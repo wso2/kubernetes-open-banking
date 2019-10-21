@@ -1,0 +1,128 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+wso2:
+  # MySQL datasource configurations
+  #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+  #   host:             Hostname of the MySQL database
+  #   username:         MySQL database username
+  #   password:         MySQL database password
+  #   driverClass:      JDBC Driver class name
+  #   validationQuery:  SQL validation query
+  db:
+    type: mysql
+    enabled: true
+    host: wso2ob-rdbms-service-mysql
+    username: wso2carbon
+    password: wso2carbon
+    driverClass: com.mysql.jdbc.Driver
+    validationQuery: "SELECT 1"
+  # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
+  # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
+  subscription:
+    username: ""
+    password: ""
+  deployment:
+    wso2obkm:
+      # Hostname of the Open Banking Key Manager 
+      hostname: "wso2-obkm"
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      dockerRegistry: "docker.wso2.com"
+      imageName: "wso2-obkm"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
+        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "4000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+    wso2obam:
+      # Hostname of the Open Banking API Manager 
+      hostname: "wso2-obam"
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      dockerRegistry: "docker.wso2.com"
+      imageName: "wso2-obam"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
+        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "4000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+kubernetes:
+  # Name of Kubernetes service account
+  svcaccount: "wso2svc-account"
