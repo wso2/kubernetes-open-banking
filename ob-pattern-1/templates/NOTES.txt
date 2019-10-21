@@ -1,0 +1,24 @@
+{{-  $obam_hostname := .Values.wso2.deployment.wso2obam.hostname  }}
+{{-  $obkm_hostname := .Values.wso2.deployment.wso2obkm.hostname  }}
+
+Thank you for installing WSO2 Open Banking Solution.
+
+Please follow these steps to access the Management Console in the environment.
+
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
+  kubectl get ing -n {{ .Release.Namespace }}
+
+    NAME                       HOSTS                  ADDRESS        PORTS     AGE
+    wso2-obam-ingress    {{ $obam_hostname }}       <EXTERNAL-IP>    80, 443     3m
+    wso2-obkm-ingress    {{ $obkm_hostname }}       <EXTERNAL-IP>    80, 443     3m
+
+2. Add the above hosts as an entries in /etc/hosts file as follows:
+
+    <EXTERNAL-IP>   {{ $obam_hostname }}
+    <EXTERNAL-IP>   {{ $obkm_hostname }}
+
+3. Navigate to https://{{ $obam_hostname }}/carbon, https://{{ $obkm_hostname }}/carbon  in your browser of choice.
+
+
+Please refer the official documentation at https://docs.wso2.com/display/OB140 for additional information on WSO2 Open Banking.
