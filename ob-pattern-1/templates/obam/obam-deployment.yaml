@@ -86,8 +86,50 @@ spec:
           protocol: TCP
         - containerPort: 9099
           protocol: TCP
+        volumeMounts:
+        -  name: obam-bin
+           mountPath: /home/wso2carbon/wso2-config-volume/bin/
+        -  name: obam-conf-datasources
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+        -  name: obam-conf-finance
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
+        -  name: obam-conf
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+        -  name: obam-deployment-executionplans
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/executionplans
+        -  name: obam-deployment-jaggeryapps-admin
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf
+        -  name: obam-deployment-jaggeryapps-store
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf        
+        -  name: obam-resources-velocity
+           mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates       
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2ob-deployment-creds
-     
+      volumes:
+      - name: obam-bin
+        configMap:
+          name: obam-bin
+      - name: obam-conf-datasources
+        configMap:
+          name: obam-conf-datasources
+      - name: obam-conf-finance
+        configMap:
+          name: obam-conf-finance
+      - name: obam-conf
+        configMap:
+          name: obam-conf
+      - name: obam-deployment-executionplans
+        configMap:
+          name: obam-deployment-executionplans
+      - name: obam-deployment-jaggeryapps-admin
+        configMap:
+          name: obam-deployment-jaggeryapps-admin
+      - name: obam-deployment-jaggeryapps-store
+        configMap:
+          name: obam-deployment-jaggeryapps-store
+      - name: obam-resources-velocity
+        configMap:
+          name: obam-resources-velocity
+
 
