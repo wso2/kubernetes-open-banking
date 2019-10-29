@@ -8,7 +8,7 @@
   "tasksPerPage": 10,
   "allowedPermission": "/permission/admin/manage/apim_admin",
   "workflows": {
-    "workFlowServerURL": "https://bps:9445/services/",
+    "workFlowServerURL": "https://{{ BPS_HOSTNAME }}:9445/services/",
   },
   "ssoConfiguration": {
     "enabled": "false",

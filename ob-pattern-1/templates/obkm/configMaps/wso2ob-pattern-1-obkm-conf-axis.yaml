@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obam-resources-velocity
+  name: wso2ob-pattern-1-obkm-conf-axis
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obam/repository/resources/api_templates/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/axis2/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

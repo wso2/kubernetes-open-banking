@@ -15,8 +15,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2-obam-deployment
-  namespace: wso2
+  name: wso2ob-pattern-1-obam-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,15 +27,15 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2-obam
+      deployment: wso2ob-pattern-1-obam
   template:
     metadata:
       labels:
-        deployment: wso2-obam
+        deployment: wso2ob-pattern-1-obam
     spec:
       containers:
-      - name: wso2-obam
-        image: docker.wso2.com/wso2-obam:1.4.0
+      - name: wso2ob-pattern-1-obam
+        image: {{ .Values.wso2.deployment.wso2obam.dockerRegistry }}/{{ .Values.wso2.deployment.wso2obam.imageName }}:{{ .Values.wso2.deployment.wso2obam.imageTag }}
         livenessProbe:
           exec:
             command:
@@ -87,49 +87,49 @@ spec:
         - containerPort: 9099
           protocol: TCP
         volumeMounts:
-        -  name: obam-bin
+        -  name: wso2ob-pattern-1-obam-bin
            mountPath: /home/wso2carbon/wso2-config-volume/bin/
-        -  name: obam-conf-datasources
+        -  name: wso2ob-pattern-1-obam-conf-datasources
            mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        -  name: obam-conf-finance
+        -  name: wso2ob-pattern-1-obam-conf-finance
            mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
-        -  name: obam-conf
+        -  name: wso2ob-pattern-1-obam-conf
            mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        -  name: obam-deployment-executionplans
+        -  name: wso2ob-pattern-1-obam-deployment-executionplans
            mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/executionplans
-        -  name: obam-deployment-jaggeryapps-admin
+        -  name: wso2ob-pattern-1-obam-deployment-jaggeryapps-admin
            mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf
-        -  name: obam-deployment-jaggeryapps-store
+        -  name: wso2ob-pattern-1-obam-deployment-jaggeryapps-store
            mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf        
-        -  name: obam-resources-velocity
+        -  name: wso2ob-pattern-1-obam-resources-velocity
            mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates       
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2ob-deployment-creds
       volumes:
-      - name: obam-bin
+      - name: wso2ob-pattern-1-obam-bin
         configMap:
-          name: obam-bin
-      - name: obam-conf-datasources
+          name: wso2ob-pattern-1-obam-bin
+      - name: wso2ob-pattern-1-obam-conf-datasources
         configMap:
-          name: obam-conf-datasources
-      - name: obam-conf-finance
+          name: wso2ob-pattern-1-obam-conf-datasources
+      - name: wso2ob-pattern-1-obam-conf-finance
         configMap:
-          name: obam-conf-finance
-      - name: obam-conf
+          name: wso2ob-pattern-1-obam-conf-finance
+      - name: wso2ob-pattern-1-obam-conf
         configMap:
-          name: obam-conf
-      - name: obam-deployment-executionplans
+          name: wso2ob-pattern-1-obam-conf
+      - name: wso2ob-pattern-1-obam-deployment-executionplans
         configMap:
-          name: obam-deployment-executionplans
-      - name: obam-deployment-jaggeryapps-admin
+          name: wso2ob-pattern-1-obam-deployment-executionplans
+      - name: wso2ob-pattern-1-obam-deployment-jaggeryapps-admin
         configMap:
-          name: obam-deployment-jaggeryapps-admin
-      - name: obam-deployment-jaggeryapps-store
+          name: wso2ob-pattern-1-obam-deployment-jaggeryapps-admin
+      - name: wso2ob-pattern-1-obam-deployment-jaggeryapps-store
         configMap:
-          name: obam-deployment-jaggeryapps-store
-      - name: obam-resources-velocity
+          name: wso2ob-pattern-1-obam-deployment-jaggeryapps-store
+      - name: wso2ob-pattern-1-obam-resources-velocity
         configMap:
-          name: obam-resources-velocity
+          name: wso2ob-pattern-1-obam-resources-velocity
 
 

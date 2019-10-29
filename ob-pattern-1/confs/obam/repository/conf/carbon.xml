@@ -26,17 +26,17 @@
     <!--
        Product Name
     -->
-    <Name>WSO2 API Manager</Name>
+    <Name>WSO2 Open Banking API Manager</Name>
 
     <!--
        machine readable unique key to identify each product
     -->
-    <ServerKey>AM</ServerKey>
+    <ServerKey>OBAM</ServerKey>
 
     <!--
        Product Version
     -->
-    <Version>2.6.0</Version>
+    <Version>{{ VERSION }}</Version>
 
     <!--
        Host name or IP address of the machine hosting this server
@@ -45,7 +45,7 @@
        services deployed on this server instance.
     -->
     <!--Required in OB-->
-    <HostName>{{ $.Values.deployment.wso2obam.hostname }}</HostName>
+    <HostName>{{ OBAM_HOSTNAME }}</HostName>
 
     <!--
     Host name to be used for the Carbon management console

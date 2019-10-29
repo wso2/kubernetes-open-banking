@@ -15,16 +15,20 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obkm-conf-tomcat
+  name: wso2ob-pattern-1-obam-conf
   namespace : {{ .Release.Namespace }}
 data:
+  {{-  $obam_hostname := .Values.wso2.deployment.wso2obam.hostname  }}
+  {{-  $obkm_hostname := .Values.wso2.deployment.wso2obkm.hostname  }}
+  {{-  $version       := .Values.wso2.deployment.wso2obkm.version   }}
+
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/tomcat/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obam/repository/conf/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-      {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ OBAM_HOSTNAME }}" $obam_hostname | replace "{{ OBKM_HOSTNAME }}" $obkm_hostname | replace "{{ VERSION }}" $version }}
     {{- end }}
   {{- end }}

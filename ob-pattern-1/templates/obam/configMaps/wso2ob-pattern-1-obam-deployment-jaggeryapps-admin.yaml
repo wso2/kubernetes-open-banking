@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obkm-deployment-jaggeryapps-consentmgt
+  name: wso2ob-pattern-1-obam-deployment-jaggeryapps-admin
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obam/repository/deployment/server/jaggeryapps/consentmgt/configs/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obam/repository/deployment/server/jaggeryapps/admin/site/conf/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
