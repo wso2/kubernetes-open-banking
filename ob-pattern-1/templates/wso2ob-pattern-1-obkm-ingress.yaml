@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2-obkm-ingress
+  name: wso2ob-pattern-1-obkm-ingress
   namespace: wso2
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -34,5 +34,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: wso2-obkm-service
+          serviceName: wso2ob-pattern-1-obkm-service
           servicePort: 9446

@@ -26,17 +26,17 @@
     <!--
        Product Name
     -->
-    <Name>WSO2 Identity Server</Name>
+    <Name>WSO2 Open Banking Key Manager</Name>
 
     <!--
        machine readable unique key to identify each product
     -->
-    <ServerKey>IS</ServerKey>
+    <ServerKey>OBKM</ServerKey>
 
     <!--
        Product Version
     -->
-    <Version>5.7.0</Version>
+    <Version>{{ VERSION }}</Version>
 
     <!--
        Host name or IP address of the machine hosting this server
@@ -44,12 +44,12 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-    <HostName>{{ $.Values.deployment.wso2obkm.hostname }}</HostName>
+    <HostName>{{ OBKM_HOSTNAME }}</HostName>
 
     <!--
     Host name to be used for the Carbon management console
     -->
-    <MgtHostName>localhost</MgtHostName>
+    <MgtHostName>{{ OBKM_HOSTNAME }}</MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and

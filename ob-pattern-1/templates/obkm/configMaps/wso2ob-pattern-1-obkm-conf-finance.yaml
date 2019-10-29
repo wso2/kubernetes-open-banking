@@ -15,16 +15,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obkm-conf-axis
+  name: wso2ob-pattern-1-obkm-conf-finance
   namespace : {{ .Release.Namespace }}
 data:
+  {{-  $obam_hostname := .Values.wso2.deployment.wso2obam.hostname  }}
+  {{-  $obkm_hostname := .Values.wso2.deployment.wso2obkm.hostname  }}
+
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/axis2/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/finance/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-      {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ OBAM_HOSTNAME }}" $obam_hostname | replace "{{ OBKM_HOSTNAME }}" $obkm_hostname }}
     {{- end }}
   {{- end }}

@@ -28,23 +28,32 @@ wso2:
     password: wso2carbon
     driverClass: com.mysql.jdbc.Driver
     validationQuery: "SELECT 1"
-    #Database Names
+    
+    # Database Names
     apimgtDB: "openbank_apimgtdb"
     mbstoreDB: "openbank_mbstoredb"
     statDB: "openbank_apimgt_statsdb"
     commonDB: "openbank_commondb"
     openbankingDB: "openbank_openbankingdb"
+  
   # WSO2 subscription parameters.
   # If you do not possess an active WSO2 subscription already, you can contact us from (https://wso2.com/solutions/financial/open-banking/).
   subscription:
     username: ""
     password: ""
+
+  # Open Banking Specification  
+  spec: "UK"
+
   deployment:
+    
     wso2obkm:
-      # Hostname of the Open Banking Key Manager 
+      # Hostname of the WSO2 Open Banking Key Manager 
       hostname: "wso2-obkm"
-      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      version: "1.4.0"
+      # URL for the Docker Registry
       dockerRegistry: "docker.wso2.com"
+      # Docker image specifications
       imageName: "wso2-obkm"
       imageTag: "1.4.0"
       # Number of deployment replicas
@@ -70,13 +79,11 @@ wso2:
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
-        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
         requests:
           # The minimum amount of memory that should be allocated for a Pod
-          memory: "2Gi"
+          memory: "4Gi"
           # The minimum amount of CPU that should be allocated for a Pod
-          cpu: "2000m"
+          cpu: "4000m"
         limits:
           # The maximum amount of memory that should be allocated for a Pod
           memory: "4Gi"
@@ -88,7 +95,8 @@ wso2:
     wso2obam:
       # Hostname of the Open Banking API Manager 
       hostname: "wso2-obam"
-      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      version: "1.4.0"
+      # URL for the private docker repository
       dockerRegistry: "docker.wso2.com"
       imageName: "wso2-obam"
       imageTag: "1.4.0"
@@ -115,8 +123,6 @@ wso2:
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
-        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
         requests:
           # The minimum amount of memory that should be allocated for a Pod
           memory: "2Gi"

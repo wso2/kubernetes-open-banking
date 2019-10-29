@@ -29,8 +29,8 @@
         AuthenticationEndpointURL is location of the web app containing
         the authentication related pages
     -->
-    <AuthenticationEndpointURL>https://localhost:9446/ob/authenticationendpoint/login.do</AuthenticationEndpointURL>
-    <AuthenticationEndpointRetryURL>https://localhost:9446/ob/authenticationendpoint/retry.do</AuthenticationEndpointRetryURL>
+    <AuthenticationEndpointURL>https://{wso2-obkm-service:9446/ob/authenticationendpoint/login.do</AuthenticationEndpointURL>
+    <AuthenticationEndpointRetryURL>https://{wso2-obkm-service:9446/ob/authenticationendpoint/retry.do</AuthenticationEndpointRetryURL>
     <AuthenticationEndpointMissingClaimsURL>/ob/authenticationendpoint/claims.do</AuthenticationEndpointMissingClaimsURL>
 
     <!--
@@ -141,9 +141,9 @@
             <Parameter name="redirectToMultiOptionPageOnFailure">false</Parameter>
         </AuthenticatorConfig>
         <AuthenticatorConfig name="SMSOTP" enabled="true">
-            <Parameter name="SMSOTPAuthenticationEndpointURL">https://localhost:9446/smsotpauthenticationendpoint/smsotp.jsp</Parameter>
-            <Parameter name="SMSOTPAuthenticationEndpointErrorPage">https://localhost:9446/smsotpauthenticationendpoint/smsotpError.jsp</Parameter>
-            <Parameter name="MobileNumberRegPage">https://localhost:9446/smsotpauthenticationendpoint/mobile.jsp</Parameter>
+            <Parameter name="SMSOTPAuthenticationEndpointURL">https://{wso2-obkm-service:9446/smsotpauthenticationendpoint/smsotp.jsp</Parameter>
+            <Parameter name="SMSOTPAuthenticationEndpointErrorPage">https://{wso2-obkm-service:9446/smsotpauthenticationendpoint/smsotpError.jsp</Parameter>
+            <Parameter name="MobileNumberRegPage">https://{wso2-obkm-service:9446/smsotpauthenticationendpoint/mobile.jsp</Parameter>
             <Parameter name="RetryEnable">true</Parameter>
             <Parameter name="ResendEnable">true</Parameter>
             <Parameter name="BackupCode">true</Parameter>

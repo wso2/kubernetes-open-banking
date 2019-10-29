@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obkm-conf-identity
+  name: wso2ob-pattern-1-obam-deployment-executionplans
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/identity/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obam/repository/deployment/server/executionplans/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

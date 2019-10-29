@@ -15,16 +15,18 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: obkm-conf
+  name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
   namespace : {{ .Release.Namespace }}
 data:
+  {{-  $spec := .Values.wso2.spec }}
+
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obkm/repository/conf/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/obam/repository/deployment/server/jaggeryapps/ccportal/configs/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-      {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ SPEC }}" $spec }}
     {{- end }}
   {{- end }}

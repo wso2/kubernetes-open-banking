@@ -13,18 +13,19 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: obam-deployment-executionplans
-  namespace : {{ .Release.Namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/obam/repository/deployment/server/executionplans/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-      {{ . }}
-    {{- end }}
-  {{- end }}
+  name: wso2ob-pattern-1-obkm-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    deployment: wso2ob-pattern-1-obkm
+  ports:
+  - name: servlet-http
+    port: 9763
+    targetPort: 9763
+    protocol: TCP
+  - name: servlet-https
+    port: 9446
+    targetPort: 9446
+    protocol: TCP

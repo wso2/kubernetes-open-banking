@@ -17,7 +17,7 @@
     <AuthManager>
         <!-- Server URL of the Authentication service -->
         <!--openbanking_hostname Required in OB-->
-        <ServerURL>https://obkm:9446${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2ob-pattern-1-obkm-service:9446${carbon.context}services/</ServerURL>
         <!-- Admin username for the Authentication manager. -->
         <Username>${admin.username}</Username>
         <!-- Admin password for the Authentication manager. -->
@@ -87,13 +87,13 @@
                 <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
                 <!-- Server URL of the API gateway -->
                 <!--openbanking_hostname Required in OB-->
-                <ServerURL>https://obam:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+                <ServerURL>https://wso2ob-pattern-1-obam-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 		        <!-- Admin username for the API gateway. -->
                 <Username>${admin.username}</Username>
                 <!-- Admin password for the API gateway.-->
                 <Password>${admin.password}</Password>
                 <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <GatewayEndpoint>http://obam:${http.nio.port},https://obam:${https.nio.port}</GatewayEndpoint>
+                <GatewayEndpoint>http://wso2ob-pattern-1-obam-service:${http.nio.port},https://wso2ob-pattern-1-obam-service:${https.nio.port}</GatewayEndpoint>
                 <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
                 <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
             </Environment>
@@ -215,7 +215,7 @@
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
         <!--Required in OB-->
-        <ServerURL>https://obkm:9446${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2ob-pattern-1-obkm-service:9446${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -254,11 +254,11 @@
         <!--KeyManagerClientImpl>org.wso2.carbon.apimgt.impl.AMDefaultKeyManagerImpl</KeyManagerClientImpl-->
         <KeyManagerClientImpl>com.wso2.finance.open.banking.sca.keymanager.SCABasedKeyManagerClient</KeyManagerClientImpl>
         <Configuration>
-            <ServerURL>https://obkm:9446${carbon.context}services/</ServerURL>
+            <ServerURL>https://wso2ob-pattern-1-obkm-service:9446${carbon.context}services/</ServerURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
-            <TokenURL>https://obam:${https.nio.port}/token</TokenURL>
-            <RevokeURL>https://obam:${https.nio.port}/revoke</RevokeURL>
+            <TokenURL>https://wso2ob-pattern-1-obam-service:${https.nio.port}/token</TokenURL>
+            <RevokeURL>https://wso2ob-pattern-1-obam-service:${https.nio.port}/revoke</RevokeURL>
         </Configuration>
     </APIKeyManager>
 
@@ -354,7 +354,7 @@
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
         <!--openbanking_hostname Required in OB-->
-        <URL>https://obam:${mgt.transport.https.port}/publisher</URL>
+        <URL>https://wso2ob-pattern-1-obam-service:${mgt.transport.https.port}/publisher</URL>
         <!-- This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
              By default any document associate with an API will have the same permissions set as the API.With enabling below
              property,it will show two additional permission levels as visible only to all registered users in a particular
