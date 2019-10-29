@@ -18,12 +18,12 @@ metadata:
   name: wso2ob-pattern-1-obam-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
-  minReadySeconds: 30
+  replicas: {{ default 1 .Values.wso2.deployment.wso2obam.replicas }} 
+  minReadySeconds: {{ default 30 .Values.wso2.deployment.wso2obam.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2obam.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2obam.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -42,21 +42,28 @@ spec:
             - /bin/sh
             - -c
             - nc -z localhost 9443
-          initialDelaySeconds: 250
-          periodSeconds: 10
+          initialDelaySeconds: {{default 250 .Values.wso2.deployment.wso2obam.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{default 10 .Values.wso2.deployment.wso2obam.livenessProbe.periodSeconds }}
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 250
-          periodSeconds: 10
+          initialDelaySeconds: {{default 250 .Values.wso2.deployment.wso2obam.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{default 10 .Values.wso2.deployment.wso2obam.readinessProbe.periodSeconds }}
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.wso2.deployment.wso2obam.imagePullPolicy }}
+        resources:
+          requests:
+            memory: {{ .Values.wso2.deployment.wso2obam.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2obam.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.wso2.deployment.wso2obam.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2obam.resources.limits.cpu }}
         securityContext:
           runAsUser: 802
         ports:
@@ -103,7 +110,7 @@ spec:
            mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf        
         -  name: wso2ob-pattern-1-obam-resources-velocity
            mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates       
-      serviceAccountName: "wso2svc-account"
+      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       imagePullSecrets:
       - name: wso2ob-deployment-creds
       volumes:
@@ -131,5 +138,3 @@ spec:
       - name: wso2ob-pattern-1-obam-resources-velocity
         configMap:
           name: wso2ob-pattern-1-obam-resources-velocity
-
-

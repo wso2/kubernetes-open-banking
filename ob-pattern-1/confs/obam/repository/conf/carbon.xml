@@ -51,7 +51,7 @@
     Host name to be used for the Carbon management console
     -->
     <!--Required in OB-->
-    <MgtHostName>localhost</MgtHostName>
+    <MgtHostName>{{ OBAM_HOSTNAME }}</MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and
