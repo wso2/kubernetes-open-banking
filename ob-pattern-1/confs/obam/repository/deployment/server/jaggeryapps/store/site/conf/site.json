@@ -86,7 +86,7 @@
     }
   },
   "cookiePolicyURL" : "http://wso2.com",
-  "DeployedSpecification" : "UK",//Allowed values are: "UK", "BERLIN", "STET", "AU" and "Default"
+  "DeployedSpecification" : "{{ SPEC }}",//Allowed values are: "UK", "BERLIN", "STET", "AU" and "Default"
   "OBDirectoryIntegrated" : false,
   "UseSoftwareIdAsApplicationName" : false
 }

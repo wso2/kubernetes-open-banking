@@ -31,7 +31,7 @@
         <TokenIssuer>www.openbank.com</TokenIssuer>
         <!--Expiry time in seconds. Default is 180 seconds-->
         <NotificationExpiryTime>180</NotificationExpiryTime>
-        <NotificationAPIUrl>https://obam:8243/open-banking/v3.1/event-notification</NotificationAPIUrl>
+        <NotificationAPIUrl>https://wso2-obam-service:8243/open-banking/v3.1/event-notification</NotificationAPIUrl>
     </EventNotifications>
 
     <MultiAuthorization>
@@ -51,10 +51,10 @@
 
     <!--Configure endpoint to retrieve payable accounts passing userId https://localhost:9443/as400/payable-accounts/{userId} -->
     <!-- Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/payable -->
-    <PayableAccountsRetrieveEndpoint>http://obam:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</PayableAccountsRetrieveEndpoint>
+    <PayableAccountsRetrieveEndpoint>http://wso2-obam-service:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</PayableAccountsRetrieveEndpoint>
     <!-- Configure endpoint to retrieve UK sharable accounts passing userId https://localhost:9443/as400/sharable-accounts/{userId}  -->
     <!-- Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/shareable -->
-    <SharableAccountsRetrieveEndpoint>http://obam:9763/open-banking/services/bankaccounts/bankaccountservice/sharable-accounts</SharableAccountsRetrieveEndpoint>
+    <SharableAccountsRetrieveEndpoint>http://wso2-obam-service:9763/open-banking/services/bankaccounts/bankaccountservice/sharable-accounts</SharableAccountsRetrieveEndpoint>
 
     <Berlin>
 
@@ -92,26 +92,26 @@
             <AuthorizeCancellation>false</AuthorizeCancellation>
 
             <!--Endpoint to retrieve OIDC Discovery metadata-->
-            <OAuthMetadataEndpoint>https://obam:8243/.well-known/openid-configuration</OAuthMetadataEndpoint>
+            <OAuthMetadataEndpoint>https://wso2-obam-service:8243/.well-known/openid-configuration</OAuthMetadataEndpoint>
 
             <!--The link to the payment initiation resource, which needs to be updated by the PSU identification.
             This might be used in an embedded, redirect or decoupled SCA Approach, where the PSU ID was missing
             in the first request. -->
-            <UpdatePSUIdentification>https://obkm:9446</UpdatePSUIdentification>
+            <UpdatePSUIdentification>https://wso2-obkm-service:9446</UpdatePSUIdentification>
 
             <!--The link to the payment initiation resource, which needs to be updated by a PSU password and eventually
              the PSU identification if not delivered yet. This is used in case of the Embedded or Decoupled SCA
              approach.-->
-            <UpdatePSUAuthentication>https://obkm:9446</UpdatePSUAuthentication>
+            <UpdatePSUAuthentication>https://wso2-obkm-service:9446</UpdatePSUAuthentication>
 
             <!--This is a link to a resource, where the TPP can select the applicable strong customer authentication
             methods for the PSU, if there were several available authentication method-->
-            <SelectAuthenticationMethod>https://obkm:9446</SelectAuthenticationMethod>
+            <SelectAuthenticationMethod>https://wso2-obkm-service:9446</SelectAuthenticationMethod>
 
             <!--The link to the payment initiation resource, where the "Payment Authorisation Request" is sent to.
             This is the link to the resource which will authorise the payment by checking the SCA authentication data
             within the Embedded SCA approach.-->
-            <AuthorizeTransaction>https://obkm:9446</AuthorizeTransaction>
+            <AuthorizeTransaction>https://wso2-obkm-service:9446</AuthorizeTransaction>
 
             <!-- Configure SCA Methods for API responses -->
             <SCAMethods>
@@ -128,15 +128,15 @@
 
         <AccountsRetrieveEndpoint>https://localhost:9443/open-banking-berlin/services/accounts/accounts</AccountsRetrieveEndpoint>
 
-        <AccountConsentSelfLink>https://obam:8243/xs2a/1.3.3/consents/%s</AccountConsentSelfLink>
-        <PaymentResourceSelfLink>https://obam:8243/xs2a/1.3.3/%s/%s/%s</PaymentResourceSelfLink>
+        <AccountConsentSelfLink>https://wso2-obam-service:8243/xs2a/1.3.3/consents/%s</AccountConsentSelfLink>
+        <PaymentResourceSelfLink>https://wso2-obam-service:8243/xs2a/1.3.3/%s/%s/%s</PaymentResourceSelfLink>
 
         <!--The time interval for duplicate checking of payment consent initiation requests using X-Request-ID-->
         <DuplicateCheck>
             <TimeIntervalInMinutes>60</TimeIntervalInMinutes>
         </DuplicateCheck>
         <EnableIBANBasedAccountRetrievalValidation>true</EnableIBANBasedAccountRetrievalValidation>
-        <Host>obam</Host>
+        <Host>wso2-obam-service</Host>
         <Port>8243</Port>
         <AccountConsentsApiPath>/AccountsInfoAPI/v1.1.0/consents</AccountConsentsApiPath>
         <PaymentConsentsApiPath>/PaymentsAPI/v1.1.0/payments</PaymentConsentsApiPath>
@@ -148,9 +148,9 @@
     <UK>
         <CustomerCareOfficerRole>Internal/CustomerCareOfficer</CustomerCareOfficerRole>
         <XFAPIFinancialId>open-bank</XFAPIFinancialId>
-        <PaymentAPIURL>https://obam:8243/open-banking/{version}/pisp/</PaymentAPIURL>
-        <AccountAPIURL>https://obam:8243/open-banking/{version}/aisp/</AccountAPIURL>
-        <FundsConfirmationAPIURL>https://obam:8243/open-banking/{version}/cbpii/</FundsConfirmationAPIURL>
+        <PaymentAPIURL>https://wso2-obam-service:8243/open-banking/{version}/pisp/</PaymentAPIURL>
+        <AccountAPIURL>https://wso2-obam-service:8243/open-banking/{version}/aisp/</AccountAPIURL>
+        <FundsConfirmationAPIURL>https://wso2-obam-service:8243/open-banking/{version}/cbpii/</FundsConfirmationAPIURL>
         <!--configure the url to get details about the error-->
         <ErrorURL></ErrorURL>
         <Cache>
@@ -318,7 +318,7 @@
     </UK>
 
     <STET>
-        <Host>obam</Host>
+        <Host>wso2-obam-service</Host>
         <Port>8243</Port>
         <MaxNumberOfTransactions>5</MaxNumberOfTransactions>
         <DuplicateCheck>
@@ -338,7 +338,7 @@
             <!--The link to the payment initiation resource, where the "Payment Authorisation Request" is sent to.
                         This is the link to the resource which will authorise the payment by checking the SCA authentication data
                         within the REDIRECT SCA approach.-->
-            <AuthorizationEndpoint>https://obam:8243/authorize</AuthorizationEndpoint>
+            <AuthorizationEndpoint>https://wso2-obam-service:8243/authorize</AuthorizationEndpoint>
         </SCA>
         <!--
         Allowed values for account reference type
@@ -348,7 +348,7 @@
         <AccountReferenceType>iban</AccountReferenceType>
 
         <!--Configure endpoint to retrieve payable accounts passing userId https://localhost:9443/as400/payable-accounts/{userId} -->
-        <AccountsRetrieveEndpoint>http://obam:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</AccountsRetrieveEndpoint>
+        <AccountsRetrieveEndpoint>http://wso2-obam-service:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</AccountsRetrieveEndpoint>
 
     </STET>
     <APISecurity>

@@ -27,13 +27,13 @@
             <definition type="RDBMS">
                 <configuration>
                     <url>{{ OPENBANKING_DB_URL }}</url>
-                    <username>{{ $.Values.wso2.db.username }}</username>
-                    <password>{{ $.Values.wso2.db.password }}</password>
-                    <driverClassName>{{ $.Values.wso2.db.driverClass }}</driverClassName>
+                    <username>{{ DB_USERNAME }}</username>
+                    <password>{{ DB_PASSWORD }}</password>
+                    <driverClassName>{{ DB_DRIVER }}</driverClassName>
                     <maxActive>150</maxActive>
                     <maxWait>60000</maxWait>
                     <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>{{ $.Values.wso2.db.driverClass }}</validationQuery>
+                    <validationQuery>{{ DB_VALIDATION_QUERY  }}</validationQuery>
                     <validationInterval>30000</validationInterval>
                     <defaultAutoCommit>false</defaultAutoCommit>
                 </configuration>

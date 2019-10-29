@@ -15,8 +15,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2-obkm-deployment
-  namespace: wso2
+  name: wso2ob-pattern-1-obkm-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,15 +27,15 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2-obkm
+      deployment: wso2ob-pattern-1-obkm
   template:
     metadata:
       labels:
-        deployment: wso2-obkm
+        deployment: wso2ob-pattern-1-obkm
     spec:
       containers:
-      - name: wso2-obkm
-        image: docker.wso2.com/wso2-obkm:1.4.0
+      - name: wso2ob-pattern-1-obkm
+        image: {{ .Values.wso2.deployment.wso2obkm.dockerRegistry }}/{{ .Values.wso2.deployment.wso2obkm.imageName }}:{{ .Values.wso2.deployment.wso2obkm.imageTag }}
         livenessProbe:
           exec:
             command:
@@ -65,54 +65,52 @@ spec:
         - containerPort: 9446
           protocol: TCP
         volumeMounts:
-        -  name: obkm-bin
+        -  name: wso2ob-pattern-1-obkm-bin
            mountPath: /home/wso2carbon/wso2-config-volume/bin
-        - name: obkm-conf-axis
+        - name: wso2ob-pattern-1-obkm-conf-axis
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-        - name: obkm-conf-datasources
+        - name: wso2ob-pattern-1-obkm-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: obkm-conf-finance
+        - name: wso2ob-pattern-1-obkm-conf-finance
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
-        - name: obkm-conf-identity
+        - name: wso2ob-pattern-1-obkm-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
-        - name: obkm-conf-tomcat
+        - name: wso2ob-pattern-1-obkm-conf-tomcat
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
-        - name: obkm-conf
+        - name: wso2ob-pattern-1-obkm-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: obkm-deployment-jaggeryapps-consentmgt
+        - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-consentmgt
           mountPath: /home/wso2carbon/wso2-config-volume/deployment/server/jaggeryapps/consentmgt/configs
-        - name: obkm-deployment-jaggeryapps-ccportal
+        - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
           mountPath: /home/wso2carbon/wso2-config-volume/deployment/server/jaggeryapps/ccportal/configs
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2ob-deployment-creds
       volumes:
-      - name: obkm-bin
+      - name: wso2ob-pattern-1-obkm-bin
         configMap:
-          name: obkm-bin
-      - name: obkm-conf-axis
+          name: wso2ob-pattern-1-obkm-bin
+      - name: wso2ob-pattern-1-obkm-conf-axis
         configMap:
-          name: obkm-conf-axis
-      - name: obkm-conf-datasources
+          name: wso2ob-pattern-1-obkm-conf-axis
+      - name: wso2ob-pattern-1-obkm-conf-datasources
         configMap:
-          name: obkm-conf-datasources
-      - name: obkm-conf-finance
+          name: wso2ob-pattern-1-obkm-conf-datasources
+      - name: wso2ob-pattern-1-obkm-conf-finance
         configMap:
-          name: obkm-conf-finance
-      - name: obkm-conf-identity
+          name: wso2ob-pattern-1-obkm-conf-finance
+      - name: wso2ob-pattern-1-obkm-conf-identity
         configMap:
-          name: obkm-conf-identity
-      - name: obkm-conf-tomcat
+          name: wso2ob-pattern-1-obkm-conf-identity
+      - name: wso2ob-pattern-1-obkm-conf-tomcat
         configMap:
-          name: obkm-conf-tomcat
-      - name: obkm-conf
+          name: wso2ob-pattern-1-obkm-conf-tomcat
+      - name: wso2ob-pattern-1-obkm-conf
         configMap:
-          name: obkm-conf
-      - name: obkm-deployment-jaggeryapps-consentmgt
+          name: wso2ob-pattern-1-obkm-conf
+      - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-consentmgt
         configMap:
-          name: obkm-deployment-jaggeryapps-consentmgt
-      - name: obkm-deployment-jaggeryapps-ccportal
+          name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-consentmgt
+      - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
         configMap:
-          name: obkm-deployment-jaggeryapps-ccportal
-
-
+          name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
