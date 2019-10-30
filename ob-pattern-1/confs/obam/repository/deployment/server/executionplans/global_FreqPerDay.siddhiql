@@ -29,4 +29,3 @@ insert all events into ResultStream;
 from ResultStream#throttler:emitOnStateChange(throttleKey, isThrottled)
 select *
 insert into GlobalThrottleStream;
-

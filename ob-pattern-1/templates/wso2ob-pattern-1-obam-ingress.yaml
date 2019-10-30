@@ -16,7 +16,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: wso2ob-pattern-1-obam-ingress
-  namespace: wso2
+  namespace: {{ .Release.namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -27,7 +27,8 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2-obam
+    - {{ .Values.wso2.deployment.wso2obam.hostname  }}
+    - {{ .Values.wso2.deployment.wso2obam.gateway.hostname  }}
   rules:
   - host: {{ .Values.wso2.deployment.wso2obam.hostname  }}
     http:
@@ -36,3 +37,10 @@ spec:
         backend:
           serviceName: wso2ob-pattern-1-obam-service
           servicePort: 9443
+  - host: {{ .Values.wso2.deployment.wso2obam.gateway.hostname  }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: wso2ob-pattern-1-obam-service
+          servicePort: 8243
