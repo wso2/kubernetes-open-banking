@@ -81,14 +81,14 @@ wso2:
       resources:
         requests:
           # The minimum amount of memory that should be allocated for a Pod
-          memory: "4Gi"
+          memory: "2Gi"
           # The minimum amount of CPU that should be allocated for a Pod
-          cpu: "4000m"
+          cpu: "2000m"
         limits:
           # The maximum amount of memory that should be allocated for a Pod
-          memory: "4Gi"
+          memory: "2Gi"
           # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "4000m"
+          cpu: "2000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
@@ -130,11 +130,13 @@ wso2:
           cpu: "2000m"
         limits:
           # The maximum amount of memory that should be allocated for a Pod
-          memory: "4Gi"
+          memory: "2Gi"
           # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "4000m"
+          cpu: "2000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
+      gateway:
+        hostname: wso2-obam-gateway
 
 kubernetes:
   # Name of Kubernetes service account
