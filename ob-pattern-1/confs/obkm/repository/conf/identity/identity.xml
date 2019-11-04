@@ -161,11 +161,11 @@
         <OAuth1RequestTokenUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth/request-token</OAuth1RequestTokenUrl>
         <OAuth1AuthorizeUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth/authorize-url</OAuth1AuthorizeUrl>
         <OAuth1AccessTokenUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth/access-token</OAuth1AccessTokenUrl>
-        <OAuth2AuthzEPUrl>${carbon.protocol}://wso2-obam-service:8243/authorize</OAuth2AuthzEPUrl>
-        <OAuth2TokenEPUrl>${carbon.protocol}://wso2-obam-service:8243/token</OAuth2TokenEPUrl>
+        <OAuth2AuthzEPUrl>${carbon.protocol}://wso2-obam-gateway/authorize</OAuth2AuthzEPUrl>
+        <OAuth2TokenEPUrl>${carbon.protocol}://wso2-obam-gateway/token</OAuth2TokenEPUrl>
         <OAuth2RevokeEPUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth2/revoke</OAuth2RevokeEPUrl>
         <OAuth2IntrospectEPUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth2/introspect</OAuth2IntrospectEPUrl>
-        <OAuth2UserInfoEPUrl>${carbon.protocol}://wso2-obam-service:8243/userinfo</OAuth2UserInfoEPUrl>
+        <OAuth2UserInfoEPUrl>${carbon.protocol}://wso2-obam-gateway/userinfo</OAuth2UserInfoEPUrl>
         <OIDCCheckSessionEPUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oidc/checksession</OIDCCheckSessionEPUrl>
         <OIDCLogoutEPUrl>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oidc/logout</OIDCLogoutEPUrl>
         <OAuth2ConsentPage>${carbon.protocol}://wso2-obkm-service:${carbon.management.port}/ob/authenticationendpoint/oauth2_authz.do</OAuth2ConsentPage>
@@ -176,7 +176,7 @@
         <OIDCWebFingerEPUrl>${carbon.protocol}://wso2-obkm-service:${carbon.management.port}/.well-known/webfinger</OIDCWebFingerEPUrl>
         <!-- For tenants below urls will be modified as https://<hostname>:<port>/t/<tenant domain>/<path>-->
         <!--OB DCR url-->
-        <OAuth2DCREPUrl>${carbon.protocol}://wso2-obam-service:8243/register</OAuth2DCREPUrl>
+        <OAuth2DCREPUrl>${carbon.protocol}://wso2-obam-gateway/register</OAuth2DCREPUrl>
         <OAuth2JWKSPage>${carbon.protocol}://${carbon.host}:${carbon.management.port}/oauth2/jwks</OAuth2JWKSPage>
         <OIDCDiscoveryEPUrl>${carbon.protocol}://wso2-obkm-service:${carbon.management.port}/oauth2/oidcdiscovery</OIDCDiscoveryEPUrl>
         <!-- Default validity period for Authorization Code in seconds -->
@@ -377,7 +377,7 @@
                 If that doesn't satisfy uncomment the following config and explicitly configure the value
             -->
             <!--openbanking_hostname Required in OB-->
-            <IDTokenIssuerID>https://wso2-obam-service:8243/token</IDTokenIssuerID>
+            <IDTokenIssuerID>https://wso2-obam-gateway/token</IDTokenIssuerID>
             <IDTokenCustomClaimsCallBackHandler>org.wso2.carbon.identity.openidconnect.SAMLAssertionClaimsCallback</IDTokenCustomClaimsCallBackHandler>
             <IDTokenExpiration>3600</IDTokenExpiration>
             <UserInfoJWTSignatureAlgorithm>SHA256withRSA</UserInfoJWTSignatureAlgorithm>

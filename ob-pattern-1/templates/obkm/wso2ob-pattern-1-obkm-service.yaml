@@ -29,4 +29,3 @@ spec:
     port: 9446
     targetPort: 9446
     protocol: TCP
-    
