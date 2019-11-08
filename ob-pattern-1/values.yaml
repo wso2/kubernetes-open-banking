@@ -45,7 +45,7 @@ wso2:
   # Open Banking Specification  
   spec: "UK"
 
-  deployment:
+  deployment: 
     
     wso2obkm:
       # Hostname of the WSO2 Open Banking Key Manager 
@@ -137,6 +137,10 @@ wso2:
       imagePullPolicy: Always
       gateway:
         hostname: wso2-obam-gateway
+
+nfs:
+  # StorageClass name of the NFS
+  storageClassName: "nfs"
 
 kubernetes:
   # Name of Kubernetes service account
