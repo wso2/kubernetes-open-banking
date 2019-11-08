@@ -9,14 +9,15 @@ Please follow these steps to access the Management Console in the environment.
 
   kubectl get ing -n {{ .Release.Namespace }}
 
-    NAME                       HOSTS                  ADDRESS        PORTS     AGE
-    wso2-obam-ingress    {{ $obam_hostname }},{{ $obam_gateway_hostname }}       <EXTERNAL-IP>    80, 443     3m
-    wso2-obkm-ingress    {{ $obkm_hostname }}       <EXTERNAL-IP>    80, 443     3m
+    NAME                       HOSTS                                         ADDRESS         PORTS     AGE
+    wso2-obam-ingress    {{ $obam_hostname }},{{ $obam_gateway_hostname }} <EXTERNAL-IP>    80, 443     3m
+    wso2-obkm-ingress    {{ $obkm_hostname }}                              <EXTERNAL-IP>    80, 443     3m
     
 2. Add the above hosts as an entries in /etc/hosts file as follows:
 
     <EXTERNAL-IP>   {{ $obam_hostname }}
     <EXTERNAL-IP>   {{ $obkm_hostname }}
+    <EXTERNAL-IP>   {{ $obam_gateway_hostname }}
 
 3. Navigate to https://{{ $obam_hostname }}/carbon, https://{{ $obkm_hostname }}/carbon  in your browser of choice.
 
