@@ -27,7 +27,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2-obkm
+    - {{ .Values.wso2.deployment.wso2obkm.hostname  }}
   rules:
   - host: {{ .Values.wso2.deployment.wso2obkm.hostname  }}
     http:
