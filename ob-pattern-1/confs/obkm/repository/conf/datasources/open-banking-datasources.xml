@@ -33,7 +33,7 @@
                     <maxActive>150</maxActive>
                     <maxWait>60000</maxWait>
                     <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>{{ DB_VALIDATION_QUERY  }}</validationQuery>
+                    <validationQuery>{{ DB_VALIDATION_QUERY }}</validationQuery>
                     <validationInterval>30000</validationInterval>
                     <defaultAutoCommit>false</defaultAutoCommit>
                 </configuration>
