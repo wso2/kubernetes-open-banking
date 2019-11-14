@@ -251,23 +251,23 @@ $out_sequences.get("$resource.getUriTemplate()").get($uri)
 ## add UK-specific consent-enforcement-handler
 <handler class="com.wso2.finance.open.banking.uk.consent.enforcement.ConsentEnforcementHandler">
     #if($!apiVersion == "v3.0" || $!apiVersion == "v3.1" || $!apiVersion == "v3.1.1")
-    <property name="accountValidationUrl" value="https://obkm:9446/consent/uk300/accounts-validation"/>
+    <property name="accountValidationUrl" value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk300/accounts-validation"/>
     <property name="paymentConsumtionUpdateUrl"
-              value="https://obkm:9446/consent/uk300/payments/{PaymentType}/{ConsentId}/status/{Status}"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk300/payments/{PaymentType}/{ConsentId}/status/{Status}"/>
     <property name="paymentSubmissionValidationUrl"
-              value="https://obkm:9446/consent/uk300/payment-submission-validation"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk300/payment-submission-validation"/>
     <property name="paymentConsentDataUrl"
-              value="https://obkm:9446/consent/uk300/payments/{PaymentType}/{ConsentId}/Consumption"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk300/payments/{PaymentType}/{ConsentId}/Consumption"/>
     <property name="fundConfirmationValidationUrl"
-              value="https://obkm:9446/consent/uk300/funds-confirmation-validation"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk300/funds-confirmation-validation"/>
     #elseif($!apiVersion == "v2.0")
-    <property name="accountValidationUrl" value="https://obkm:9446/consent/uk200/accounts-validation"/>
+    <property name="accountValidationUrl" value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk200/accounts-validation"/>
     <property name="paymentSubmissionValidationUrl"
-              value="https://obkm:9446/consent/uk110/payment-submission-validation"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk110/payment-submission-validation"/>
     #else
-    <property name="accountValidationUrl" value="https://obkm:9446/consent/uk110/accounts-validation"/>
+    <property name="accountValidationUrl" value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk110/accounts-validation"/>
     <property name="paymentSubmissionValidationUrl"
-              value="https://obkm:9446/consent/uk110/payment-submission-validation"/>
+              value="https://wso2ob-pattern-1-obkm-service:9446/consent/uk110/payment-submission-validation"/>
     #end
     <property name="keyStore" value="./repository/resources/security/wso2carbon.jks"/>
     <property name="password" value="wso2carbon"/>
@@ -300,7 +300,7 @@ $out_sequences.get("$resource.getUriTemplate()").get($uri)
 *#
 
 <handler class="com.wso2.finance.open.banking.berlin.consent.enforcement.ConsentEnforcementHandler">
-    <property name="accountValidationUrl" value="https://obkm:9446/consent/berlin110/accounts-validation"/>
+    <property name="accountValidationUrl" value="https://wso2ob-pattern-1-obkm-service:9446/consent/berlin110/accounts-validation"/>
     <property name="keyStore" value="./repository/resources/security/wso2carbon.jks"/>
     <property name="password" value="wso2carbon"/>
     <property name="alias" value="wso2carbon"/>
@@ -312,7 +312,7 @@ $out_sequences.get("$resource.getUriTemplate()").get($uri)
 ## add ob-STET specific handlers before the APIManagerExtensionHandler
 <handler class="com.wso2.finance.open.banking.stet.header.validation.HeaderValidationHandler"/>
 <handler class="com.wso2.finance.open.banking.stet.consent.enforcement.ConsentEnforcementHandler">
-    <property name="accountValidationUrl" value="https://obkm:9446/consent/stet140/accounts-validation"/>
+    <property name="accountValidationUrl" value="https://wso2ob-pattern-1-obkm-service:9446/consent/stet140/accounts-validation"/>
     <property name="keyStore" value="./repository/resources/security/wso2carbon.jks"/>
     <property name="password" value="wso2carbon"/>
     <property name="alias" value="wso2carbon"/>

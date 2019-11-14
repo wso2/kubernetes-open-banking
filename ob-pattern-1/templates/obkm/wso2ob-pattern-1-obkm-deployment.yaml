@@ -96,16 +96,6 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/consentmgt/configs
         - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/ccportal/configs
-        # - name: wso2ob-pattern-1-obkm-eventpublishers
-        #   mountPath: /home/wso2carbon/wso2-obkm-1.4.0/repository/deployment/server/eventpublishers/
-        # - name: wso2ob-pattern-1-obkm-userstores
-        #   mountPath: /home/wso2carbon/wso2-obkm-1.4.0/repository/deployment/server/userstores/
-        # - name: wso2ob-pattern-1-obkm-eventstreams
-        #   mountPath: /home/wso2carbon/wso2-obkm-1.4.0/repository/deployment/server/eventstreams/
-        # - name: wso2ob-pattern-1-obkm-humantasks
-        #   mountPath: /home/wso2carbon/wso2-obkm-1.4.0/repository/deployment/server/humantasks/
-        # - name: wso2ob-pattern-1-obkm-bpel
-        #   mountPath: /home/wso2carbon/wso2-obkm-1.4.0/repository/deployment/server/bpel/
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       imagePullSecrets:
       - name: wso2ob-deployment-creds
@@ -137,18 +127,4 @@ spec:
       - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
         configMap:
           name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
-      # - name : wso2ob-pattern-1-obkm-eventpublishers
-      #   persistentVolumeClaim:
-      #     claimName: wso2ob-pattern-1-obkm-eventpublishers-volume-claim
-      # - name : wso2ob-pattern-1-obkm-userstores
-      #   persistentVolumeClaim:
-      #     claimName: wso2ob-pattern-1-obkm-userstores-volume-claim
-      # - name : wso2ob-pattern-1-obkm-eventstreams
-      #   persistentVolumeClaim:
-      #     claimName: wso2ob-pattern-1-obkm-eventstreams-volume-claim
-      # - name : wso2ob-pattern-1-obkm-humantasks
-      #   persistentVolumeClaim:
-      #     claimName: wso2ob-pattern-1-obkm-humantasks-volume-claim
-      # - name : wso2ob-pattern-1-obkm-bpel
-      #   persistentVolumeClaim:
-      #     claimName: wso2ob-pattern-1-obkm-bpel-volume-claim
+          
