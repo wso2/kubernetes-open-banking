@@ -51,10 +51,10 @@
 
     <!--Configure endpoint to retrieve payable accounts passing userId https://localhost:9443/as400/payable-accounts/{userId} -->
     <!-- Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/payable -->
-    <PayableAccountsRetrieveEndpoint>http://wso2-obam/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</PayableAccountsRetrieveEndpoint>
+    <PayableAccountsRetrieveEndpoint>http://wso2ob-pattern-1-obam-service:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</PayableAccountsRetrieveEndpoint>
     <!-- Configure endpoint to retrieve UK sharable accounts passing userId https://localhost:9443/as400/sharable-accounts/{userId}  -->
     <!-- Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/shareable -->
-    <SharableAccountsRetrieveEndpoint>http://wso2-obam/open-banking/services/bankaccounts/bankaccountservice/sharable-accounts</SharableAccountsRetrieveEndpoint>
+    <SharableAccountsRetrieveEndpoint>http://wso2ob-pattern-1-obam-service:9763/open-banking/services/bankaccounts/bankaccountservice/sharable-accounts</SharableAccountsRetrieveEndpoint>
 
     <Berlin>
 
