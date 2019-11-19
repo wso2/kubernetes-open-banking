@@ -13,8 +13,10 @@
 # limitations under the License.
 wso2:
   # MySQL datasource configurations
+  #   type:             Database type (Only mysql is supported so far)
   #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
-  #   host:             Hostname of the MySQL database
+  #   hostname:         Hostname of the MySQL database
+  #   port:             MySQL Database port
   #   username:         MySQL database username
   #   password:         MySQL database password
   #   driverClass:      JDBC Driver class name
@@ -35,6 +37,13 @@ wso2:
     statDB: "openbank_apimgt_statsdb"
     commonDB: "openbank_commondb"
     openbankingDB: "openbank_openbankingdb"
+
+  # Network File System configurations
+  #   enabled:            The configuration should be set to be 'true' if a NFS server should be spawned as a pod within the cluster
+  #   storageClassName:   Name of the StorageClass in the NFS server
+  nfs:
+    enabled: true
+    storageClassName: "nfs"
   
   # WSO2 subscription parameters.
   # If you do not possess an active WSO2 subscription already, you can contact us from (https://wso2.com/solutions/financial/open-banking/).
@@ -137,10 +146,6 @@ wso2:
       imagePullPolicy: Always
       gateway:
         hostname: wso2-obam-gateway
-
-nfs:
-  # StorageClass name of the NFS
-  storageClassName: "nfs"
 
 kubernetes:
   # Name of Kubernetes service account
