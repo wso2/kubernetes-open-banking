@@ -127,4 +127,3 @@ spec:
       - name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
         configMap:
           name: wso2ob-pattern-1-obkm-deployment-jaggeryapps-ccportal
-          
