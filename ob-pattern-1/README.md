@@ -15,10 +15,9 @@
 (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10) in order to run the 
 steps provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). This can be easily done via
- ################
   ```
   helm install stable/nginx-ingress --name nginx-wso2ob --set rbac.create=true
   ```
@@ -35,14 +34,7 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-open-banking.git
 ```
 
-##### 2. Setup persistent storage.
-
-* Using [NFS Server Provisioner Stable Helm Chart](https://github.com/helm/charts/blob/master/stable/nfs-server-provisioner).
-  ```
-  helm install --dep-up --name wso2ob-internal-nfs <HELM_HOME>/persistent-volumes/nfs-internal-ob/ --namespace <NAMESPACE>
-  ```
-
-##### 3. Provide configurations.
+##### 2. Provide configurations.
 
 a. The default product configurations are available at `<HELM_HOME>/ob-pattern-1/confs` folder. Change the
 configurations as necessary.
@@ -57,22 +49,19 @@ b. Open the `<HELM_HOME>/ob-pattern-1/values.yaml` and provide the following val
 | `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 
-##### 4. Deploy product database(s) using MySQL in Kubernetes.
+
+#### 3. Deploy WSO2 Open Banking.
 
 ```
-helm install --dep-up --name wso2ob-rdbms-service-mysql <HELM_HOME>/databases/mysql-ob/ --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/ob-pattern-1 --namespace <NAMESPACE>
 ```
 
-NAMESPACE should be same as in `step 2`.
-
-For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
-
-##### 5. Access Management Console:
+##### 4. Access Management Console:
 
 a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
 
   ```
-  kubectl get ing --namespac <NAMESPACE>
+  kubectl get ing --namespace <NAMESPACE>
   ```
 
 e.g.

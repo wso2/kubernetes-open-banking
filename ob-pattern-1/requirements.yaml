@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-persistence:
-  enabled: true
-  storageClass: "standard"
-  size: 10Gi
-
-storageClass:
-  create: true
-  name: nfs
-  defaultClass: true
+dependencies:
+  - name: mysql-ob
+    version: "1.4.0-1"
+    repository: "https://helm.wso2.com"
+    condition: .Values.wso2.db.enabled
+  - name: nfs-server-provisioner
+    version: "0.3.1"
+    repository: "https://kubernetes-charts.storage.googleapis.com"
+    condition: .Values.wso2.nfs.enabled
+    tags:
+      - internal-nfs
