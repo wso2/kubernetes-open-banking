@@ -39,6 +39,9 @@ spec:
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2ob-rdbms-service-mysql" .Values.wso2.db.hostname }} 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         {{ end }}
+        - name: init-ob-km
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of Open Banking Key Manager"; while ! nc -z "wso2ob-pattern-1-obkm-service" 9446; do sleep 1; printf "-"; done; echo -e "  >> Open Banking Key Manager has started";']
       containers:
       - name: wso2ob-pattern-1-obam
         image: {{ .Values.wso2.deployment.wso2obam.dockerRegistry }}/{{ .Values.wso2.deployment.wso2obam.imageName }}:{{ .Values.wso2.deployment.wso2obam.imageTag }}
