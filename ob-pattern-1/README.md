@@ -19,7 +19,7 @@ steps provided in the following quick start guide.<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). This can be easily done via
   ```
-  helm install stable/nginx-ingress --name nginx-wso2ob --set rbac.create=true --set controller.extraArgs.enable-ssl-passthrough="" stable/nginx-ingress
+  helm install stable/nginx-ingress --name nginx-wso2ob --set rbac.create=true --set controller.extraArgs.enable-ssl-passthrough=""
   ```
 
 ## Quick Start Guide    
@@ -85,12 +85,12 @@ c. Try navigating to `https://wso2obam/carbon`,`https://wso2obkm/carbon`  from y
 
 ##### 5. Follow the documentation to use WSO2 Open Banking:
 
-    To deploy the APIs
-      * [Deploying APIs for UK](https://docs.wso2.com/display/OB140/Deploying+APIs+for+UK)
-      * [Deploying APIs for Berlin](https://docs.wso2.com/display/OB140/Deploying+APIs+for+Berlin)
+To deploy the APIs
+* [Deploying APIs for UK](https://docs.wso2.com/display/OB140/Deploying+APIs+for+UK)
+* [Deploying APIs for Berlin](https://docs.wso2.com/display/OB140/Deploying+APIs+for+Berlin)
 
-    To try out the solution:
-      * [Try Out WSO2 Open Banking UK](https://docs.wso2.com/display/OB140/Try+Out+WSO2+Open+Banking+UK)
-      * [Try Out WSO2 Open Banking Berlin](https://docs.wso2.com/display/OB140/Try+Out+WSO2+Open+Banking+Berlin?src=sidebar)
+To try out the solution:
+* [Try Out WSO2 Open Banking UK](https://docs.wso2.com/display/OB140/Try+Out+WSO2+Open+Banking+UK)
+* [Try Out WSO2 Open Banking Berlin](https://docs.wso2.com/display/OB140/Try+Out+WSO2+Open+Banking+Berlin?src=sidebar)
 
 For more information, see [WSO2 Open Banking documentation](https://docs.wso2.com/display/OB140).
