@@ -1,0 +1,248 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+wso2:
+  # MySQL datasource configurations
+  #   type:             Database type (Only mysql is supported so far)
+  #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+  #   hostname:         Hostname of the MySQL database
+  #   port:             MySQL Database port
+  #   username:         MySQL database username
+  #   password:         MySQL database password
+  #   driverClass:      JDBC Driver class name
+  #   validationQuery:  SQL validation query
+  db:
+    type: mysql
+    enabled: true
+    hostname: wso2ob-rdbms-service-mysql
+    port: "3306"
+    username: wso2carbon
+    password: wso2carbon
+    driverClass: com.mysql.jdbc.Driver
+    validationQuery: "SELECT 1"
+    
+    # Database Names
+    apimgtDB: "openbank_apimgtdb"
+    mbstoreDB: "openbank_mbstoredb"
+    statDB: "openbank_apimgt_statsdb"
+    commonDB: "openbank_commondb"
+    openbankingDB: "openbank_openbankingdb"
+    geolocationDB: "openbank_geolocationdb"
+    reportingstatDB: "openbank_ob_reporting_statsdb"
+    reportingsumDB: "openbank_ob_reporting_summarizeddb"
+
+  # Network File System configurations
+  #   enabled:            The configuration should be set to be 'true' if a NFS server should be spawned as a pod within the cluster
+  #   storageClassName:   Name of the StorageClass in the NFS server
+  nfs:
+    enabled: true
+    storageClassName: "nfs"
+  
+  # WSO2 subscription parameters.
+  # If you do not possess an active WSO2 subscription already, you can contact us from (https://wso2.com/solutions/financial/open-banking/).
+  subscription:
+    username: ""
+    password: ""
+
+  # Open Banking Specification  
+  spec: "UK"
+
+  deployment: 
+    
+    wso2obkm:
+      # Hostname of the WSO2 Open Banking Key Manager 
+      hostname: "wso2-obkm"
+      version: "1.4.0"
+      # URL for the Docker Registry
+      dockerRegistry: "docker.wso2.com"
+      # Docker image specifications
+      imageName: "wso2-obkm"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+    wso2obam:
+      # Hostname of the Open Banking API Manager 
+      hostname: "wso2-obam"
+      version: "1.4.0"
+      # URL for the private docker repository
+      dockerRegistry: "docker.wso2.com"
+      imageName: "wso2-obam"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+      gateway:
+        hostname: wso2-obam-gateway
+
+    wso2obbiWorker:
+      # Hostname of the Open Banking Business Intelligence worker profile 
+      hostname: "wso2-obbi-worker"
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      dockerRegistry: "docker.wso2.com"
+      imageName: "wso2-obbi-worker"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 100
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 100
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Stream Processing based server profiles
+        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "4Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        # Please see the official documentation on WSO2 Stream Processing based Performance Analysis and Resource recommendations
+        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+        # where necessary.
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+      imagePullPolicy: Always
+
+    wso2obbiDashboard:
+      # Hostname of the Open Banking Business Intelligence worker profile 
+      hostname: "wso2-obbi-dashboard"
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      dockerRegistry: "docker.wso2.com"
+      imageName: "wso2-obbi-dashboard"
+      imageTag: "1.4.0"
+      # Number of deployment replicas
+      replicas: 1
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 100
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 100
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Stream Processing based server profiles
+        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+        requests:
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+        # Please see the official documentation on WSO2 Stream Processing based Performance Analysis and Resource recommendations
+        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+        # where necessary.
+        limits:
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "2Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "2000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+kubernetes:
+  # Name of Kubernetes service account
+  svcaccount: "wso2svc-account"
