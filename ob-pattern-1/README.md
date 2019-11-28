@@ -28,13 +28,13 @@ steps provided in the following quick start guide.<br><br>
 >* `HELM_HOME` refers to the local copy of the [`wso2/kubernetes-open-banking`](https://github.com/wso2/kubernetes-open-banking/)
 Git repository. <br>
 
-#### 1. Clone Kubernetes Resources for WSO2 Open Banking Git repository.
+#### 1. Clone Kubernetes Resources for WSO2 Open Banking Git repository
 
 ```
 git clone https://github.com/wso2/kubernetes-open-banking.git
 ```
 
-#### 2. Provide Configurations.
+#### 2. Provide Configurations
 
 a. The default product configurations are in the `<HELM_HOME>/ob-pattern-1/confs` folder. Change the
 configurations as required.
@@ -50,13 +50,13 @@ b. Open the `<HELM_HOME>/ob-pattern-1/values.yaml` file and configure the follow
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which the product instance pods are attached |
 
 
-#### 3. Deploy WSO2 Open Banking.
+#### 3. Deploy WSO2 Open Banking
 
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/ob-pattern-1 --namespace <NAMESPACE>
 ```
 
-#### 4. Access Product Management Consoles.
+#### 4. Access Product Management Consoles
 
 a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses:
 
@@ -83,7 +83,7 @@ b. Add the above host as an entry in the /etc/hosts file as follows:
 
 c. Try navigating to `https://wso2obam/carbon`,`https://wso2obkm/carbon`  from your browser.
 
-#### 5. Follow the documentation to use WSO2 Open Banking.
+#### 5. Follow the documentation to use WSO2 Open Banking
 
 a. To deploy APIs
 * [Deploying APIs for UK](https://docs.wso2.com/display/OB140/Deploying+APIs+for+UK)
