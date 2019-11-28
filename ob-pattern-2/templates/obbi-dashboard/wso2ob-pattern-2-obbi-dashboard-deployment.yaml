@@ -93,4 +93,3 @@ spec:
       - name: wso2ob-pattern-2-obbi-dashboard-conf
         configMap:
           name: wso2ob-pattern-2-obbi-dashboard-conf
-

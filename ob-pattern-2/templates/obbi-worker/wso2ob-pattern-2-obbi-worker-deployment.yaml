@@ -104,4 +104,3 @@ spec:
       - name: wso2ob-pattern-2-obbi-worker-deployment-siddhi-files
         configMap:
           name: wso2ob-pattern-2-obbi-worker-deployment-siddhi-files
-      
