@@ -149,4 +149,4 @@ wso2:
 
 kubernetes:
   # Name of Kubernetes service account
-  svcaccount: "wso2svc-account"
+  serviceAccount: "wso2svc-account"
