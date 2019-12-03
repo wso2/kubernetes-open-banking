@@ -4,17 +4,11 @@
 
 #### Kubernetes and Helm resources for Open Banking deployment patterns
 
-* [Deployment Pattern 1](ob-pattern-1/README.md)
-* [Deployment Pattern 2](ob-pattern-2/README.md)
+* [Deployment Pattern 1](eval-ob-pattern-1/README.md)
+* [Deployment Pattern 2](eval-ob-pattern-2/README.md)
 
-## Reporting issues
+**Change log** from previous v1.4.0.1 release: [View Here](CHANGELOG.md)
 
-We encourage you to report any issues and documentation faults regarding Helm resources
-for WSO2 Open Banking. Please report your issues [here](https://github.com/wso2/kubernetes-open-banking/issues).
+## Contributions
 
-## Contact us
-
-WSO2 developers can be contacted via the following mailing lists:
-
-* WSO2 Developers Mailing List : [dev@wso2.org](mailto:dev@wso2.org)
-* WSO2 Architecture Mailing List : [architecture@wso2.org](mailto:architecture@wso2.org)
+For details on how to contribute to this repository, please refer [this](CONTRIBUTING.md) documentation.
