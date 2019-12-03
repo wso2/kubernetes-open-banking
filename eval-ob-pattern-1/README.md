@@ -36,10 +36,10 @@ git clone https://github.com/wso2/kubernetes-open-banking.git
 
 #### 2. Provide Configurations
 
-a. The default product configurations are in the `<HELM_HOME>/ob-pattern-1/confs` folder. Change the
+a. The default product configurations are in the `<HELM_HOME>/eval-ob-pattern-1/confs` folder. Change the
 configurations as required.
 
-b. Open the `<HELM_HOME>/ob-pattern-1/values.yaml` file and configure the following propeties: 
+b. Open the `<HELM_HOME>/eval-ob-pattern-1/values.yaml` file and configure the following propeties: 
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
@@ -53,7 +53,7 @@ b. Open the `<HELM_HOME>/ob-pattern-1/values.yaml` file and configure the follow
 #### 3. Deploy WSO2 Open Banking
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/ob-pattern-1 --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/eval-ob-pattern-1 --namespace <NAMESPACE>
 ```
 
 #### 4. Access Product Management Consoles
@@ -81,7 +81,7 @@ b. Add the above host as an entry in the /etc/hosts file as follows:
   <EXTERNAL-IP>	wso2-obkm
   ```
 
-c. Try navigating to `https://wso2obam/carbon`,`https://wso2obkm/carbon`  from your browser.
+c. Try navigating to `https://wso2-obam/carbon`,`https://wso2-obkm/carbon`  from your browser.
 
 #### 5. Follow the documentation to use WSO2 Open Banking
 
