@@ -2036,14 +2036,14 @@ mysql:
         -- Performance indexes end--
 
 
-    mysql_openbank_openbankingdb: |-
-        DROP DATABASE IF EXISTS OPENBANK_OPENBANKING_DB;
+    mysql_openbank_openbankingdb_for_berlin.sql: |-
+        DROP DATABASE IF EXISTS OPENBANK_OPENBANKING_BERLIN_DB;
 
-        CREATE DATABASE OPENBANK_OPENBANKING_DB;
+        CREATE DATABASE OPENBANK_OPENBANKING_BERLIN_DB;
 
-        GRANT ALL ON OPENBANK_OPENBANKING_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+        GRANT ALL ON OPENBANK_OPENBANKING_BERLIN_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
-        USE OPENBANK_OPENBANKING_DB;
+        USE OPENBANK_OPENBANKING_BERLIN_DB;
 
         CREATE TABLE BG_PAYMENT_CONSENT (
           PAYMENT_ID                   VARCHAR(255)   NOT NULL,
