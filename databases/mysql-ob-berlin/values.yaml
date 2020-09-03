@@ -16,7 +16,11 @@ mysql:
   mysqlRootPassword: root
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
-  fullnameOverride: "wso2ob-rdbms-service-mysql"
+  fullnameOverride: "wso2ob-berlin-rdbms-service-mysql"
+  livenessProbe:
+    initialDelaySeconds: 120
+  readinessProbe:
+    initialDelaySeconds: 120
   configurationFiles:
     mysql.cnf: |-
       [mysqld]
