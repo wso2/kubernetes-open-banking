@@ -26,8 +26,12 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.ob.km.bin: {{ include (print $.Template.BasePath "/km/wso2ob-pattern-1-ob-km-bin.yaml") . | sha256sum }}
-        checksum.is.conf: {{ include (print $.Template.BasePath "/km/wso2ob-pattern-1-ob-km-conf-axis2.yaml") . | sha256sum }}
+        checksum.ob.km.bin: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-bin.yaml") . | sha256sum }}
+        checksum.ob.km.conf: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf.yaml") . | sha256sum }}
+        checksum.ob.km.conf.axis2: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-axis2.yaml") . | sha256sum }}
+        checksum.ob.km.conf.datasources: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-datasources.yaml") . | sha256sum }}
+        checksum.ob.km.conf.finance: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-finance.yaml") . | sha256sum }}
+        checksum.ob.km.conf.identity: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-identity.yaml") . | sha256sum }}
       labels:
         deployment: wso2ob-km
     spec:
@@ -104,6 +108,10 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
             - name: ob-km-conf-datasources
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+            - name: ob-km-conf-finance
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
+            - name: ob-km-conf-identity
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
             - name: ob-km-volume-claim-userstores-storage
               mountPath: /home/wso2carbon/wso2-obkm-1.5.0/repository/deployment/server/userstores
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -131,6 +139,12 @@ spec:
       - name: ob-km-conf-datasources
         configMap:
           name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-conf-datasources
+      - name: ob-km-conf-finance
+        configMap:
+          name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-conf-finance
+      - name: ob-km-conf-identity
+        configMap:
+          name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-conf-identity
       - name: ob-km-volume-claim-userstores-storage
         persistentVolumeClaim:
           claimName: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-shared-userstores-volume-claim
