@@ -65,12 +65,12 @@ data:
            This is will become part of the End Point Reference of the
            services deployed on this server instance.
         -->
-        <HostName>{{ template "ob-pattern-1.resource.prefix" . }}-ob-km</HostName>
+        <HostName>{{ .Values.wso2.deployment.ob.km.ingress.hostname }}</HostName>
 
         <!--
         Host name to be used for the Carbon management console
         -->
-        <MgtHostName>{{ template "ob-pattern-1.resource.prefix" . }}-ob-km</MgtHostName>
+        <MgtHostName>{{ .Values.wso2.deployment.ob.km.ingress.hostname }}</MgtHostName>
 
         <!--
             The URL of the back end server. This is where the admin services are hosted and
@@ -890,9 +890,8 @@ data:
 
         <mount path="/_system/config" overwrite="true">
           <instanceId>configInstance</instanceId>
-          <targetPath>/_system/ob_km/config</targetPath>
+          <targetPath>/_system/config</targetPath>
         </mount>
-
 
         <dbConfig name="governanceRegistry">
           <dataSource>jdbc/WSO2RegistryDB</dataSource>
