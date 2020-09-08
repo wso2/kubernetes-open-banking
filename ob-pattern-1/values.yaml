@@ -36,22 +36,90 @@ wso2:
       # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
       # Defaults to Kubernetes Storage Class generated using the NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner)
       storageClass: &storage_class "nfs"
-
       # Define configurations for persistent runtime artifacts which are shared between instances of the Open Banking product profiles
       sharedArtifacts:
         # Define capacities for persistent runtime artifacts which are shared between instances of the Open Banking product profiles
         capacity:
-          # For secondary user stores shared between the Open Banking product profile instances
+          # For secondary user stores shared between the Key Manager profile instances
           userstores: 50M
+          # For execution plans shared between the API Manager profile instances
+          executionPlans: 20M
+          # For synapse artifacts of APIs shared between the API Manager Gateway profile instances
+          synapseConfigs: 50M
+      # Persistent runtime artifacts for Apache Solr-based indexing
+      apacheSolrIndexing:
+        # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
+        # By default, this is disabled
+        enabled: false
+        # Define capacities for persistent runtime artifact directories
+        capacity:
+          # For persisting the H2 based local Carbon database file
+          carbonDatabase: 50M
+          # For persisting the indexed data
+          solrIndexedData: 50M
 
     ob:
       am:
+        # Container image configurations
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+        # dockerRegistry: ""
+        imageName: "wso2-obam"
+        imageTag: "1.5.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
+        # Indicates whether the container is running
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 180
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 180
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        resources:
+          # These are the minimum resource recommendations for running WSO2 API Management product profiles
+          # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "3Gi"
+            cpu: "3000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "1024m"
+                # Maximum Heap size
+                xmx: "1024m"
+
         # Configure Ingresses for Open Banking API Manager service
         ingress:
+          # Ingress configurations for Open Banking API Manager service
+          management:
+            # Hostname for Open Banking API Manager Carbon Management Console
+            hostname: "am.ob.wso2.com"
+            # Annotations for the Open Banking API Manager services Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+              nginx.ingress.kubernetes.io/affinity: "cookie"
+              nginx.ingress.kubernetes.io/session-cookie-name: "route"
+              nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+
           # Ingress configurations for Gateway profile service
           gateway:
             # Hostname for Open Banking API Manager Gateway service
-            hostname: "gateway.ob.wso2.com"
+            hostname: "gateway.am.ob.wso2.com"
             # Annotations for the Open Banking API Manager Gateway service Ingress
             annotations:
               kubernetes.io/ingress.class: "nginx"
