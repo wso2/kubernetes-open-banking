@@ -35,12 +35,12 @@ spec:
       labels:
         deployment: wso2ob-km
     spec:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-ob-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2ob-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        {{ end }}
+      {{ end }}
       containers:
         - name: ob-km
           {{ if .Values.wso2.deployment.ob.km.dockerRegistry }}
