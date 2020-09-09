@@ -115,6 +115,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             - name: ob-am-conf-datasources
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+            - name: ob-am-conf-finance
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: ob-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -147,6 +149,9 @@ spec:
         - name: ob-am-conf-datasources
           configMap:
             name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-conf-datasources
+        - name: ob-am-conf-finance
+          configMap:
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-conf-finance
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: ob-local-carbon-database-storage
           persistentVolumeClaim:

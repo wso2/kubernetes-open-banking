@@ -38,7 +38,7 @@ data:
         <AuthManager>
             <!-- Server URL of the Authentication service -->
             <!--openbanking_hostname Required in OB-->
-            <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+            <ServerURL>https://{{ template "ob-pattern-1.resource.prefix" . }}-ob-km-service:9446${carbon.context}services/</ServerURL>
             <!-- Admin username for the Authentication manager. -->
             <Username>${admin.username}</Username>
             <!-- Admin password for the Authentication manager. -->
@@ -235,7 +235,7 @@ data:
         -->
         <APIKeyValidator>
             <!-- Server URL of the API key manager -->
-            <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+            <ServerURL>https://{{ template "ob-pattern-1.resource.prefix" . }}-ob-km-service:9446${carbon.context}services/</ServerURL>
 
             <!-- Admin username for API key manager. -->
             <Username>${admin.username}</Username>
@@ -296,6 +296,7 @@ data:
             <ScopeWhitelist>
                 <Scope>openid</Scope>
                 <Scope>^OB_.*</Scope>
+                <Scope>^TIME_.*</Scope>
             </ScopeWhitelist>
             <!-- Name of the token API -->
             <TokenEndPointName>/oauth2/token</TokenEndPointName>
