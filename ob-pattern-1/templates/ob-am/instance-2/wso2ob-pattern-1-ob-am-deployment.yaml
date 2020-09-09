@@ -30,6 +30,8 @@ spec:
       annotations:
         checksum.ob.am.conf: {{ include (print $.Template.BasePath "/ob-am/instance-2/wso2ob-pattern-1-ob-am-conf.yaml") . | sha256sum }}
         checksum.ob.am.conf.datasources: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-conf-datasources.yaml") . | sha256sum }}
+        checksum.ob.am.conf.finance: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-conf-finance.yaml") . | sha256sum }}
+        checksum.ob.am.resources.security: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am
         node: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-2
@@ -117,6 +119,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
             - name: ob-am-conf-finance
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
+            - name: ob-am-resources-security
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: ob-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -152,6 +156,9 @@ spec:
         - name: ob-am-conf-finance
           configMap:
             name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-conf-finance
+        - name: ob-am-resources-security
+          configMap:
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-resources-security
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: ob-local-carbon-database-storage
           persistentVolumeClaim:
