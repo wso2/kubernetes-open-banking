@@ -19,6 +19,6 @@ metadata:
   namespace : {{ .Release.Namespace }}
 binaryData:
   client-truststore.jks: |-
-    {{ .Files.Get "resources/ob-km/client-truststore.jks" | b64enc }}
+    {{ .Files.Get "resources/ob-km/security/client-truststore.jks" | b64enc }}
   wso2carbon.jks: |-
-    {{ .Files.Get "resources/ob-km/wso2carbon.jks" | b64enc }}
+    {{ .Files.Get "resources/ob-km/security/wso2carbon.jks" | b64enc }}
