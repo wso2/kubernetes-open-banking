@@ -20,6 +20,7 @@ metadata:
 spec:
   selector:
     deployment: wso2ob-km
+  sessionAffinity: ClientIP
   ports:
   - name: servlet-https
     port: 9446
