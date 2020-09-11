@@ -32,7 +32,6 @@ spec:
         checksum.ob.km.conf.datasources: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-datasources.yaml") . | sha256sum }}
         checksum.ob.km.conf.finance: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-finance.yaml") . | sha256sum }}
         checksum.ob.km.conf.identity: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-conf-identity.yaml") . | sha256sum }}
-        checksum.ob.km.resources.security: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-1-ob-km-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: wso2ob-km
     spec:
@@ -48,8 +47,6 @@ spec:
           image: {{ .Values.wso2.deployment.ob.km.dockerRegistry }}/{{ .Values.wso2.deployment.ob.km.imageName }}
           {{- $tag := .Values.wso2.deployment.ob.km.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-          {{ else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.ob.km.imageName }}:{{ .Values.wso2.deployment.ob.km.imageTag }}
           {{ else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.ob.km.imageName }}:{{ .Values.wso2.deployment.ob.km.imageTag }}
           {{ end }}
@@ -113,8 +110,6 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
             - name: ob-km-conf-identity
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
-            - name: ob-km-resources-security
-              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
             - name: ob-km-volume-claim-userstores-storage
               mountPath: /home/wso2carbon/wso2-obkm-1.5.0/repository/deployment/server/userstores
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -148,9 +143,6 @@ spec:
       - name: ob-km-conf-identity
         configMap:
           name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-conf-identity
-      - name: ob-km-resources-security
-        configMap:
-          name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-resources-security
       - name: ob-km-volume-claim-userstores-storage
         persistentVolumeClaim:
           claimName: {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-shared-userstores-volume-claim

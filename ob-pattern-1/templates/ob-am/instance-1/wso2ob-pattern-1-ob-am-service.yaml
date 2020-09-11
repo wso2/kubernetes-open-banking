@@ -33,3 +33,7 @@ spec:
     - name: jms-tcp
       protocol: TCP
       port: 5672
+    - name: servlet-https
+      protocol: TCP
+      port: 9443
+
