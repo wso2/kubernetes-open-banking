@@ -33,8 +33,6 @@ spec:
         checksum.ob.am.conf.finance: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-conf-finance.yaml") . | sha256sum }}
         checksum.ob.am.conf.jaggeryapp.admin: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-conf-jaggeryapp-admin.yaml") . | sha256sum }}
         checksum.ob.am.resources.api_templates: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-resources-api-templates.yaml") . | sha256sum }}
-        checksum.ob.am.resources.finance.apis.berlin.psd2api: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-resources-finance-apis-berlin-psd2api.yaml") . | sha256sum }}
-        checksum.ob.am.resources.security: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-1-ob-am-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am
         node: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-2
@@ -48,14 +46,15 @@ spec:
         - name: init-ob-km
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB Key Manager deployment"; while ! nc -z {{ template "ob-pattern-1.resource.prefix" . }}-ob-km-service 9446; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB Key Manager has started";']
+        - name: init-ob-am-1
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB API Manager instance one deployment"; while ! nc -z {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-1-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB API Manager instance one has started";']
       containers:
         - name: ob-am
           {{ if .Values.wso2.deployment.ob.am.dockerRegistry }}
           image: {{ .Values.wso2.deployment.ob.am.dockerRegistry }}/{{ .Values.wso2.deployment.ob.am.imageName }}
           {{- $tag := .Values.wso2.deployment.ob.am.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-          {{ else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.ob.am.imageName }}:{{ .Values.wso2.deployment.ob.am.imageTag }}
           {{ else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.ob.am.imageName }}:{{ .Values.wso2.deployment.ob.am.imageTag }}
           {{ end }}
@@ -126,10 +125,6 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf
             - name: ob-am-resources-api-templates
               mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates
-            - name: ob-am-resources-finance-apis-berlin-psd2api
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/finance/apis/berlin-group.org/PSD2API_1.3.3
-            - name: ob-am-resources-security
-              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: ob-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -171,12 +166,6 @@ spec:
         - name: ob-am-resources-api-templates
           configMap:
             name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-resources-api-templates
-        - name: ob-am-resources-finance-apis-berlin-psd2api
-          configMap:
-            name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-resources-finance-apis-berlin-psd2api
-        - name: ob-am-resources-security
-          configMap:
-            name: {{ template "ob-pattern-1.resource.prefix" . }}-ob-am-resources-security
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: ob-local-carbon-database-storage
           persistentVolumeClaim:

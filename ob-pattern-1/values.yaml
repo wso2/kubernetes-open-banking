@@ -102,6 +102,11 @@ wso2:
                 # Maximum Heap size
                 xmx: "1024m"
 
+        # Product configurations
+        config:
+          # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
+          workflowServerURL: "https://localhost:9445/services/"
+
         # Configure Ingresses for Open Banking API Manager service
         ingress:
           # Ingress configurations for Open Banking API Manager service
