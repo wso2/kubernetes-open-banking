@@ -22,7 +22,7 @@ spec:
   selector:
     matchLabels:
       deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker
-  serviceName: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service
+  serviceName: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service
   template:
     metadata:
       annotations:
@@ -34,7 +34,7 @@ spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
         - name: init-ob-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2ob-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
       containers:
@@ -69,7 +69,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
+                - nc -z localhost 7712
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.worker.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.bi.worker.readinessProbe.periodSeconds }}
           lifecycle:
