@@ -1,0 +1,107 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.ob.bi.dashboard.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.wso2.deployment.ob.bi.dashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.ob.bi.dashboard.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard
+  template:
+    metadata:
+      annotations:
+        checksum.ob.bi.dashboard.bin: {{ include (print $.Template.BasePath "/ob-bi/dashboard/wso2ob-pattern-2-ob-bi-dashboard-bin.yaml") . | sha256sum }}
+        checksum.ob.bi.dashboard.conf: {{ include (print $.Template.BasePath "/ob-bi/dashboard/wso2ob-pattern-2-ob-bi-dashboard-conf.yaml") . | sha256sum }}
+      labels:
+        deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard
+    spec:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
+      initContainers:
+        - name: init-ob-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2ob-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      {{ end }}
+      containers:
+        - name: wso2ob-bi-dashboard
+          {{- if .Values.wso2.deployment.ob.bi.dashboard.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.ob.bi.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.ob.bi.dashboard.imageName }}
+          {{- $tag := .Values.wso2.deployment.ob.bi.dashboard.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.ob.bi.dashboard.imageName }}:{{ .Values.wso2.deployment.ob.bi.dashboard.imageTag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.ob.bi.dashboard.imagePullPolicy }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.dashboard.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.bi.dashboard.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.dashboard.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.bi.dashboard.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
+          resources:
+            requests:
+              memory: {{  .Values.wso2.deployment.ob.bi.dashboard.resources.requests.memory }}
+              cpu: {{  .Values.wso2.deployment.ob.bi.dashboard.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.ob.bi.dashboard.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.bi.dashboard.resources.limits.cpu }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 9643
+              protocol: "TCP"
+          volumeMounts:
+            - name: ob-bi-dashboard-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
+              subPath: carbon.sh
+            - name: ob-bi-dashboard-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
+              subPath: deployment.yaml
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.ob.bi.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.ob.bi.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "ob-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
+      {{- end }}
+      volumes:
+        - name: ob-bi-dashboard-bin
+          configMap:
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-bin
+        - name: ob-bi-dashboard-conf
+          configMap:
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-conf
