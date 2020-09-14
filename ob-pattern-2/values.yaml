@@ -102,11 +102,6 @@ wso2:
                 # Maximum Heap size
                 xmx: "1024m"
 
-        # Product configurations
-        config:
-          # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
-          workflowServerURL: "https://localhost:9445/services/"
-
         # Configure Ingresses for Open Banking API Manager service
         ingress:
           # Ingress configurations for Open Banking API Manager service
@@ -190,6 +185,85 @@ wso2:
             nginx.ingress.kubernetes.io/affinity: "cookie"
             nginx.ingress.kubernetes.io/session-cookie-name: "route"
             nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+
+      bi:
+        dashboard:
+          # Container image configurations
+          # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+          # dockerRegistry: ""
+          imageName: "wso2-obbi-dashboard"
+          imageTag: "1.5.0"
+          # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+          imagePullPolicy: Always
+
+          # Number of deployment replicas
+          replicas: 1
+
+          # Kubernetes RollingUpdate strategy configurations
+          strategy:
+            rollingUpdate:
+              maxSurge: 1
+              maxUnavailable: 0
+
+          # Indicates whether the container is running
+          livenessProbe:
+            # Number of seconds after the container has started before liveness probes are initiated
+            initialDelaySeconds: 20
+            # How often (in seconds) to perform the probe
+            periodSeconds: 10
+          # Indicates whether the container is ready to service requests
+          readinessProbe:
+            # Number of seconds after the container has started before readiness probes are initiated
+            initialDelaySeconds: 20
+            # How often (in seconds) to perform the probe
+            periodSeconds: 10
+
+          resources:
+            # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+            # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+            requests:
+              memory: "4Gi"
+              cpu: "2000m"
+            # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+            # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+            # where necessary
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+            # JVM settings
+            # These are the resource allocation configurations associated with the JVM
+            # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+            jvm:
+              # Resource allocation for the Java Heap
+              heap:
+                memory:
+                  # Initial and minimum Heap size
+                  xms: "2048m"
+                  # Maximum Heap size
+                  xmx: "2048m"
+
+            # If the deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml),
+            # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> dashboard -> config -> deployment.yaml)
+#            config:
+#              deployment.yaml: |-
+#                # deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml)
+
+          # Configure Ingress
+          ingress:
+            # Hostname for Business Intelligence Dashboard
+            hostname: "dashboard.bi.ob.wso2.com"
+            # Annotations for the Business Intelligence Dashboard service Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
+      # Product configurations
+      config:
+        # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
+        workflowServerURL: "https://localhost:9445/services/"
+        # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)
+        fraudDetection:
+          enabled: false
 
 kubernetes:
   # Name of Kubernetes service account
