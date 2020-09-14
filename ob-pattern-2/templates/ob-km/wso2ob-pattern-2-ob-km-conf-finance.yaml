@@ -512,11 +512,11 @@ data:
                 <!-- Include all configurations related to Data publishing -->
 
                 <!-- Enable data publishing in WSO2 Open Banking-->
-                <Enabled>false</Enabled>
+                <Enabled>true</Enabled>
 
                 <!-- Server URL of the remote BI server used to collect statistics. Must
                 be specified in protocol://hostname:port/ format. -->
-                <ServerURL>{tcp://ANALYTICS_HOSTNAME:7612}</ServerURL>
+                <ServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7612</ServerURL>
                 <!-- Administrator username to login to the BI server for data publishing. -->
                 <Username>admin@wso2.com@carbon.super</Username>
                 <!-- Administrator password to login to the BI server for data publishing. -->
@@ -526,12 +526,12 @@ data:
                 <!-- Include all configurations related to Transaction Risk Analysis -->
 
                 <!-- Enable TRA in WSO2 Open Banking-->
-                <IsEnabled>false</IsEnabled>
+                <IsEnabled>true</IsEnabled>
                 <!-- following configurations are used to enable TRA for specific flows only-->
                 <!-- Enable TRA for Payments-->
-                <PaymentValidationEnabled>false</PaymentValidationEnabled>
+                <PaymentValidationEnabled>true</PaymentValidationEnabled>
                 <!-- Enable TRA for Accounts-->
-                <AccountValidationEnabled>false</AccountValidationEnabled>
+                <AccountValidationEnabled>true</AccountValidationEnabled>
                 <!-- Configurations related to TRA Receivers-->
                 <Receivers>
                     <!-- Administrator username to login to the remote BI server. -->
@@ -539,8 +539,8 @@ data:
                     <!-- Administrator password to login to the remote BI server. -->
                     <Password>wso2123</Password>
                     <!-- Receiver URLs of the Siddhi Apps used to validate for TRA.-->
-                    <TRAAccountValidationURL>http://ANALYTICS_HOSTNAME:8007/TRAAccountValidationApp/TRAValidationStream</TRAAccountValidationURL>
-                    <TRAPaymentValidationURL>http://ANALYTICS_HOSTNAME:8007/TRAPaymentValidationApp/TRAValidationStream</TRAPaymentValidationURL>
+                    <TRAAccountValidationURL>http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAAccountValidationApp/TRAValidationStream</TRAAccountValidationURL>
+                    <TRAPaymentValidationURL>http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAPaymentValidationApp/TRAValidationStream</TRAPaymentValidationURL>
                 </Receivers>
                 <TimePeriodOfRecurringPayment>90</TimePeriodOfRecurringPayment>
                 <MaxFrequencyOfTransactionsWithoutSCA>5</MaxFrequencyOfTransactionsWithoutSCA>
@@ -554,7 +554,7 @@ data:
                 <!-- Include all configurations related to Fraud Detection -->
 
                 <!-- Enable FD in WSO2 Open Banking-->
-                <IsEnabled>false</IsEnabled>
+                <IsEnabled>{{ .Values.wso2.deployment.ob.config.fraudDetection.enabled }}</IsEnabled>
                 <!-- Configurations related to FD Receivers-->
                 <Receivers>
                     <!-- Administrator username to login to the remote BI server. -->
@@ -562,8 +562,8 @@ data:
                     <!-- Administrator password to login to the remote BI server. -->
                     <Password>wso2123</Password>
                     <!-- Receiver URLs of the Siddhi Apps used to validate for FD.-->
-                    <FraudDetectionURL>http://ANALYTICS_HOSTNAME:8007/FraudDetectionApp/FraudDetectionStream</FraudDetectionURL>
-                    <InvalidSubmissionURL>http://ANALYTICS_HOSTNAME:8006/InvalidSubmissionsApp/InvalidSubmissionsStream</InvalidSubmissionURL>
+                    <FraudDetectionURL>http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/FraudDetectionApp/FraudDetectionStream</FraudDetectionURL>
+                    <InvalidSubmissionURL>http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8006/InvalidSubmissionsApp/InvalidSubmissionsStream</InvalidSubmissionURL>
                 </Receivers>
             </FraudDetection>
             <Reporting>

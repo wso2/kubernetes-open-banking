@@ -23,11 +23,15 @@ spec:
     deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker
   ports:
     # ports that this service should serve on
+    - name: thrift
+      port: 7612
+      protocol: TCP
+    - name: thrift-ssl
+      port: 7712
+      protocol: TCP
     - name: data-receiver-1
       port: 8006
-      targetPort: 8006
       protocol: TCP
     - name: data-receiver-2
       port: 8007
-      targetPort: 8007
       protocol: TCP

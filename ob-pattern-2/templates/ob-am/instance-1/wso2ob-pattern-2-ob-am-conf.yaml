@@ -162,7 +162,7 @@ data:
         -->
         <Analytics>
             <!-- Enable Analytics for API Manager -->
-            <Enabled>false</Enabled>
+            <Enabled>true</Enabled>
 
             <!-- Server URL of the remote StreamProcessor server used to collect statistics. Must
                  be specified in protocol://hostname:port/ format.
@@ -174,7 +174,7 @@ data:
 
                  Ex - Multiple Receiver Groups with two receivers each
                  {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-            <StreamProcessorServerURL>{tcp://localhost:7612}</StreamProcessorServerURL>
+            <StreamProcessorServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7612</StreamProcessorServerURL>
             <!--StreamProcessorAuthServerURL>{ssl://localhost:7712}</StreamProcessorAuthServerURL-->
             <!-- Administrator username to login to the remote StreamProcessor server. -->
             <StreamProcessorUsername>admin@wso2.com@carbon.super</StreamProcessorUsername>
