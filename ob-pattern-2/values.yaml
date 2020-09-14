@@ -242,11 +242,11 @@ wso2:
                   # Maximum Heap size
                   xmx: "2048m"
 
-            # If the deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml),
-            # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> dashboard -> config -> deployment.yaml)
-#            config:
-#              deployment.yaml: |-
-#                # deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml)
+          # If the deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml),
+          # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> dashboard -> config -> deployment.yaml)
+#          config:
+#            deployment.yaml: |-
+#              # deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml)
 
           # Configure Ingress
           ingress:
@@ -256,6 +256,58 @@ wso2:
             annotations:
               kubernetes.io/ingress.class: "nginx"
               nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
+        worker:
+          # Container image configurations
+          # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+          # dockerRegistry: ""
+          imageName: "wso2-obbi-worker"
+          imageTag: "1.5.0"
+          # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+          imagePullPolicy: Always
+
+          # Indicates whether the container is running
+          livenessProbe:
+            # Number of seconds after the container has started before liveness probes are initiated
+            initialDelaySeconds: 20
+            # How often (in seconds) to perform the probe
+            periodSeconds: 10
+          # Indicates whether the container is ready to service requests
+          readinessProbe:
+            # Number of seconds after the container has started before readiness probes are initiated
+            initialDelaySeconds: 20
+            # How often (in seconds) to perform the probe
+            periodSeconds: 10
+
+          resources:
+            # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+            # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+            requests:
+              memory: "4Gi"
+              cpu: "2000m"
+            # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+            # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+            # where necessary
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+            # JVM settings
+            # These are the resource allocation configurations associated with the JVM
+            # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+            jvm:
+              # Resource allocation for the Java Heap
+              heap:
+                memory:
+                  # Initial and minimum Heap size
+                  xms: "2048m"
+                  # Maximum Heap size
+                  xmx: "2048m"
+
+          # If the deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/worker/deployment.yaml),
+          # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> worker -> config -> deployment.yaml)
+#          config:
+#            deployment.yaml: |-
+#              # deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/worker/deployment.yaml)
 
       # Product configurations
       config:
