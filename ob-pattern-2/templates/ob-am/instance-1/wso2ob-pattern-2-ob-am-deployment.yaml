@@ -32,6 +32,7 @@ spec:
         checksum.ob.am.conf.datasources: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-datasources.yaml") . | sha256sum }}
         checksum.ob.am.conf.finance: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-finance.yaml") . | sha256sum }}
         checksum.ob.am.conf.jaggeryapp.admin: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-admin.yaml") . | sha256sum }}
+        checksum.ob.am.conf.jaggeryapp.store: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-store.yaml") . | sha256sum }}
         checksum.ob.am.resources.api_templates: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-resources-api-templates.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am
@@ -128,6 +129,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
             - name: ob-am-conf-jaggeryapp-admin
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf
+            - name: ob-am-conf-jaggeryapp-store
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf
             - name: ob-am-resources-api-templates
               mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
@@ -168,6 +171,9 @@ spec:
         - name: ob-am-conf-jaggeryapp-admin
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-jaggeryapp-admin
+        - name: ob-am-conf-jaggeryapp-store
+          configMap:
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-jaggeryapp-store
         - name: ob-am-resources-api-templates
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-api-templates
