@@ -185,7 +185,7 @@ data:
             <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
 
             <!-- StreamProcessor REST API configuration -->
-            <StreamProcessorRestApiURL>https://localhost:7444</StreamProcessorRestApiURL>
+            <StreamProcessorRestApiURL>https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7444</StreamProcessorRestApiURL>
             <StreamProcessorRestApiUsername>admin@wso2.com@carbon.super</StreamProcessorRestApiUsername>
             <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
 
@@ -683,6 +683,14 @@ data:
             </ClientGeneration>
         </SwaggerCodegen>
 
+        <ApplicationConfiguration>
+          <ApplicationAttributes>
+            <Attribute required="true">
+              <Name>Regulatory Compliance</Name>
+              <Description>Regulatory Compliance</Description>
+            </Attribute>
+          </ApplicationAttributes>
+        </ApplicationConfiguration>
     </APIManager>
 
   carbon.xml: |-

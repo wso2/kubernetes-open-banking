@@ -23,6 +23,9 @@ spec:
     deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker
   ports:
     # ports that this service should serve on
+    - name: rest-api-port
+      port: 7444
+      protocol: TCP
     - name: thrift
       port: 7612
       protocol: TCP
