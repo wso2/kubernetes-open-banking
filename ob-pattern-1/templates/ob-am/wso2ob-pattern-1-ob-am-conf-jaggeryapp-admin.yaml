@@ -29,7 +29,7 @@ data:
       "tasksPerPage": 10,
       "allowedPermission": "/permission/admin/manage/apim_admin",
       "workflows": {
-        "workFlowServerURL": "{{ .Values.wso2.deployment.ob.am.config.workflowServerURL }}",
+        "workFlowServerURL": "{{ .Values.wso2.deployment.ob.config.workflowServerURL }}",
       },
       "ssoConfiguration": {
         "enabled": "false",
