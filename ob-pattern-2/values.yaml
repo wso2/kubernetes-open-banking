@@ -321,6 +321,8 @@ wso2:
             server:
               hostname: "wso2ob-rdbms-service-mysql"
               port: "3306"
+              username: "wso2carbon"
+              password: "wso2carbon"
             driverClassName: "com.mysql.jdbc.Driver"
           # Specific data source configurations
           # Please refer to official documentation for detailed information on data sources
