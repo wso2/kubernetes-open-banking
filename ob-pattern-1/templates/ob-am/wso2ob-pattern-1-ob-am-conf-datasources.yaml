@@ -65,8 +65,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -91,8 +91,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -134,20 +134,20 @@ data:
                 </jndiConfig>
                 <definition type="RDBMS">
                     <configuration>
-                    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-                    <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }}?autoReconnect=true&amp;useSSL=false</url>
-                    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
-                    <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }};SendStringParametersAsUnicode=false</url>
-                    {{- end }}
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
-                    <maxActive>150</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
+                      {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+                      <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }}?autoReconnect=true&amp;useSSL=false</url>
+                      {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+                      <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }};SendStringParametersAsUnicode=false</url>
+                      {{- end }}
+                      <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                      <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
+                      <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
+                      <maxActive>150</maxActive>
+                      <maxWait>60000</maxWait>
+                      <testOnBorrow>true</testOnBorrow>
+                      <validationQuery>SELECT 1</validationQuery>
+                      <validationInterval>30000</validationInterval>
+                      <defaultAutoCommit>false</defaultAutoCommit>
                     </configuration>
                 </definition>
             </datasource>
@@ -160,20 +160,20 @@ data:
                 </jndiConfig>
                 <definition type="RDBMS">
                     <configuration>
-                    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-                    <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.amConfigRegistry.name }}?autoReconnect=true&amp;useSSL=false</url>
-                    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
-                    <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.amConfigRegistry.name }};SendStringParametersAsUnicode=false</url>
-                    {{- end }}
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
-                    <maxActive>150</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
+                      {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+                      <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.amConfigRegistry.name }}?autoReconnect=true&amp;useSSL=false</url>
+                      {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+                      <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.amConfigRegistry.name }};SendStringParametersAsUnicode=false</url>
+                      {{- end }}
+                      <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                      <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
+                      <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
+                      <maxActive>150</maxActive>
+                      <maxWait>60000</maxWait>
+                      <testOnBorrow>true</testOnBorrow>
+                      <validationQuery>SELECT 1</validationQuery>
+                      <validationInterval>30000</validationInterval>
+                      <defaultAutoCommit>false</defaultAutoCommit>
                     </configuration>
                 </definition>
             </datasource>
@@ -186,20 +186,20 @@ data:
                 </jndiConfig>
                 <definition type="RDBMS">
                     <configuration>
-                    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-                    <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }}?autoReconnect=true&amp;useSSL=false</url>
-                    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
-                    <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }};SendStringParametersAsUnicode=false</url>
-                    {{- end }}
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
-                    <maxActive>150</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
+                      {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+                      <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }}?autoReconnect=true&amp;useSSL=false</url>
+                      {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+                      <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }};SendStringParametersAsUnicode=false</url>
+                      {{- end }}
+                      <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                      <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
+                      <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
+                      <maxActive>150</maxActive>
+                      <maxWait>60000</maxWait>
+                      <testOnBorrow>true</testOnBorrow>
+                      <validationQuery>SELECT 1</validationQuery>
+                      <validationInterval>30000</validationInterval>
+                      <defaultAutoCommit>false</defaultAutoCommit>
                     </configuration>
                 </definition>
             </datasource>
@@ -271,20 +271,20 @@ data:
               </jndiConfig>
               <definition type="RDBMS">
                   <configuration>
-                      {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-                      <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&amp;useSSL=false</url>
-                      {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
-                      <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false</url>
-                      {{- end }}
-                      <username>wso2carbon</username>
-                      <password>wso2carbon</password>
-                      <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
-                      <maxActive>150</maxActive>
-                      <maxWait>60000</maxWait>
-                      <testOnBorrow>true</testOnBorrow>
-                      <validationQuery>SELECT 1</validationQuery>
-                      <validationInterval>30000</validationInterval>
-                      <defaultAutoCommit>false</defaultAutoCommit>
+                    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+                    <url>jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&amp;useSSL=false</url>
+                    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+                    <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false</url>
+                    {{- end }}
+                    <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                    <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
+                    <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
+                    <maxActive>150</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                    <defaultAutoCommit>false</defaultAutoCommit>
                   </configuration>
               </definition>
           </datasource>
