@@ -78,6 +78,7 @@ data:
           id: "default"
           host: "0.0.0.0"
           port: 9091
+          messageProcessorId: "MSF4J-CM-PROCESSOR"
         -
           id: "msf4j-https"
           host: "0.0.0.0"
@@ -86,6 +87,7 @@ data:
           keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
           keyStorePassword: wso2carbon
           certPass: wso2carbon
+          messageProcessorId: "MSF4J-CM-PROCESSOR"
 
       senderConfigurations:
         -
@@ -334,13 +336,12 @@ data:
 
       # Periodic Persistence Configuration
     state.persistence:
-      enabled: true
+      enabled: false
       intervalInMin: 1
       revisionsToKeep: 2
-      persistenceStore: org.wso2.carbon.stream.processor.core.persistence.DBPersistenceStore
+      persistenceStore: org.wso2.carbon.stream.processor.core.persistence.FileSystemPersistenceStore
       config:
-        datasource: PERSISTENCE_DB   # A datasource with this name should be defined in wso2.datasources namespace
-        table: PERSISTENCE_TABLE
+        location: siddhi-app-persistence
 
       # Secure Vault Configuration
     wso2.securevault:
@@ -402,10 +403,10 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
+              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_PERMISSIONS_DB?autoReconnect=true&useSSL=false'
+              username: 'wso2carbon'
+              password: 'wso2carbon'
+              driverClassName: com.mysql.jdbc.Driver
               maxPoolSize: 10
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -443,7 +444,7 @@ data:
               jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_GEOLOCATION_DB?autoReconnect=true&useSSL=false'
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: 'com.mysql.jdbc.Driver'
+              driverClassName: com.mysql.jdbc.Driver
               maxPoolSize: 50
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -547,41 +548,11 @@ data:
               validationTimeout: 30000
               isAutoCommit: false
 
-        - name: PERSISTENCE_DB
-          description: The MySQL datasource used for persistence
-          jndiConfig:
-            name: jdbc/PERSISTENCE_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_STAT_PERSISTENCE_DB?autoReconnect=true&useSSL=false'
-              username: 'wso2carbon'
-              password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
-              maxPoolSize: 50
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
-        - name: WSO2_CLUSTER_DB
-          description: The MySQL datasource used for Cluster Coordination
-          jndiConfig:
-            name: jdbc/WSO2ClusterDB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_STAT_CLUSTER_DB?autoReconnect=true&useSSL=false'
-              username: 'wso2carbon'
-              password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
-              maxPoolSize: 50
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
     siddhi:
+      properties:
+        partitionById: true
+        shardId: ${NODE_ID}
+
       extensions:
         -
           extension:
@@ -606,14 +577,14 @@ data:
 
       # Cluster Configuration
     cluster.config:
-      enabled: true
-      groupId:  wso2-obbi
+      enabled: false
+      groupId:  sp
       coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
       strategyConfig:
-        datasource: WSO2_CLUSTER_DB
-        heartbeatInterval: 5000
-        heartbeatMaxRetry: 3
-        eventPollingInterval: 5000
+        datasource: WSO2_CARBON_DB
+        heartbeatInterval: 1000
+        heartbeatMaxRetry: 2
+        eventPollingInterval: 1000
 
     auth.configs:
       type: 'local'
@@ -631,24 +602,6 @@ data:
              role:
                id: 1
                displayName: admin
-
-    deployment.config:
-      type: ha
-      eventByteBufferQueueCapacity: 20000
-      byteBufferExtractorThreadPoolSize: 5
-      eventSyncServer:
-        host: ${NODE_IP}
-        port: 9893
-        advertisedHost: ${NODE_IP}
-        advertisedPort: 9893
-        bossThreads: 10
-        workerThreads: 10
-      eventSyncClientPool:
-        maxActive: 10
-        maxTotal: 10
-        maxIdle: 10
-        maxWait: 60000
-        minEvictableIdleTimeMillis: 120000
 
       # Sample of deployment.config for Two node HA
     #deployment.config:
