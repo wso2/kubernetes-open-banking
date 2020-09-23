@@ -174,7 +174,7 @@ data:
 
                  Ex - Multiple Receiver Groups with two receivers each
                  {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-            <StreamProcessorServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7612</StreamProcessorServerURL>
+            <StreamProcessorServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-0.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612,tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-1.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612</StreamProcessorServerURL>
             <!--StreamProcessorAuthServerURL>{ssl://localhost:7712}</StreamProcessorAuthServerURL-->
             <!-- Administrator username to login to the remote StreamProcessor server. -->
             <StreamProcessorUsername>admin@wso2.com@carbon.super</StreamProcessorUsername>

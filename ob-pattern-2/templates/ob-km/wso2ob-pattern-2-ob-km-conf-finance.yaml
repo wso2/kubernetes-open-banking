@@ -74,10 +74,10 @@ data:
 
         <!--Configure endpoint to retrieve payable accounts passing userId https://localhost:9443/as400/payable-accounts/{userId} -->
         <!-- Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/payable -->
-        <PayableAccountsRetrieveEndpoint>http://APIM_HOSTNAME:9763/open-banking/services/bankaccounts/bankaccountservice/payable-accounts</PayableAccountsRetrieveEndpoint>
+        <PayableAccountsRetrieveEndpoint>{{ .Values.wso2.deployment.ob.config.berlin.payableAccountsRetrieveEndpoint }}</PayableAccountsRetrieveEndpoint>
         <!-- Configure endpoint to retrieve UK sharable accounts passing userId https://localhost:9443/as400/sharable-accounts/{userId}  -->
         <!-- Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter. https://localhost:9443/open-banking-berlin/services/v130/accounts/shareable -->
-        <SharableAccountsRetrieveEndpoint>https://localhost:9443/open-banking-berlin/services/v130/accounts/shareable</SharableAccountsRetrieveEndpoint>
+        <SharableAccountsRetrieveEndpoint>{{ .Values.wso2.deployment.ob.config.berlin.sharableAccountsRetrieveEndpoint }}</SharableAccountsRetrieveEndpoint>
 
         <Berlin>
 
@@ -516,7 +516,7 @@ data:
 
                 <!-- Server URL of the remote BI server used to collect statistics. Must
                 be specified in protocol://hostname:port/ format. -->
-                <ServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7612</ServerURL>
+                <ServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-0.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612,tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-1.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612</ServerURL>
                 <!-- Administrator username to login to the BI server for data publishing. -->
                 <Username>admin@wso2.com@carbon.super</Username>
                 <!-- Administrator password to login to the BI server for data publishing. -->

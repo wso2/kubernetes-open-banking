@@ -515,7 +515,7 @@ data:
 
                 <!-- Server URL of the remote BI server used to collect statistics. Must
                 be specified in protocol://hostname:port/ format. -->
-                <ServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:7612</ServerURL>
+                <ServerURL>tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-0.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612,tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-1.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612</ServerURL>
                 <!-- Administrator username to login to the BI server for data publishing. -->
                 <Username>admin@wso2.com@carbon.super</Username>
                 <!-- Administrator password to login to the BI server for data publishing. -->
