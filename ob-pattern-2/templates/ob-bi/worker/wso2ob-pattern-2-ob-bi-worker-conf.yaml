@@ -408,8 +408,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 10
               idleTimeout: 60000
@@ -450,8 +450,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
@@ -473,8 +473,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
@@ -515,8 +515,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
@@ -538,8 +538,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 20
               idleTimeout: 60000
@@ -561,8 +561,8 @@ data:
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }};SendStringParametersAsUnicode=false'
               {{- end }}
-              username: 'wso2carbon'
-              password: 'wso2carbon'
+              username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
+              password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 20
               idleTimeout: 60000

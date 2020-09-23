@@ -61,8 +61,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -87,8 +87,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.isKMConfigRegistry.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -113,8 +113,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -139,8 +139,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
@@ -266,8 +266,8 @@ data:
                         {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
                         <url>jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false</url>
                         {{- end }}
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
+                        <username>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}</username>
+                        <password>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}</password>
                         <driverClassName>{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}</driverClassName>
                         <maxActive>150</maxActive>
                         <maxWait>60000</maxWait>
