@@ -40,11 +40,9 @@ spec:
         node: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-2
     spec:
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-ob-db
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2ob-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        {{ end }}
+          command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
         {{ if .Values.wso2.deployment.ob.config.fraudDetection.enabled }}
         - name: init-ob-bi-dashboard
           image: busybox:1.32
