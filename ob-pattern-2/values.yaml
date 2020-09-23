@@ -311,6 +311,47 @@ wso2:
 
       # Product configurations
       config:
+        # Externalized data source configurations
+        datasources:
+          # RDBMS configurations
+          rdbms:
+            # RDBMS type
+            type: "mysql"
+            # RDBMS server configurations
+            server:
+              hostname: "wso2ob-rdbms-service-mysql"
+              port: "3306"
+            driverClassName: "com.mysql.jdbc.Driver"
+          # Specific data source configurations
+          # Please refer to official documentation for detailed information on data sources
+          # For Open Banking API Manager and Key Manager based on specification (https://docs.wso2.com/display/OB150/Configuring+WSO2+Open+Banking)
+          # For Open Banking Business Intelligence (https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-Configuringdatabases)
+          # For API Manager Analytics (https://docs.wso2.com/display/AM260/Configuring+APIM+Analytics#standardsetup)
+          databases:
+            amConfigRegistry:
+              name: "OPENBANK_AM_CONFIG_DB"
+            isKMConfigRegistry:
+              name: "OPENBANK_ISKM_CONFIG_DB"
+            openBankingGovernanceRegistry:
+              name: "OPENBANK_GOV_DB"
+            apiManagement:
+              name: "OPENBANK_APIMGT_DB"
+            apiManagementStats:
+              name: "OPENBANK_APIMGT_STATS_DB"
+            openBanking:
+              name: "OPENBANK_OPENBANKING_BERLIN_DB"
+            user:
+              name: "OPENBANK_USER_DB"
+            geoLocation:
+              name: "OPENBANK_GEOLOCATION_DB"
+            reportingStats:
+              name: "OPENBANK_REPORTING_STATS_DB"
+            reportingSummarized:
+              name: "OPENBANK_REPORTING_SUMMARIZED_DB"
+            businessRules:
+              name: "OPENBANK_BUSINESS_RULES_DB"
+            permissions:
+              name: "OPENBANK_PERMISSIONS_DB"
         # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
         workflowServerURL: "https://localhost:9445/services/"
         # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)

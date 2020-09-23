@@ -403,10 +403,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_PERMISSIONS_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 10
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -441,10 +445,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_GEOLOCATION_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -460,10 +468,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_APIMGT_STATS_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -498,10 +510,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_OPENBANKING_BERLIN_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 50
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -517,10 +533,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_REPORTING_STATS_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 20
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
@@ -536,10 +556,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2ob-rdbms-service-mysql:3306/OPENBANK_REPORTING_SUMMARIZED_DB?autoReconnect=true&useSSL=false'
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }}?autoReconnect=true&amp;useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               username: 'wso2carbon'
               password: 'wso2carbon'
-              driverClassName: com.mysql.jdbc.Driver
+              driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 20
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
