@@ -33,7 +33,7 @@ data:
     @App:name("FraudStatusUpdaterApp")
 
     @Source(type = 'http',
-            receiver.url='http://0.0.0.0:8006/FraudStatusUpdaterApp/FraudStatusUpdaterStream',
+            receiver.url='http://localhost:8006/FraudStatusUpdaterApp/FraudStatusUpdaterStream',
             basic.auth.enabled='false',
             @map(type='json'))
     define stream FraudStatusUpdaterStream (consentId string, analystId string, option int);
@@ -95,7 +95,7 @@ data:
 
     @Source(type = 'http-request',
             source.id='source',
-            receiver.url='http://0.0.0.0:8007/TRAAccountValidationApp/TRAValidationStream',
+            receiver.url='http://localhost:8007/TRAAccountValidationApp/TRAValidationStream',
             basic.auth.enabled='false',
             @map(type = 'json',@attributes(MESSAGE_ID='trp:messageId',TPP_ID='$.event.userId',CONSENT_ID='$.event.consentId',
             TIMESTAMP='$.event.timestamp', TYPE='$.event.type', DEPLOYED_SPEC='$.event.DeployedSpec',
@@ -269,7 +269,7 @@ data:
 
     @Source(type = 'http-request',
          source.id='source',
-         receiver.url='http://0.0.0.0:8007/TRAPaymentValidationApp/TRAValidationStream',
+         receiver.url='http://localhost:8007/TRAPaymentValidationApp/TRAValidationStream',
          basic.auth.enabled='false',
          @map(type = 'json',@attributes(MESSAGE_ID='trp:messageId',TIMESTAMP='event.timestamp',USER_ID='event.userId',
          CONSENT_ID='event.consentId', TYPE='$.event.type', DEPLOYED_SPEC='$.event.DeployedSpec',

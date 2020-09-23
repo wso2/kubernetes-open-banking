@@ -22,7 +22,7 @@ spec:
   selector:
     matchLabels:
       deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker
-  serviceName: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service
+  serviceName: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service
   template:
     metadata:
       annotations:
