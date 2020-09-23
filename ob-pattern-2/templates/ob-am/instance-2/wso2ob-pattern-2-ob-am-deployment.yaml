@@ -34,6 +34,7 @@ spec:
         checksum.ob.am.conf.jaggeryapp.admin: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-admin.yaml") . | sha256sum }}
         checksum.ob.am.conf.jaggeryapp.store: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-store.yaml") . | sha256sum }}
         checksum.ob.am.resources.api_templates: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-resources-api-templates.yaml") . | sha256sum }}
+        checksum.ob.am.resources.security: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am
         node: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-2
@@ -136,6 +137,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf
             - name: ob-am-resources-api-templates
               mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates
+            - name: ob-am-resources-security
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: ob-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -180,6 +183,9 @@ spec:
         - name: ob-am-resources-api-templates
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-api-templates
+        - name: ob-am-resources-security
+          configMap:
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-security
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: ob-local-carbon-database-storage
           persistentVolumeClaim:
