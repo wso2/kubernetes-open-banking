@@ -683,6 +683,14 @@ data:
             </ClientGeneration>
         </SwaggerCodegen>
 
+        <ApplicationConfiguration>
+          <ApplicationAttributes>
+            <Attribute required="true">
+              <Name>Regulatory Compliance</Name>
+              <Description>Regulatory Compliance</Description>
+            </Attribute>
+          </ApplicationAttributes>
+        </ApplicationConfiguration>
     </APIManager>
 
   carbon.xml: |-
