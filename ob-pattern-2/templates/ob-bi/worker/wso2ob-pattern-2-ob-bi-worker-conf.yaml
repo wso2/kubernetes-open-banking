@@ -404,7 +404,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.permissions.name }};SendStringParametersAsUnicode=false'
               {{- end }}
@@ -446,7 +446,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.geoLocation.name }};SendStringParametersAsUnicode=false'
               {{- end }}
@@ -469,7 +469,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagementStats.name }};SendStringParametersAsUnicode=false'
               {{- end }}
@@ -511,7 +511,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false'
               {{- end }}
@@ -534,7 +534,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingStats.name }};SendStringParametersAsUnicode=false'
               {{- end }}
@@ -557,7 +557,7 @@ data:
             type: RDBMS
             configuration:
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
-              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }}?autoReconnect=true&amp;useSSL=false'
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.reportingSummarized.name }};SendStringParametersAsUnicode=false'
               {{- end }}
