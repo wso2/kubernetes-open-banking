@@ -220,9 +220,7 @@ wso2:
               name: "OPENBANK_USER_DB"
         # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
         workflowServerURL: "https://localhost:9445/services/"
-        # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)
-        fraudDetection:
-          enabled: false
+        # Berlin PSD2 API specification specific configurations
         berlin:
           # Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter
           payableAccountsRetrieveEndpoint: "https://wso2ob-pattern-1-ob-am-service:9443/open-banking-berlin/services/v130/accounts/payable"
