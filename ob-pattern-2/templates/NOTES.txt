@@ -30,6 +30,13 @@ API Manager and Key Manager.
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the Key Manager service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the Key Manager service
 
+  Business Intelligence (BI) Dashboard
+
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-ingress)
+  - HOSTS: Hostname of the BI Dashboard service ({{ .Values.wso2.deployment.ob.bi.dashboard.ingress.hostname }})
+  - ADDRESS: External IP (`EXTERNAL-IP`) exposing the BI Dashboard service to outside of the Kubernetes environment
+  - PORTS: Externally exposed service ports of the BI Dashboard service
+
 2. Add a DNS record mapping the hostnames (in step 1) and the external IP.
 
    If the defined hostnames (in step 1) are backed by a DNS service, add a DNS record mapping the hostnames and
