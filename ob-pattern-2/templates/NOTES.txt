@@ -45,7 +45,7 @@ API Manager and Key Manager.
    If the defined hostnames are not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
    hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
-   <EXTERNAL-IP> {{ .Values.wso2.deployment.ob.am.ingress.management.hostname }} {{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }} {{ .Values.wso2.deployment.ob.km.ingress.hostname }}
+   <EXTERNAL-IP> {{ .Values.wso2.deployment.ob.am.ingress.management.hostname }} {{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }} {{ .Values.wso2.deployment.ob.km.ingress.hostname }} {{ .Values.wso2.deployment.ob.bi.dashboard.ingress.hostname }}
 
 3. Navigate to the consoles in your browser of choice.
 
