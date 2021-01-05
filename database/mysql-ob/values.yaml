@@ -1,4 +1,3 @@
-  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
 # Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-solr
-  namespace : {{ .Release.Namespace }}
-data:
-  core.properties: |-
-    name=registry-indexing
-    dataDir=/home/wso2carbon/solr/indexed-data
-  {{ end }}
+wso2:
+  deployment:
+    spec:
+      berlin:
+        enabled: true
+      uk:
+        enabled: false

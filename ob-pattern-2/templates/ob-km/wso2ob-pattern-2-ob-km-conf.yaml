@@ -18,1163 +18,920 @@ metadata:
     name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf
     namespace : {{ .Release.Namespace }}
 data:
-  carbon.xml: |-
-    <?xml version="1.0" encoding="ISO-8859-1"?>
-    <!--
-     Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
-    -->
-
-    <!--
-        This is the main server configuration file
-
-        ${carbon.home} represents the carbon.home system property.
-        Other system properties can be specified in a similar manner.
-    -->
-    <Server xmlns="http://wso2.org/projects/carbon/carbon.xml">
-
-        <!--
-           Product Name
-        -->
-        <Name>WSO2 Identity Server</Name>
-
-        <!--
-           machine readable unique key to identify each product
-        -->
-        <ServerKey>IS</ServerKey>
-
-        <!--
-           Product Version
-        -->
-        <Version>5.7.0</Version>
-
-        <!--
-           Host name or IP address of the machine hosting this server
-           e.g. www.wso2.org, 192.168.1.10
-           This is will become part of the End Point Reference of the
-           services deployed on this server instance.
-        -->
-        <HostName>{{ .Values.wso2.deployment.ob.km.ingress.hostname }}</HostName>
-
-        <!--
-        Host name to be used for the Carbon management console
-        -->
-        <MgtHostName>{{ .Values.wso2.deployment.ob.km.ingress.hostname }}</MgtHostName>
-
-        <!--
-            The URL of the back end server. This is where the admin services are hosted and
-            will be used by the clients in the front end server.
-            This is required only for the Front-end server. This is used when seperating BE server from FE server
-           -->
-        <ServerURL>local:/${carbon.context}/services/</ServerURL>
-        <!--
-        <ServerURL>https://localhost:${carbon.management.port}${carbon.context}/services/</ServerURL>
-        -->
-         <!--
-         The URL of the index page. This is where the user will be redirected after signing in to the
-         carbon server.
-         -->
-        <!-- IndexPageURL>/carbon/admin/index.jsp</IndexPageURL-->
-
-        <!--
-        For cApp deployment, we have to identify the roles that can be acted by the current server.
-        The following property is used for that purpose. Any number of roles can be defined here.
-        Regular expressions can be used in the role.
-        Ex : <Role>.*</Role> means this server can act any role
-        -->
-        <ServerRoles>
-            <Role>IdentityServer</Role>
-        </ServerRoles>
-
-        <!-- uncommnet this line to subscribe to a bam instance automatically -->
-        <!--<BamServerURL>https://bamhost:bamport/services/</BamServerURL>-->
-
-        <!--
-           The fully qualified name of the server
-        -->
-        <Package>org.wso2.carbon</Package>
-
-        <!--
-           Webapp context root of WSO2 Carbon management console.
-        -->
-        <WebContextRoot>/</WebContextRoot>
-
-        <!--
-            Proxy context path is a useful parameter to add a proxy path when a Carbon server is fronted by reverse proxy. In addtion
-            to the proxy host and proxy port this parameter allows you add a path component to external URLs. e.g.
-                URL of the Carbon server -> https://10.100.1.1:9443/carbon
-            URL of the reverse proxy -> https://prod.abc.com/appserver/carbon
-
-        appserver - proxy context path. This specially required whenever you are generating URLs to displace in
-        Carbon UI components.
-        -->
-        <!--
-            <MgtProxyContextPath></MgtProxyContextPath>
-            <ProxyContextPath></ProxyContextPath>
-        -->
-
-        <!-- In-order to  get the registry http Port from the back-end when the default http transport is not the same-->
-        <!--RegistryHttpPort>9763</RegistryHttpPort-->
-
-        <!--
-        Number of items to be displayed on a management console page. This is used at the
-        backend server for pagination of various items.
-        -->
-        <ItemsPerPage>15</ItemsPerPage>
-
-        <!-- The endpoint URL of the cloud instance management Web service -->
-        <!--<InstanceMgtWSEndpoint>https://ec2.amazonaws.com/</InstanceMgtWSEndpoint>-->
-
-        <!--
-           Ports used by this server
-        -->
-        <Ports>
-
-            <!-- Ports offset. This entry will set the value of the ports defined below to
-             the define value + Offset.
-             e.g. Offset=2 and HTTPS port=9443 will set the effective HTTPS port to 9445
-             -->
-            <Offset>3</Offset>
-
-            <!-- The JMX Ports -->
-            <JMX>
-                <!--The port RMI registry is exposed-->
-                <RMIRegistryPort>9999</RMIRegistryPort>
-                <!--The port RMI server should be exposed-->
-                <RMIServerPort>11111</RMIServerPort>
-            </JMX>
-
-            <!-- Embedded LDAP server specific ports -->
-            <EmbeddedLDAP>
-                <!-- Port which embedded LDAP server runs -->
-                <LDAPServerPort>10389</LDAPServerPort>
-                <!-- Port which KDC (Kerberos Key Distribution Center) server runs -->
-                <KDCServerPort>8000</KDCServerPort>
-            </EmbeddedLDAP>
-
-            <!--
-                     Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
-            -->
-            <!--<JNDIProviderPort>2199</JNDIProviderPort>-->
-            <!--Override receive port of thrift based entitlement service.-->
-            <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
-
-            <!--
-             This is the proxy port of the worker cluster. These need to be configured in a scenario where
-             manager node is not exposed through the load balancer through which the workers are exposed
-             therefore doesn't have a proxy port.
-            <WorkerHttpProxyPort>80</WorkerHttpProxyPort>
-            <WorkerHttpsProxyPort>443</WorkerHttpsProxyPort>
-            -->
-
-        </Ports>
-
-        <!--
-            JNDI Configuration
-        -->
-        <JNDI>
-            <!--
-                 The fully qualified name of the default initial context factory
-            -->
-            <DefaultInitialContextFactory>org.wso2.carbon.tomcat.jndi.CarbonJavaURLContextFactory</DefaultInitialContextFactory>
-            <!--
-                 The restrictions that are done to various JNDI Contexts in a Multi-tenant environment
-            -->
-            <Restrictions>
-                <!--
-                    Contexts that will be available only to the super-tenant
-                -->
-                <!-- <SuperTenantOnly>
-                    <UrlContexts>
-                        <UrlContext>
-                            <Scheme>foo</Scheme>
-                        </UrlContext>
-                        <UrlContext>
-                            <Scheme>bar</Scheme>
-                        </UrlContext>
-                    </UrlContexts>
-                </SuperTenantOnly> -->
-                <!--
-                    Contexts that are common to all tenants
-                -->
-                <AllTenants>
-                    <UrlContexts>
-                        <UrlContext>
-                            <Scheme>java</Scheme>
-                        </UrlContext>
-                        <!-- <UrlContext>
-                            <Scheme>foo</Scheme>
-                        </UrlContext> -->
-                    </UrlContexts>
-                </AllTenants>
-                <!--
-                     All other contexts not mentioned above will be available on a per-tenant basis
-                     (i.e. will not be shared among tenants)
-                -->
-            </Restrictions>
-        </JNDI>
-
-        <!--
-            Property to determine if the server is running an a cloud deployment environment.
-            This property should only be used to determine deployment specific details that are
-            applicable only in a cloud deployment, i.e when the server deployed *-as-a-service.
-        -->
-        <IsCloudDeployment>false</IsCloudDeployment>
-
-        <!--
-        Property to determine whether usage data should be collected for metering purposes
-        -->
-        <EnableMetering>false</EnableMetering>
-
-        <!-- The Max time a thread should take for execution in seconds -->
-        <MaxThreadExecutionTime>600</MaxThreadExecutionTime>
-
-        <!--
-            A flag to enable or disable Ghost Deployer. By default this is set to false. That is
-            because the Ghost Deployer works only with the HTTP/S transports. If you are using
-            other transports, don't enable Ghost Deployer.
-        -->
-        <GhostDeployment>
-            <Enabled>false</Enabled>
-        </GhostDeployment>
-
-
-        <!--
-            Eager loading or lazy loading is a design pattern commonly used in computer programming which
-            will initialize an object upon creation or load on-demand. In carbon, lazy loading is used to
-            load tenant when a request is received only. Similarly Eager loading is used to enable load
-            existing tenants after carbon server starts up. Using this feature, you will be able to include
-            or exclude tenants which are to be loaded when server startup.
-
-            We can enable only one LoadingPolicy at a given time.
-
-            1. Tenant Lazy Loading
-               This is the default behaviour and enabled by default. With this policy, tenants are not loaded at
-               server startup, but loaded based on-demand (i.e when a request is received for a tenant).
-               The default tenant idle time is 30 minutes.
-
-            2. Tenant Eager Loading
-               This is by default not enabled. It can be be enabled by un-commenting the <EagerLoading> section.
-               The eager loading configurations supported are as below. These configurations can be given as the
-               value for <Include> element with eager loading.
-                    (i)Load all tenants when server startup             -   *
-                    (ii)Load all tenants except foo.com & bar.com       -   *,!foo.com,!bar.com
-                    (iii)Load only foo.com &  bar.com to be included    -   foo.com,bar.com
-        -->
-        <Tenant>
-            <LoadingPolicy>
-                <LazyLoading>
-                    <IdleTime>30</IdleTime>
-                </LazyLoading>
-                <!-- <EagerLoading>
-                       <Include>*,!foo.com,!bar.com</Include>
-                </EagerLoading>-->
-            </LoadingPolicy>
-        </Tenant>
-
-        <!--
-         Caching related configurations
-        -->
-        <Cache>
-            <!-- Default cache timeout in minutes -->
-            <DefaultCacheTimeout>15</DefaultCacheTimeout>
-            <!-- Force all caches to act as local -->
-            <ForceLocalCache>false</ForceLocalCache>
-        </Cache>
-
-        <!--
-        Axis2 related configurations
-        -->
-        <Axis2Config>
-            <!--
-                 Location of the Axis2 Services & Modules repository
-
-                 This can be a directory in the local file system, or a URL.
-
-                 e.g.
-                 1. /home/wso2wsas/repository/ - An absolute path
-                 2. repository - In this case, the path is relative to CARBON_HOME
-                 3. file:///home/wso2wsas/repository/
-                 4. http://wso2wsas/repository/
-            -->
-            <RepositoryLocation>${carbon.home}/repository/deployment/server/</RepositoryLocation>
-
-            <!--
-             Deployment update interval in seconds. This is the interval between repository listener
-             executions.
-            -->
-            <DeploymentUpdateInterval>15</DeploymentUpdateInterval>
-
-            <!--
-                Location of the main Axis2 configuration descriptor file, a.k.a. axis2.xml file
-
-                This can be a file on the local file system, or a URL
-
-                e.g.
-                1. /home/repository/axis2.xml - An absolute path
-                2. conf/axis2.xml - In this case, the path is relative to CARBON_HOME
-                3. file:///home/carbon/repository/axis2.xml
-                4. http://repository/conf/axis2.xml
-            -->
-            <ConfigurationFile>${carbon.home}/repository/conf/axis2/axis2.xml</ConfigurationFile>
-
-            <!--
-              ServiceGroupContextIdleTime, which will be set in ConfigurationContex
-              for multiple clients which are going to access the same ServiceGroupContext
-              Default Value is 30 Sec.
-            -->
-            <ServiceGroupContextIdleTime>30000</ServiceGroupContextIdleTime>
-
-            <!--
-              This repository location is used to crete the client side configuration
-              context used by the server when calling admin services.
-            -->
-            <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/</ClientRepositoryLocation>
-            <!-- This axis2 xml is used in createing the configuration context by the FE server
-             calling to BE server -->
-            <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
-            <!-- If this parameter is set, the ?wsdl on an admin service will not give the admin service wsdl. -->
-            <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
-
-        <!--WARNING-Use With Care! Uncommenting bellow parameter would expose all AdminServices in HTTP transport.
-        With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks.
-        Use bellow parameter ONLY if your communication channels are confirmed to be secured by other means -->
-            <!--HttpAdminServices>*</HttpAdminServices-->
-
-        </Axis2Config>
-
-        <!--
-           The default user roles which will be created when the server
-           is started up for the first time.
-        -->
-        <ServiceUserRoles>
-            <Role>
-                <Name>admin</Name>
-                <Description>Default Administrator Role</Description>
-            </Role>
-            <Role>
-                <Name>user</Name>
-                <Description>Default User Role</Description>
-            </Role>
-        </ServiceUserRoles>
-
-        <!--
-           Configurations related to Carbon Crypto Service which is a crypto framework used inside Carbon products.
-        -->
-        <CryptoService>
-
-            <Enabled>true</Enabled>
-
-            <!-- The crypto provider which is used for internal data encryption and decryption -->
-            <InternalCryptoProviderClassName>org.wso2.carbon.crypto.provider.KeyStoreBasedInternalCryptoProvider</InternalCryptoProviderClassName>
-
-            <!--
-                The crypto provider which is used for the crypto needs which come when communicating with external parties.
-                e.g. Signing, Decrypting.
-            -->
-            <ExternalCryptoProviderClassName>org.wso2.carbon.core.encryption.KeyStoreBasedExternalCryptoProvider</ExternalCryptoProviderClassName>
-
-            <!--
-                The list of key resolvers which will be used based on the context when handling crypto with external parties.
-
-                e.g. Resolving the public key of an external entity.
-            -->
-            <KeyResolvers>
-                <KeyResolver className="org.wso2.carbon.crypto.defaultProvider.resolver.ContextIndependentKeyResolver" priority="-1"/>
-            </KeyResolvers>
-
-        </CryptoService>
-
-        <!--
-          Enable following config to allow Emails as usernames.
-          Required in OB.
-        -->
-        <EnableEmailUserName>true</EnableEmailUserName>
-
-        <!--
-          Security configurations
-        -->
-        <Security>
-            <!--
-                KeyStore which will be used for encrypting/decrypting passwords
-                and other sensitive information.
-            -->
-            <KeyStore>
-                <!-- Keystore file location-->
-                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                <!-- Keystore type (JKS/PKCS12 etc.)-->
-                <Type>JKS</Type>
-                <!-- Keystore password-->
-                <Password>wso2carbon</Password>
-                <!-- Private Key alias-->
-                <KeyAlias>wso2carbon</KeyAlias>
-                <!-- Private Key password-->
-                <KeyPassword>wso2carbon</KeyPassword>
-            </KeyStore>
-
-            <!--
-                The KeyStore which is used for encrypting/decrypting internal data.
-                This block is read by Carbon Crypto Service.
-            -->
-            <InternalKeyStore>
-                <!-- Keystore file location-->
-                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                <!-- Keystore type (JKS/PKCS12 etc.)-->
-                <Type>JKS</Type>
-                <!-- Keystore password-->
-                <Password>wso2carbon</Password>
-                <!-- Private Key alias-->
-                <KeyAlias>wso2carbon</KeyAlias>
-                <!-- Private Key password-->
-                <KeyPassword>wso2carbon</KeyPassword>
-            </InternalKeyStore>
-
-            <!--
-                System wide trust-store which is used to maintain the certificates of all
-                the trusted parties.
-            -->
-            <TrustStore>
-                <!-- trust-store file location -->
-                <Location>${carbon.home}/repository/resources/security/client-truststore.jks</Location>
-                <!-- trust-store type (JKS/PKCS12 etc.) -->
-                <Type>JKS</Type>
-                <!-- trust-store password -->
-                <Password>wso2carbon</Password>
-            </TrustStore>
-
-            <!--
-                The Authenticator configuration to be used at the JVM level. We extend the
-                java.net.Authenticator to make it possible to authenticate to given servers and
-                proxies.
-            -->
-            <NetworkAuthenticatorConfig>
-                <!--
-                    Below is a sample configuration for a single authenticator. Please note that
-                    all child elements are mandatory. Not having some child elements would lead to
-                    exceptions at runtime.
-                -->
-                <!-- <Credential> -->
-                    <!--
-                        the pattern that would match a subset of URLs for which this authenticator
-                        would be used
-                    -->
-                    <!-- <Pattern>regularExpression</Pattern> -->
-                    <!--
-                        the type of this authenticator. Allowed values are:
-                        1. server
-                        2. proxy
-                    -->
-                    <!-- <Type>proxy</Type> -->
-                    <!-- the username used to log in to server/proxy -->
-                    <!-- <Username>username</Username> -->
-                    <!-- the password used to log in to server/proxy -->
-                    <!-- <Password>password</Password> -->
-                <!-- </Credential> -->
-            </NetworkAuthenticatorConfig>
-
-            <!--
-             The Tomcat realm to be used for hosted Web applications. Allowed values are;
-             1. UserManager
-             2. Memory
-
-             If this is set to 'UserManager', the realm will pick users & roles from the system's
-             WSO2 User Manager. If it is set to 'memory', the realm will pick users & roles from
-             CARBON_HOME/repository/conf/tomcat/tomcat-users.xml
-            -->
-            <TomcatRealm>UserManager</TomcatRealm>
-
-        <!--Option to disable storing of tokens issued by STS-->
-        <DisableTokenStore>false</DisableTokenStore>
-
-     <STSCallBackHandlerName>org.wso2.carbon.identity.provider.AttributeCallbackHandler</STSCallBackHandlerName>
-
-        <!--
-         Security token store class name. If this is not set, default class will be
-         org.wso2.carbon.security.util.SecurityTokenStore
-        -->
-        <TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName>
-
-            <XSSPreventionConfig>
-                <Enabled>true</Enabled>
-                <Rule>allow</Rule>
-                <Patterns>
-                    <!--Pattern></Pattern-->
-                </Patterns>
-            </XSSPreventionConfig>
-        </Security>
-    <HideMenuItemIds>
-    <HideMenuItemId>claim_mgt_menu</HideMenuItemId>
-    <HideMenuItemId>identity_mgt_emailtemplate_menu</HideMenuItemId>
-    <HideMenuItemId>identity_security_questions_menu</HideMenuItemId>
-    </HideMenuItemIds>
-
-        <!--
-           The temporary work directory
-        -->
-        <WorkDirectory>${carbon.home}/tmp/work</WorkDirectory>
-
-        <!--
-           House-keeping configuration
-        -->
-        <HouseKeeping>
-
-            <!--
-               true  - Start House-keeping thread on server startup
-               false - Do not start House-keeping thread on server startup.
-                       The user will run it manually as and when he wishes.
-            -->
-            <AutoStart>true</AutoStart>
-
-            <!--
-               The interval in *minutes*, between house-keeping runs
-            -->
-            <Interval>10</Interval>
-
-            <!--
-              The maximum time in *minutes*, temp files are allowed to live
-              in the system. Files/directories which were modified more than
-              "MaxTempFileLifetime" minutes ago will be removed by the
-              house-keeping task
-            -->
-            <MaxTempFileLifetime>30</MaxTempFileLifetime>
-        </HouseKeeping>
-
-        <!--
-           Configuration for handling different types of file upload & other file uploading related
-           config parameters.
-           To map all actions to a particular FileUploadExecutor, use
-           <Action>*</Action>
-        -->
-        <FileUploadConfig>
-            <!--
-               The total file upload size limit in MB
-            -->
-            <TotalFileSizeLimit>100</TotalFileSizeLimit>
-
-            <Mapping>
-                <Actions>
-                    <Action>keystore</Action>
-                    <Action>certificate</Action>
-                    <Action>*</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.AnyFileUploadExecutor</Class>
-            </Mapping>
-
-            <Mapping>
-                <Actions>
-                    <Action>jarZip</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.JarZipUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>dbs</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.DBSFileUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>tools</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsFileUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>toolsAny</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsAnyFileUploadExecutor</Class>
-            </Mapping>
-        </FileUploadConfig>
-
-        <!-- FileNameRegEx is used to validate the file input/upload/write-out names.
-        e.g.
-         <FileNameRegEx>^(?!(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.[^.])?$)[^&lt;&gt:"/\\|?*\x00-\x1F][^&lt;&gt:"/\\|?*\x00-\x1F\ .]$</FileNameRegEx>
-        -->
-        <!--<FileNameRegEx></FileNameRegEx>-->
-
-        <!--
-           Processors which process special HTTP GET requests such as ?wsdl, ?policy etc.
-
-           In order to plug in a processor to handle a special request, simply add an entry to this
-           section.
-
-           The value of the Item element is the first parameter in the query string(e.g. ?wsdl)
-           which needs special processing
-
-           The value of the Class element is a class which implements
-           org.wso2.carbon.transport.HttpGetRequestProcessor
-        -->
-        <HttpGetRequestProcessors>
-            <Processor>
-                <Item>info</Item>
-                <Class>org.wso2.carbon.core.transports.util.InfoProcessor</Class>
-            </Processor>
-            <Processor>
-                <Item>wsdl</Item>
-                <Class>org.wso2.carbon.core.transports.util.Wsdl11Processor</Class>
-            </Processor>
-            <Processor>
-                <Item>wsdl2</Item>
-                <Class>org.wso2.carbon.core.transports.util.Wsdl20Processor</Class>
-            </Processor>
-            <Processor>
-                <Item>xsd</Item>
-                <Class>org.wso2.carbon.core.transports.util.XsdProcessor</Class>
-            </Processor>
-        </HttpGetRequestProcessors>
-
-        <!-- Deployment Synchronizer Configuration. Enable value to true when running with "svn based" dep sync.
-        In master nodes you need to set both AutoCommit and AutoCheckout to true
-        and in  worker nodes set only AutoCheckout to true.
-        -->
-        <DeploymentSynchronizer>
-            <Enabled>false</Enabled>
-            <AutoCommit>false</AutoCommit>
-            <AutoCheckout>true</AutoCheckout>
-            <RepositoryType>svn</RepositoryType>
-            <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
-            <SvnUser>username</SvnUser>
-            <SvnPassword>password</SvnPassword>
-            <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
-        </DeploymentSynchronizer>
-
-        <!-- Mediation persistence configurations. Only valid if mediation features are available i.e. ESB -->
-        <!--<MediationConfig>
-            <LoadFromRegistry>false</LoadFromRegistry>
-            <SaveToFile>false</SaveToFile>
-            <Persistence>enabled</Persistence>
-            <RegistryPersistence>enabled</RegistryPersistence>
-        </MediationConfig>-->
-
-        <!--
-        Server intializing code, specified as implementation classes of org.wso2.carbon.core.ServerInitializer.
-        This code will be run when the Carbon server is initialized
-        -->
-        <ServerInitializers>
-            <!--<Initializer></Initializer>-->
-        </ServerInitializers>
-
-        <!--
-        Indicates whether the Carbon Servlet is required by the system, and whether it should be
-        registered
-        -->
-        <RequireCarbonServlet>${require.carbon.servlet}</RequireCarbonServlet>
-
-        <!--
-        Carbon H2 OSGI Configuration
-        By default non of the servers start.
-            name="web" - Start the web server with the H2 Console
-            name="webPort" - The port (default: 8082)
-            name="webAllowOthers" - Allow other computers to connect
-            name="webSSL" - Use encrypted (HTTPS) connections
-            name="tcp" - Start the TCP server
-            name="tcpPort" - The port (default: 9092)
-            name="tcpAllowOthers" - Allow other computers to connect
-            name="tcpSSL" - Use encrypted (SSL) connections
-            name="pg" - Start the PG server
-            name="pgPort"  - The port (default: 5435)
-            name="pgAllowOthers"  - Allow other computers to connect
-            name="trace" - Print additional trace information; for all servers
-            name="baseDir" - The base directory for H2 databases; for all servers
-        -->
-        <!--H2DatabaseConfiguration>
-            <property name="web" />
-            <property name="webPort">8082</property>
-            <property name="webAllowOthers" />
-            <property name="webSSL" />
-            <property name="tcp" />
-            <property name="tcpPort">9092</property>
-            <property name="tcpAllowOthers" />
-            <property name="tcpSSL" />
-            <property name="pg" />
-            <property name="pgPort">5435</property>
-            <property name="pgAllowOthers" />
-            <property name="trace" />
-            <property name="baseDir">${carbon.home}</property>
-        </H2DatabaseConfiguration-->
-        <!--Disabling statistics reporter by default-->
-        <StatisticsReporterDisabled>true</StatisticsReporterDisabled>
-
-        <!-- Enable accessing Admin Console via HTTP -->
-        <!-- EnableHTTPAdminConsole>true</EnableHTTPAdminConsole -->
-
-        <!--
-           Default Feature Repository of WSO2 Carbon.
-        -->
-        <FeatureRepository>
-            <RepositoryName>default repository</RepositoryName>
-            <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
-        </FeatureRepository>
-
-        <!--
-        Configure API Management
-       -->
-       <APIManagement>
-
-        <!--Uses the embedded API Manager by default. If you want to use an external
-        API Manager instance to manage APIs, configure below  externalAPIManager-->
-
-        <Enabled>true</Enabled>
-
-        <!--Uncomment and configure API Gateway and
-        Publisher URLs to use external API Manager instance-->
-
-        <!--ExternalAPIManager>
-
-            <APIGatewayURL>http://localhost:8281</APIGatewayURL>
-            <APIPublisherURL>http://localhost:8281/publisher</APIPublisherURL>
-
-        </ExternalAPIManager-->
-
-        <LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
-       </APIManagement>
-    </Server>
-  registry.xml: |-
-    <?xml version="1.0" encoding="ISO-8859-1"?>
-
-    <!--
-    ~ Copyright 2005-2011 WSO2, Inc. (http://wso2.com)
-    ~
-    ~ Licensed under the Apache License, Version 2.0 (the "License");
-    ~ you may not use this file except in compliance with the License.
-    ~ You may obtain a copy of the License at
-    ~
-    ~ http://www.apache.org/licenses/LICENSE-2.0
-    ~
-    ~ Unless required by applicable law or agreed to in writing, software
-    ~ distributed under the License is distributed on an "AS IS" BASIS,
-    ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    ~ See the License for the specific language governing permissions and
-    ~ limitations under the License.
-    -->
-    <wso2registry>
-
-        <!--
-        For details on configuring different config & governance registries see;
-        http://wso2.org/library/tutorials/2010/04/sharing-registry-space-across-multiple-product-instances
-        -->
-
-        <currentDBConfig>wso2registry</currentDBConfig>
-        <readOnly>false</readOnly>
-        <enableCache>true</enableCache>
-        <registryRoot>/</registryRoot>
-
-        <dbConfig name="wso2registry">
-          <dataSource>jdbc/WSO2CarbonDB</dataSource>
-        </dbConfig>
-
-        <handler class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyHandler">
-          <filter class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyMediaTypeMatcher">
-              <property name="mediaType">application/xacml-policy+xml</property>
-          </filter>
-        </handler>
-
-        <!--<handler class="org.wso2.carbon.registry.extensions.handlers.SynapseRepositoryHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/vnd.apache.synapse</property>
-             </filter>
-         </handler>
-
-         <handler class="org.wso2.carbon.registry.extensions.handlers.SynapseRepositoryHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/vnd.apache.esb</property>
-             </filter>
-         </handler>
-
-         <handler class="org.wso2.carbon.registry.extensions.handlers.Axis2RepositoryHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/vnd.apache.axis2</property>
-             </filter>
-         </handler>
-
-         <handler class="org.wso2.carbon.registry.extensions.handlers.Axis2RepositoryHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/vnd.apache.wsas</property>
-             </filter>
-         </handler>
-
-         <handler class="org.wso2.carbon.registry.extensions.handlers.WSDLMediaTypeHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/wsdl+xml</property>
-             </filter>
-         </handler>
-
-         <handler class="org.wso2.carbon.registry.extensions.handlers.XSDMediaTypeHandler">
-             <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-                 <property name="mediaType">application/x-xsd+xml</property>
-             </filter>
-         </handler>-->
-
-        <!--remoteInstance url="https://localhost:9443/registry">
-          <id>instanceid</id>
-          <username>username</username>
-          <password>password</password>
-        </remoteInstance-->
-
-        <!--remoteInstance url="https://localhost:9443/registry">
-          <id>instanceid</id>
-          <dbConfig>wso2registry</dbConfig>
-          <readOnly>false</readOnly>
-          <enableCache>true</enableCache>
-          <registryRoot>/</registryRoot>
-        </remoteInstance-->
-
-        <!--mount path="/_system/config" overwrite="true|false|virtual">
-          <instanceId>instanceid</instanceId>
-          <targetPath>/_system/nodes</targetPath>
-        </mount-->
-
-        <indexingConfiguration>
-          <startIndexing>false</startIndexing>
-          <startingDelayInSeconds>35</startingDelayInSeconds>
-          <indexingFrequencyInSeconds>5</indexingFrequencyInSeconds>
-          <!--number of resources submit for given indexing thread -->
-          <batchSize>40</batchSize>
-          <!--number of worker threads for indexing -->
-          <indexerPoolSize>40</indexerPoolSize>
-          <!-- location storing the time the indexing took place-->
-          <lastAccessTimeLocation>/_system/local/repository/components/org.wso2.carbon.registry/indexing/lastaccesstime</lastAccessTimeLocation>
-          <!-- the indexers that implement the indexer interface for a relevant media type/(s) -->
-          <indexers>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.MSExcelIndexer" mediaTypeRegEx="application/vnd.ms-excel"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.MSPowerpointIndexer" mediaTypeRegEx="application/vnd.ms-powerpoint"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.MSWordIndexer" mediaTypeRegEx="application/msword"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.PDFIndexer" mediaTypeRegEx="application/pdf"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/xml"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/(.)+\+xml"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/swagger\+json"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/(.)+\+json"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/(.)+"/>
-              <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/x-javascript"/>
-          </indexers>
-          <exclusions>
-              <exclusion pathRegEx="/_system/config/repository/dashboards/gadgets/swfobject1-5/.*[.]html"/>
-              <exclusion pathRegEx="/_system/local/repository/components/org[.]wso2[.]carbon[.]registry/mount/.*"/>
-          </exclusions>
-        </indexingConfiguration>
-
-
-        <versionResourcesOnChange>false</versionResourcesOnChange>
-
-        <!-- NOTE: You can edit the options under "StaticConfiguration" only before the
-        startup. -->
-        <staticConfiguration>
-          <versioningProperties>true</versioningProperties>
-          <versioningComments>true</versioningComments>
-          <versioningTags>true</versioningTags>
-          <versioningRatings>true</versioningRatings>
-        </staticConfiguration>
-
-        <dbConfig name="configRegistry">
-          <dataSource>jdbc/WSO2Config_DB</dataSource>
-        </dbConfig>
-
-        <remoteInstance url="https://localhost:9443/registry">
-          <id>configInstance</id>
-          <dbConfig>configRegistry</dbConfig>
-          <readOnly>false</readOnly>
-          <enableCache>true</enableCache>
-          <registryRoot>/</registryRoot>
-        </remoteInstance>
-
-        <mount path="/_system/config" overwrite="true">
-          <instanceId>configInstance</instanceId>
-          <targetPath>/_system/config</targetPath>
-        </mount>
-
-        <dbConfig name="governanceRegistry">
-          <dataSource>jdbc/WSO2RegistryDB</dataSource>
-        </dbConfig>
-
-        <remoteInstance url="https://localhost:9443/registry">
-          <id>governanceInstance</id>
-          <dbConfig>governanceRegistry</dbConfig>
-          <readOnly>false</readOnly>
-          <enableCache>true</enableCache>
-          <registryRoot>/</registryRoot>
-        </remoteInstance>
-
-        <mount path="/_system/governance" overwrite="true">
-          <instanceId>governanceInstance</instanceId>
-          <targetPath>/_system/governance</targetPath>
-        </mount>
-    </wso2registry>
-
-  user-mgt.xml: |-
-    <!--
-      ~ Copyright WSO2, Inc. (http://wso2.com)
-      ~
-      ~ Licensed under the Apache License, Version 2.0 (the "License");
-      ~ you may not use this file except in compliance with the License.
-      ~ You may obtain a copy of the License at
-      ~
-      ~ http://www.apache.org/licenses/LICENSE-2.0
-      ~
-      ~ Unless required by applicable law or agreed to in writing, software
-      ~ distributed under the License is distributed on an "AS IS" BASIS,
-      ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-      ~ See the License for the specific language governing permissions and
-      ~ limitations under the License.
-      -->
-
-    <UserManager>
-        <Realm>
-            <Configuration>
-                <AddAdmin>true</AddAdmin>
-                <AdminRole>admin</AdminRole>
-                <AdminUser>
-                    <!--Required in OB-->
-                    <UserName>admin@wso2.com</UserName>
-                    <Password>wso2123</Password>
-                </AdminUser>
-                <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->
-                <Property name="isCascadeDeleteEnabled">true</Property>
-                <Property name="initializeNewClaimManager">true</Property>
-                <Property name="dataSource">jdbc/WSO2UMDB</Property>
-            </Configuration>
-
-            <!-- Following is the configuration for internal JDBC user store. This user store manager is based on JDBC.
-                 In case if application needs to manage passwords externally set property
-                 <Property name="PasswordsExternallyManaged">true</Property>.
-                 In case if user core cache domain is needed to identify uniquely set property
-                 <Property name="UserCoreCacheIdentifier">domain</Property>.
-                 Furthermore properties, IsEmailUserName and DomainCalculation are readonly properties.
-                 Note: Do not comment within UserStoreManager tags. Cause, specific tag names are used as tokens
-                 when building configurations for products.
-            -->
-            <!--Required in OB-->
-            <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
-                <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
-                <Property name="ReadOnly">false</Property>
-                <Property name="ReadGroups">true</Property>
-                <Property name="WriteGroups">true</Property>
-                <Property name="UsernameJavaRegEx">a-zA-Z0-9@._-{3,30}$</Property>
-                <Property name="UsernameJavaScriptRegEx">^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$</Property>
-                <Property name="UsernameJavaRegExViolationErrorMsg">Username pattern policy violated</Property>
-                <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaRegExViolationErrorMsg">Password length should be within 5 to 30 characters</Property>
-                <Property name="RolenameJavaRegEx">^[\S]{3,30}$</Property>
-                <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                <Property name="CaseInsensitiveUsername">true</Property>
-                <Property name="SCIMEnabled">false</Property>
-                <Property name="IsBulkImportSupported">false</Property>
-                <Property name="PasswordDigest">SHA-256</Property>
-                <Property name="StoreSaltedPassword">true</Property>
-                <Property name="MultiAttributeSeparator">,</Property>
-                <Property name="MaxUserNameListLength">100</Property>
-                <Property name="MaxRoleNameListLength">100</Property>
-                <Property name="UserRolesCacheEnabled">true</Property>
-                <Property name="UserNameUniqueAcrossTenants">false</Property>
-                <Property name="UsernameWithEmailJavaScriptRegEx">^[\S]{3,30}$</Property>
-            </UserStoreManager>
-
-            <!-- If product is using an external LDAP as the user store in READ ONLY mode, use following user manager.
-                 In case if user core cache domain is needed to identify uniquely set property
-                 <Property name="UserCoreCacheIdentifier">domain</Property>
-             -->
-            <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadOnlyLDAPUserStoreManager">
-                <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-                <Property name="ConnectionURL">ldap://localhost:10389</Property>
-                <Property name="ConnectionName">uid=admin,ou=system</Property>
-                <Property name="ConnectionPassword">admin</Property>
-                <Property name="AnonymousBind">false</Property>
-                <Property name="UserSearchBase">ou=system</Property>
-                <Property name="UserNameAttribute">uid</Property>
-                <Property name="UserNameSearchFilter">(&amp;(objectClass=person)(uid=?))</Property>
-                <Property name="UserNameListFilter">(objectClass=person)</Property>
-                <Property name="DisplayNameAttribute"/>
-                <Property name="ReadGroups">true</Property>
-                <Property name="GroupSearchBase">ou=system</Property>
-                <Property name="GroupNameAttribute">cn</Property>
-                <Property name="GroupNameSearchFilter">(&amp;(objectClass=groupOfNames)(cn=?))</Property>
-                <Property name="GroupNameListFilter">(objectClass=groupOfNames)</Property>
-                <Property name="MembershipAttribute">member</Property>
-                <Property name="BackLinksEnabled">false</Property>
-                <Property name="UsernameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
-                <Property name="RolenameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="SCIMEnabled">false</Property>
-                <Property name="PasswordHashMethod">PLAIN_TEXT</Property>
-                <Property name="MultiAttributeSeparator">,</Property>
-                <Property name="MaxUserNameListLength">100</Property>
-                <Property name="MaxRoleNameListLength">100</Property>
-                <Property name="UserRolesCacheEnabled">true</Property>
-                <Property name="ConnectionPoolingEnabled">true</Property>
-                <Property name="LDAPConnectionTimeout">5000</Property>
-                <Property name="ReadTimeout"/>
-                <Property name="RetryAttempts"/>
-                <Property name="ReplaceEscapeCharactersAtUserLogin">true</Property>
-            </UserStoreManager-->
-
-            <!-- Active directory configuration is as follows.
-                 In case if user core cache domain is needed to identify uniquely set property
-                 <Property name="UserCoreCacheIdentifier">domain</Property>
-                 There are few special properties for "Active Directory".
-                 They are :
-                 1.Referral - (comment out this property if this feature is not reuired) This enables LDAP referral support.
-                 2.BackLinksEnabled - (Do not comment, set to true or false) In some cases LDAP works with BackLinksEnabled.
-                 In which role is stored at user level. Depending on this value we need to change the Search Base within code.
-                 isADLDSRole - (Do not comment) Set to true if connecting to an AD LDS instance else set to false.
-            -->
-            <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ActiveDirectoryUserStoreManager">
-                <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-                <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property>
-                <Property name="ConnectionName">CN=admin,CN=Users,DC=WSO2,DC=Com</Property>
-                <Property name="ConnectionPassword">A1b2c3d4</Property>
-                <Property name="AnonymousBind">false</Property>
-                <Property name="UserSearchBase">CN=Users,DC=WSO2,DC=Com</Property>
-                <Property name="UserEntryObjectClass">user</Property>
-                <Property name="UserNameAttribute">cn</Property>
-                <Property name="UserNameSearchFilter">(&amp;(objectClass=user)(cn=?))</Property>
-                <Property name="UserNameListFilter">(objectClass=user)</Property>
-                <Property name="DisplayNameAttribute"/>
-                <Property name="ReadGroups">true</Property>
-                <Property name="WriteGroups">true</Property>
-                <Property name="GroupSearchBase">CN=Users,DC=WSO2,DC=Com</Property>
-                <Property name="GroupEntryObjectClass">group</Property>
-                <Property name="GroupNameAttribute">cn</Property>
-                <Property name="GroupNameSearchFilter">(&amp;(objectClass=group)(cn=?))</Property>
-                <Property name="GroupNameListFilter">(objectcategory=group)</Property>
-                <Property name="MembershipAttribute">member</Property>
-                <Property name="MemberOfAttribute">memberOf</Property>
-                <Property name="BackLinksEnabled">true</Property>
-                <Property name="Referral">follow</Property>
-                <Property name="UsernameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="UsernameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                <Property name="UsernameJavaRegExViolationErrorMsg">Username pattern policy violated</Property>
-                <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaRegExViolationErrorMsg">Password length should be within 5 to 30 characters</Property>
-                <Property name="RolenameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                <Property name="SCIMEnabled">false</Property>
-                <Property name="IsBulkImportSupported">false</Property>
-                <Property name="EmptyRolesAllowed">true</Property>
-                <Property name="PasswordHashMethod">PLAIN_TEXT</Property>
-                <Property name="MultiAttributeSeparator">,</Property>
-                <Property name="isADLDSRole">false</Property>
-                <Property name="userAccountControl">512</Property>
-                <Property name="MaxUserNameListLength">100</Property>
-                <Property name="MaxRoleNameListLength">100</Property>
-                <Property name="MembershipAttributeRange">1500</Property>
-                <Property name="kdcEnabled">false</Property>
-                <Property name="defaultRealmName">WSO2.ORG</Property>
-                <Property name="UserRolesCacheEnabled">true</Property>
-                <Property name="ConnectionPoolingEnabled">false</Property>
-                <Property name="LDAPConnectionTimeout">5000</Property>
-                <Property name="ReadTimeout"/>
-                <Property name="RetryAttempts"/>
-            </UserStoreManager-->
-
-            <!-- Following user manager is used by Identity Server (IS) as its default user manager.
-                 IS will do token replacement when building the product. Therefore do not change the syntax.
-                 If "kdcEnabled" parameter is true, IS will allow service principle management.
-                 Thus "ServicePasswordJavaRegEx", "ServiceNameJavaRegEx" properties control the service name format and
-                 service password formats. In case if user core cache domain is needed to identify uniquely set property
-                 <Property name="UserCoreCacheIdentifier">domain</Property>
-            -->
-
-            <!--Required in OB as disabled-->
-            <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
-                <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-                <Property name="ConnectionURL">ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}</Property>
-                <Property name="ConnectionName">uid=admin,ou=system</Property>
-                <Property name="ConnectionPassword">admin</Property>
-                <Property name="AnonymousBind">false</Property>
-                <Property name="UserSearchBase">ou=Users,dc=wso2,dc=org</Property>
-                <Property name="UserEntryObjectClass">identityPerson</Property>
-                <Property name="UserNameAttribute">uid</Property>
-                <Property name="UserNameSearchFilter">(&amp;(objectClass=person)(uid=?))</Property>
-                <Property name="UserNameListFilter">(objectClass=person)</Property>
-                <Property name="DisplayNameAttribute"/>
-                <Property name="ReadGroups">true</Property>
-                <Property name="WriteGroups">true</Property>
-                <Property name="GroupSearchBase">ou=Groups,dc=wso2,dc=org</Property>
-                <Property name="GroupEntryObjectClass">groupOfNames</Property>
-                <Property name="GroupNameAttribute">cn</Property>
-                <Property name="GroupNameSearchFilter">(&amp;(objectClass=groupOfNames)(cn=?))</Property>
-                <Property name="GroupNameListFilter">(objectClass=groupOfNames)</Property>
-                <Property name="MembershipAttribute">member</Property>
-                <Property name="BackLinksEnabled">false</Property>
-                <Property name="UsernameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="UsernameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                <Property name="UsernameJavaRegExViolationErrorMsg">Username pattern policy violated</Property>
-                <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
-                <Property name="PasswordJavaRegExViolationErrorMsg">Password length should be within 5 to 30 characters</Property>
-                <Property name="RolenameJavaRegEx">[a-zA-Z0-9._\-|//]{3,30}$</Property>
-                <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                <Property name="SCIMEnabled">true</Property>
-                <Property name="IsBulkImportSupported">false</Property>
-                <Property name="EmptyRolesAllowed">true</Property>
-                <Property name="PasswordHashMethod">PLAIN_TEXT</Property>
-                <Property name="MultiAttributeSeparator">,</Property>
-                <Property name="MaxUserNameListLength">100</Property>
-                <Property name="MaxRoleNameListLength">100</Property>
-                <Property name="kdcEnabled">false</Property>
-                <Property name="defaultRealmName">WSO2.ORG</Property>
-                <Property name="UserRolesCacheEnabled">true</Property>
-                <Property name="ConnectionPoolingEnabled">false</Property>
-                <Property name="LDAPConnectionTimeout">5000</Property>
-                <Property name="ReadTimeout"/>
-                <Property name="RetryAttempts"/>
-            </UserStoreManager-->
-
-            <AuthorizationManager class="org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager">
-                <Property name="AdminRoleManagementPermissions">/permission</Property>
-                <Property name="AuthorizationCacheEnabled">true</Property>
-                <Property name="GetAllRolesOfUserEnabled">false</Property>
-            </AuthorizationManager>
-        </Realm>
-    </UserManager>
-
-    <!--
-
-    ************* Description of some of the configuration properties used in user-mgt.xml *********************************
-
-    DomainName -
-        This property must be used by all secondary user store managers in multiple user store configuration.
-        DomainName is a unique identifier given to the user store. Users must provide both the domain name and
-        username at log-in as "DomainName\Username"
-
-    UserRolesCacheEnabled -
-        This is to indicate whether to cache role list of a user. By default it is set to true.
-        You may need to disable it if user-roles are changed by external means and need to reflect
-        those changes in the carbon product immediately.
-
-    ReplaceEscapeCharactersAtUserLogin -
-        This is to configure whether escape characters in user name needs to be replaced at user login.
-        Currently the identified escape characters that needs to be replaced are '\' & '\\'
-
-    UserDNPattern -
-        This property will be used when authenticating users. During authentication we do a bind. But if the user is login
-        with email address or some other property we need to first lookup LDAP and retrieve DN for the user.
-        This involves an additional step.  If UserDNPattern is specified the DN will be constructed using the pattern
-        specified in this property. Performance of this is much better than looking up DN and binding user.
-
-    RoleDNPattern -
-        This property will be used when checking whether user has been assigned to a given role.
-        Rather than searching the role in search base, by using this property direct search can be done.
-
-    PasswordHashMethod -
-        This says how the password should be stored. Allowed values are as follows,
-            SHA - Uses SHA digest method
-            MD5 - Uses MD 5 digest method
-            PLAIN_TEXT - Plain text passwords
-            In addition to above this supports all digest methods supported by http://docs.oracle.com/javase/6/docs/api/java/security/MessageDigest.html.
-
-    DisplayNameAttribute -
-        This is to have a dedicated LDAP attribute to display an entity(User/Role) in UI, in addition to the UserNameAttribute which is used for IS-UserStore interactions.
-    -->
+  deployment-berlin.toml: |-
+    #================configs related to carbon.xml=============
+    [server]
+    hostname = "{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+    node_ip = "$env{NODE_IP}"
+    base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+    serverDetails = "WSO2 IS as KM 5.10.0"
+    mode = "single"
+    userAgent = "WSO2 IS as KM 5.10.0"
+    offset = 3
+
+    [transport.https.properties]
+    proxyPort="443"
+
+    [keystore.primary]
+    name = "wso2carbon.jks"
+    password = "wso2carbon"
+
+    [tenant_mgt]
+    enable_email_domain = true
+
+    #================configs related to user-mgt.xml=============
+
+    [super_admin]
+    username = "admin@wso2.com"
+    password = "wso2123"
+    create_admin_account = true
+
+    [realm_manager]
+    data_source= "WSO2UM_DB"
+
+    [user_store]
+    type = "database_unique_id"
+    class = "org.wso2.carbon.user.core.jdbc.UniqueIDJDBCUserStoreManager"
+
+    [user_store.properties]
+    UsernameJavaRegEx = "a-zA-Z0-9@._-{3,30}$"
+    UsernameJavaScriptRegEx = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"
+    SCIMEnabled = false
+    IsBulkImportSupported = false
+    LeadingOrTrailingSpaceAllowedInUserName = false
+    UsernameWithEmailJavaScriptRegEx = "^[\\S]{3,30}$"
+
+    [authorization_manager]
+    class = "org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager"
+
+    [authorization_manager.properties]
+    AdminRoleManagementPermissions = "/permission"
+    AuthorizationCacheEnabled = true
+    GetAllRolesOfUserEnabled = false
+
+    #================configs related to axis2.xml==================
+
+    [clustering]
+    membership_scheme = "kubernetes"
+    domain = "wso2.ob.km.domain"
+    properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
+    properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-2.resource.prefix" . }}-ob-km-service"
+    properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
+    properties.USE_DNS = "false"
+
+    #================configs related to master-datasources.xml=============
+
+    # for registry data
+    [database.shared_db]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.shared_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for api manager data
+    [database.apim_db]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.apim_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for km-config registry
+    [database.config]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.isKMConfigRegistry.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.isKMConfigRegistry.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.config.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for user management data
+    [[datasource]]
+    id="WSO2UM_DB"
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+    jmx_enable=false
+    pool_options.maxActive = "150"
+    pool_options.maxWait = "60000"
+    pool_options.minIdle = "5"
+    pool_options.testOnBorrow = true
+    pool_options.validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    pool_options.validationInterval="30000"
+    pool_options.defaultAutoCommit=false
+
+    #================configs related to application-authentication.xml=============
+
+    [authentication.endpoints]
+    login_url = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/login.do"
+    retry_url = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/retry.do"
+
+    [authentication.endpoint.redirect_params]
+    filter_policy = "include"
+    remove_on_consume_from_api = "true"
+    parameters = ["sessionDataKeyConsent","relyingParty", "authenticators", "authFailureMsg", "authFailure"]
+
+    #================configs related to api-manager.xml=============
+
+    [[apim.gateway.environment]]
+    name = "Production and Sandbox"
+    type = "hybrid"
+    display_in_api_console = true
+    description = "This is a hybrid gateway that handles both production and sandbox token traffic."
+    service_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:9443/services/"
+    username= "${admin.username}"
+    password= "${admin.password}"
+    https_endpoint = "https://${carbon.local.ip}:${https.nio.port}"
+    http_endpoint = "http://${carbon.local.ip}:${http.nio.port}"
+    ws_endpoint = "ws://${carbon.local.ip}:9099"
+
+    [apim.oauth_config]
+    white_listed_scopes = ["^device_.*","openid","extended_transaction_history", "^OB_.*", "^TIME_.*", "^x5t.*"]
+
+    [apim.jwt]
+    enable = false
+    signing_algorithm = "NONE"
+    header = "X-JWT-Assertion"
+
+    [apim.throttling]
+    enable_data_publishing = false
+    enable_policy_deploy = true
+    enable_blacklist_condition = true
+    enable_decision_connection = true
+
+    [apim.jwt_authenitcation]
+    subscription_validation_via_km = false
+
+    [[apim.devportal.application_attributes]]
+    required = true
+    hidden = false
+    name ="Regulatory Compliance"
+    description = "Regulatory Compliance"
+
+
+    #================configs related to identity.xml=============
+
+    [identity_data_source]
+    skip_db_schema_creation = true
+
+    [oauth.endpoints]
+    oauth2_authz_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/authorize"
+    oauth2_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/token"
+    oauth2_user_info_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/userinfo"
+    oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/ob/authenticationendpoint/oauth2_authz.do"
+    oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/ob/authenticationendpoint/oauth2_consent.do"
+    oauth2_error_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_error.do"
+    oidc_logout_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_logout_consent.do"
+    oidc_logout_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_logout.do"
+    oidc_web_finger_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/.well-known/webfinger"
+    oauth2_dcr_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/register"
+    oidc_discovery_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/oauth2/oidcdiscovery"
+    [oauth.token_renewal]
+    renew_refresh_token = false
+
+    [oauth.response_type]
+    token.enable = true
+    code.enable = false
+    id_token.enable = true
+    id_token_token.enable = false
+    device.enable = true
+
+    [[oauth.custom_response_type]]
+    name = "code"
+    class = "com.wso2.finance.open.banking.identity.extensions.response.type.handlers.OBCodeResponseTypeHandler"
+    validator = "com.wso2.finance.open.banking.identity.extensions.response.type.validators.OBCodeTokenResponseValidator"
+
+    [[oauth.custom_response_type]]
+    name = "code id_token"
+    class = "com.wso2.finance.open.banking.identity.extensions.response.type.handlers.OBHybridResponseTypeHandler"
+
+    [oauth.grant_type]
+    authorization_code.enable = true
+    authorization_code.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBAuthorizationCodeGrantHandler"
+    refresh_token.enable = true
+    refresh_token.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBRefreshGrantHandler"
+    client_credentials.enable = true
+    client_credentials.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBClientCredentialsGrantHandler"
+    iwa_ntlm.enable = false
+    jwt_bearer.enable = false
+
+    [oauth.oidc]
+    extensions.id_token_builder = "com.wso2.finance.open.banking.idtoken.builder.OBIDTokenBuilder"
+    id_token.issuer = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/token"
+    extensions.request_object_validator = "com.wso2.finance.open.banking.request.object.validator.OBRequestObjectValidatorImpl"
+
+    [identity_mgt.user_self_registration]
+    allow_self_registration = true
+
+    [[event_listener]]
+    id = "mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.carbon.identity.oauth2.token.handler.clientauth.mutualtls.MutualTLSClientAuthenticator"
+    order = "158"
+    enable = false
+
+    [[event_listener]]
+    id = "ob_mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.mtls.authenticator.OBMutualTLSClientAuthenticator"
+    order = "26"
+    enable = false
+
+    [[event_listener]]
+    id = "ob_introspection_response_interceptor"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.identity.extensions.introspection.OBIntrospectionResponseInterceptor"
+    order = "27"
+    enable = true
+
+    [[event_listener]]
+    id = "ob_introspection_data_provider"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.identity.extensions.introspection.OBIntrospectionDataProvider"
+    order = "28"
+    enable = true
+
+    [resource_access_control]
+    default_access_allow= true
+
+    [[resource.access_control]]
+    context = "(.*)/berlin110/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/berlin130/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/stet140/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk110/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk200/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk300/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [authentication.adaptive.event_publisher]
+    url = "http://localhost:8006/"
+
+    #================configs related to identity-event.properties=============
+
+    [[event_handler]]
+    name="userPostSelfRegistration"
+    subscriptions=["POST_ADD_USER"]
+
+    #================configs related to open-banking-datasources.xml=============
+
+    [open_banking_database]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    config.url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    config.url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    config.username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    config.password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    config.driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [open_banking_database.config.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    #================custom filters and filter-mappings==============
+    [[tomcat.filter]]
+    name = "TokenFilter"
+    class = "com.wso2.finance.open.banking.identity.extensions.filter.TokenFilter"
+
+    [[tomcat.filter_mapping]]
+    name = "TokenFilter"
+    url_pattern = "/token/*"
+
+    #================configs related to open-banking.xml=============
+
+    [open_banking]
+    deployed_spec = "BERLIN"
+    payable_accounts_retrieve_endpoint = "{{ .Values.wso2.deployment.ob.config.berlin.payableAccountsRetrieveEndpoint }}"
+    sharable_accounts_retrieve_endpoint = "{{ .Values.wso2.deployment.ob.config.berlin.sharableAccountsRetrieveEndpoint }}"
+
+    [open_banking.jdbc_persistence_manager.data_source]
+    name= "WSO2OpenBankingDB"
+
+    [open_banking.berlin]
+    accounts_retrieve_endpoint = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:9443/api/openbanking/backend-berlin/services/accounts/accounts"
+    account_consent_self_link = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/xs2a/v1/consents/%s"
+    payment_resource_self_link = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/xs2a/v1/%s/%s/%s"
+    cof_resource_self_link = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/xs2a/v2/consents/confirmation-of-funds/%s"
+    iban_single_acc_retrieval_validation.enable = "false"
+    iban_acc_retrieval_validation.enable = "true"
+    host = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}"
+    port = "8243"
+    acc_ref_type = "iban"
+
+    [open_banking.berlin.freq_per_day]
+    enable = true
+
+    [open_banking.berlin.sca]
+    prioritize_tpp_preference.enable = false
+    selected_approach = "REDIRECT"
+    auth_cancellation.enable = false
+    oauth_metadata_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/.well-known/openid-configuration"
+    update_psu_identification_endpoint = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+    update_psu_authentication_endpoint = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+    select_auth_method_endpoint = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+    auth_transaction_endpoint = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+
+    [open_banking.api_security]
+    mtls_token_binding.enable = true
+
+    [open_banking.api_security.global]
+    username = "$ref{super_admin.username}"
+    password = "$ref{super_admin.password}"
+
+    [open_banking.cert_mgt]
+    client_auth_header = "x-wso2-mutual-auth-cert"
+    [open_banking.cert_mgt.cert_revocation_proxy]
+    enable = false
+    proxy_host = "PROXY_HOSTNAME"
+    proxy_port = "8080"
+
+    [open_banking.dcr]
+    uri_validation.enable = true
+    hostname_validation.enable = true
+    software_id_as_application_name.enable = true
+
+    [open_banking.bi_server]
+    username = "$ref{super_admin.username}@carbon.super"
+    password = "$ref{super_admin.password}"
+
+    [open_banking.bi_server.data_publishing]
+    enable = true
+    server_url = "{tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-0.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612,tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-1.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612}"
+
+    [open_banking.bi_server.tra]
+    enable = true
+    payment_validation.enable = true
+    account_validation.enable = true
+
+    [open_banking.bi_server.tra.receivers]
+    account_validation_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAAccountValidationApp/TRAValidationStream"
+    payment_validation_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAPaymentValidationApp/TRAValidationStream"
+
+    [open_banking.bi_server.fraud_detection]
+    enable = {{ .Values.wso2.deployment.ob.config.fraudDetection.enabled }}
+
+    [open_banking.bi_server.fraud_detection.receivers]
+    fraud_detection_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/FraudDetectionApp/FraudDetectionStream"
+    invalid_submission_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8006/InvalidSubmissionsApp/InvalidSubmissionsStream"
+
+  deployment-uk.toml: |-
+    #================configs related to carbon.xml=============
+    [server]
+    hostname = "{{ .Values.wso2.deployment.ob.km.ingress.hostname }}"
+    node_ip = "$env{NODE_IP}"
+    base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+    serverDetails = "WSO2 IS as KM 5.10.0"
+    mode = "single"
+    userAgent = "WSO2 IS as KM 5.10.0"
+    offset = 3
+
+    [transport.https.properties]
+    proxyPort="443"
+
+    [keystore.primary]
+    name = "wso2carbon.jks"
+    password = "wso2carbon"
+
+    [tenant_mgt]
+    enable_email_domain = true
+
+    #================configs related to user-mgt.xml=============
+
+    [super_admin]
+    username = "admin@wso2.com"
+    password = "wso2123"
+    create_admin_account = true
+
+    [realm_manager]
+    data_source= "WSO2UM_DB"
+
+    [user_store]
+    type = "database_unique_id"
+    class = "org.wso2.carbon.user.core.jdbc.UniqueIDJDBCUserStoreManager"
+
+    [user_store.properties]
+    UsernameJavaRegEx = "a-zA-Z0-9@._-{3,30}$"
+    UsernameJavaScriptRegEx = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"
+    SCIMEnabled = false
+    IsBulkImportSupported = false
+    LeadingOrTrailingSpaceAllowedInUserName = false
+    UsernameWithEmailJavaScriptRegEx = "^[\\S]{3,30}$"
+
+    [authorization_manager]
+    class = "org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager"
+
+    [authorization_manager.properties]
+    AdminRoleManagementPermissions = "/permission"
+    AuthorizationCacheEnabled = true
+    GetAllRolesOfUserEnabled = false
+
+    #================configs related to axis2.xml==================
+
+    [clustering]
+    membership_scheme = "kubernetes"
+    domain = "wso2.ob.km.domain"
+    properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
+    properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-2.resource.prefix" . }}-ob-km-service"
+    properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
+    properties.USE_DNS = "false"
+
+    #================configs related to master-datasources.xml=============
+
+    # for registry data
+    [database.shared_db]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingGovernanceRegistry.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.shared_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for api manager data
+    [database.apim_db]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.apiManagement.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.apim_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for km-config registry
+    [database.config]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.isKMConfigRegistry.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.isKMConfigRegistry.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.config.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for user management data
+    [[datasource]]
+    id="WSO2UM_DB"
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.user.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+    jmx_enable=false
+    pool_options.maxActive = "150"
+    pool_options.maxWait = "60000"
+    pool_options.minIdle = "5"
+    pool_options.testOnBorrow = true
+    pool_options.validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    pool_options.validationInterval="30000"
+    pool_options.defaultAutoCommit=false
+
+    #================configs related to application-authentication.xml=============
+
+    [authentication.endpoints]
+    login_url = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/login.do"
+    retry_url = "https://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/retry.do"
+
+    [authentication.endpoint.redirect_params]
+    filter_policy = "include"
+    remove_on_consume_from_api = "true"
+    parameters = ["sessionDataKeyConsent","relyingParty", "authenticators", "authFailureMsg", "authFailure"]
+
+    #================configs related to api-manager.xml=============
+
+    [[apim.gateway.environment]]
+    name = "Production and Sandbox"
+    type = "hybrid"
+    display_in_api_console = true
+    description = "This is a hybrid gateway that handles both production and sandbox token traffic."
+    service_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:9443/services/"
+    username= "${admin.username}"
+    password= "${admin.password}"
+    https_endpoint = "https://${carbon.local.ip}:${https.nio.port}"
+    http_endpoint = "http://${carbon.local.ip}:${http.nio.port}"
+    ws_endpoint = "ws://${carbon.local.ip}:9099"
+
+    [apim.oauth_config]
+    white_listed_scopes = ["^device_.*","openid","extended_transaction_history", "^OB_.*", "^TIME_.*", "^x5t.*"]
+
+    [apim.jwt]
+    enable = false
+    signing_algorithm = "NONE"
+    header = "X-JWT-Assertion"
+
+    [apim.throttling]
+    enable_data_publishing = false
+    enable_policy_deploy = true
+    enable_blacklist_condition = true
+    enable_decision_connection = true
+
+    [[apim.throttling.url_group]]
+    traffic_manager_urls = ["tcp://localhost:9611"]
+    traffic_manager_auth_urls = ["ssl://localhost:9711"]
+    type = "loadbalance"
+
+    [apim.jwt_authenitcation]
+    subscription_validation_via_km = false
+
+    [[apim.devportal.application_attributes]]
+    required = true
+    hidden = false
+    name ="Regulatory Compliance"
+    description = "Regulatory Compliance"
+
+
+    #================configs related to identity.xml=============
+
+    [identity_data_source]
+    skip_db_schema_creation = true
+
+    [oauth.jwks_endpoint]
+    enable = true
+    connection_timeout = 50000
+    read_timeout = 50000
+
+    [oauth.endpoints]
+    oauth2_authz_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/authorize"
+    oauth2_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/token"
+    oauth2_user_info_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/userinfo"
+    oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/ob/authenticationendpoint/oauth2_authz.do"
+    oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/ob/authenticationendpoint/oauth2_consent.do"
+    oauth2_error_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_error.do"
+    oidc_logout_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_logout_consent.do"
+    oidc_logout_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/authenticationendpoint/oauth2_logout.do"
+    oidc_web_finger_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/.well-known/webfinger"
+    oauth2_dcr_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/v3.2/register"
+    oidc_discovery_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.km.ingress.hostname }}/oauth2/oidcdiscovery"
+
+    [oauth.token_renewal]
+    renew_refresh_token = false
+
+    [oauth.response_type]
+    token.enable = true
+    code.enable = false
+    id_token.enable = true
+    id_token_token.enable = false
+    device.enable = true
+
+    [[oauth.custom_response_type]]
+    name = "code"
+    class = "com.wso2.finance.open.banking.identity.extensions.response.type.handlers.OBCodeResponseTypeHandler"
+    validator = "com.wso2.finance.open.banking.identity.extensions.response.type.validators.OBCodeTokenResponseValidator"
+
+    [[oauth.custom_response_type]]
+    name = "code id_token"
+    class = "com.wso2.finance.open.banking.identity.extensions.response.type.handlers.OBHybridResponseTypeHandler"
+
+    [oauth.grant_type]
+    authorization_code.enable = true
+    authorization_code.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBAuthorizationCodeGrantHandler"
+    refresh_token.enable = true
+    refresh_token.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBRefreshGrantHandler"
+    client_credentials.enable = true
+    client_credentials.grant_handler = "com.wso2.finance.open.banking.identity.extensions.grant.type.handlers.OBClientCredentialsGrantHandler"
+    iwa_ntlm.enable = false
+    jwt_bearer.enable = false
+
+    [oauth.oidc]
+    extensions.id_token_builder = "com.wso2.finance.open.banking.idtoken.builder.OBIDTokenBuilder"
+    id_token.issuer = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/token"
+    extensions.request_object_validator = "com.wso2.finance.open.banking.request.object.validator.OBRequestObjectValidatorImpl"
+
+    [identity_mgt.user_self_registration]
+    allow_self_registration = true
+
+    [[event_listener]]
+    id = "mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.carbon.identity.oauth2.token.handler.clientauth.mutualtls.MutualTLSClientAuthenticator"
+    order = "158"
+    enable = false
+
+    [[event_listener]]
+    id = "ob_mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.mtls.authenticator.OBMutualTLSClientAuthenticator"
+    order = "26"
+    enable = false
+
+    [[event_listener]]
+    id = "ob_introspection_response_interceptor"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.identity.extensions.introspection.OBIntrospectionResponseInterceptor"
+    order = "27"
+    enable = true
+
+    [[event_listener]]
+    id = "ob_introspection_data_provider"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.finance.open.banking.identity.extensions.introspection.OBIntrospectionDataProvider"
+    order = "28"
+    enable = true
+
+    [resource_access_control]
+    default_access_allow= true
+
+    [[resource.access_control]]
+    context = "(.*)/berlin110/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/berlin130/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/stet140/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk110/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk200/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/uk300/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [authentication.adaptive.event_publisher]
+    url = "http://localhost:8006/"
+
+    #================configs related to identity-event.properties=============
+
+    [[event_handler]]
+    name="userPostSelfRegistration"
+    subscriptions=["POST_ADD_USER"]
+
+    #================configs related to open-banking-datasources.xml=============
+
+    [open_banking_database]
+    {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+    config.url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingUK.name }}?autoReconnect=true&amp;useSSL=false"
+    {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+    config.url = "jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingUK.name }};SendStringParametersAsUnicode=false"
+    {{- end }}
+    config.username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    config.password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    config.driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [open_banking_database.config.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    #================custom filters and filter-mappings==============
+    [[tomcat.filter]]
+    name = "TokenFilter"
+    class = "com.wso2.finance.open.banking.identity.extensions.filter.TokenFilter"
+
+    [[tomcat.filter_mapping]]
+    name = "TokenFilter"
+    url_pattern = "/token/*"
+
+    #================configs related to open-banking.xml=============
+
+    [open_banking]
+    deployed_spec = "UK"
+    payable_accounts_retrieve_endpoint = "{{ .Values.wso2.deployment.ob.config.uk.payableAccountsRetrieveEndpoint }}"
+    sharable_accounts_retrieve_endpoint = "{{ .Values.wso2.deployment.ob.config.uk.sharableAccountsRetrieveEndpoint }}"
+
+    [open_banking.jdbc_persistence_manager.data_source]
+    name= "WSO2OpenBankingDB"
+
+    [open_banking.event_notifications]
+    enable = true
+    token_issuer = "www.openbank.com"
+    api_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/open-banking/v3.1/event-notification"
+    signing_alias = "wso2carbon"
+
+    [open_banking.uk]
+    x_fapi_financial_id = "open-bank"
+    payment_api_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/open-banking/{version}/pisp/"
+    account_api_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/open-banking/{version}/aisp/"
+    funds_confirmation_api_url = "https://{{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service:8243/open-banking/{version}/cbpii/"
+
+    [open_banking.uk.acc_update_by_psu]
+    enable = false
+
+    [open_banking.uk.payment_restrictions.cut_off_date_time]
+    enable = false
+    policy = "REJECT"
+    daily_cut_off_time = "17:30:00+00:00"
+    expected_execution_time = "10:00:00+00:00"
+    expected_settlement_time = "11:00:00+00:00"
+
+    [open_banking.uk.signing_config]
+    enable = false
+    obie.trusted_anchors.signing = "openbanking.org.uk"
+    obie.trusted_anchors.validation = "openbanking.org.uk"
+    obie.org_id = "ABC1234"
+
+    [consent_id_in_path]
+    enable = true
+
+    [debtor_account_validation]
+    enable = true
+
+    [open_banking.api_security]
+    mtls_token_binding.enable = true
+
+    [open_banking.api_security.global]
+    username = "$ref{super_admin.username}"
+    password = "$ref{super_admin.password}"
+
+    [open_banking.cert_mgt]
+    client_auth_header = "x-wso2-mutual-auth-cert"
+
+    [open_banking.cert_mgt.cert_revocation_proxy]
+    enable = false
+    proxy_host = "PROXY_HOSTNAME"
+    proxy_port = "8080"
+
+    [open_banking.dcr]
+    uri_validation.enable = false
+    hostname_validation.enable = false
+    software_id_as_application_name.enable = true
+
+    [open_banking.bi_server]
+    username = "$ref{super_admin.username}@carbon.super"
+    password = "$ref{super_admin.password}"
+
+    [open_banking.bi_server.data_publishing]
+    enable = true
+    server_url = "{tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-0.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612,tcp://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-statefulset-1.{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-headless-service:7612}"
+
+    [open_banking.bi_server.tra]
+    enable = true
+    payment_validation.enable = true
+    account_validation.enable = true
+
+    [open_banking.bi_server.tra.receivers]
+    account_validation_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAAccountValidationApp/TRAValidationStream"
+    payment_validation_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/TRAPaymentValidationApp/TRAValidationStream"
+
+    [open_banking.bi_server.fraud_detection]
+    enable = {{ .Values.wso2.deployment.ob.config.fraudDetection.enabled }}
+
+    [open_banking.bi_server.fraud_detection.receivers]
+    fraud_detection_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8007/FraudDetectionApp/FraudDetectionStream"
+    invalid_submission_url = "http://{{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service:8006/InvalidSubmissionsApp/InvalidSubmissionsStream"
+
+    [open_banking.account_id_validation_on_retrieval]
+    enable = true
+

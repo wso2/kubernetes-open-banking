@@ -21,6 +21,12 @@ wso2:
     password: ""
 
   deployment:
+    # spec related parameters
+    spec:
+      berlin:
+        enabled: &berlin_mysql_enabled true
+      uk:
+        enabled: &uk_mysql_enabled false
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true
@@ -62,9 +68,9 @@ wso2:
       am:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-        # dockerRegistry: ""
-        imageName: "wso2-obam"
-        imageTag: "1.5.0"
+        dockerRegistry: "asia.gcr.io/openbanking-254903"
+        imageName: "wso2-obam-latest"
+        imageTag: "2.0.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -128,9 +134,9 @@ wso2:
       km:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-        # dockerRegistry: ""
-        imageName: "wso2-obkm"
-        imageTag: "1.5.0"
+        dockerRegistry: "asia.gcr.io/openbanking-254903"
+        imageName: "wso2-obiam-latest"
+        imageTag: "2.0.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -190,9 +196,9 @@ wso2:
         dashboard:
           # Container image configurations
           # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-          # dockerRegistry: ""
+          dockerRegistry: "asia.gcr.io/openbanking-254903"
           imageName: "wso2-obbi-dashboard"
-          imageTag: "1.5.0"
+          imageTag: "2.0.0"
           # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
           imagePullPolicy: Always
 
@@ -260,9 +266,9 @@ wso2:
         worker:
           # Container image configurations
           # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-          # dockerRegistry: ""
+          dockerRegistry: "asia.gcr.io/openbanking-254903"
           imageName: "wso2-obbi-worker"
-          imageTag: "1.5.0"
+          imageTag: "2.0.0"
           # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
           imagePullPolicy: Always
 
@@ -342,6 +348,8 @@ wso2:
               name: "OPENBANK_APIMGT_STATS_DB"
             openBanking:
               name: "OPENBANK_OPENBANKING_BERLIN_DB"
+            openBankingUK:
+              name: "OPENBANK_OPENBANKING_UK_DB"
             user:
               name: "OPENBANK_USER_DB"
             geoLocation:
@@ -358,19 +366,31 @@ wso2:
         workflowServerURL: "https://localhost:9445/services/"
         # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)
         fraudDetection:
-          enabled: false
+          enabled: true
         berlin:
           # Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter
-          payableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/payable"
+          payableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/payable"
           # Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter
-          sharableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/shareable"
-
+          sharableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/shareable"
+        uk:
+          # Configure endpoint to retrieve UK payable accounts passing PSU-ID as a path parameter
+          payableAccountsRetrieveEndpoint: "http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/payable-accounts"
+          # Configure endpoint to retrieve UK sharable accounts passing PSU-ID as a path parameter
+          sharableAccountsRetrieveEndpoint: "http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/sharable-accounts"
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2ob-pattern-2-svc-account"
 
 # Override sub chart parameters
 mysql-ob:
+  # Override spec related parameters
+  wso2:
+    deployment:
+      spec:
+        berlin:
+          enabled: *berlin_mysql_enabled
+        uk:
+          enabled: *uk_mysql_enabled
   mysql:
     persistence:
       storageClass: *storage_class

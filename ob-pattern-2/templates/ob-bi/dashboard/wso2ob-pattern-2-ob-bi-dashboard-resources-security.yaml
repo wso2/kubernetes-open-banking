@@ -13,22 +13,12 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service
+  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-resources-security
   namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am
-  ports:
-    # ports that this service should serve on
-    - name: pass-through-https
-      protocol: TCP
-      port: 8243
-    - name: servlet-https
-      protocol: TCP
-      port: 9443
-    - name: servlet-http
-      protocol: TCP
-      port: 9763
+binaryData:
+  client-truststore.jks: |-
+    {{ .Files.Get "resources/ob-bi/client-truststore.jks" | b64enc }}
+  wso2carbon.jks: |-
+    {{ .Files.Get "resources/ob-bi/wso2carbon.jks" | b64enc }}

@@ -47,7 +47,7 @@ data:
     wso2.carbon:
       type: wso2-sp
         # value to uniquely identify a server
-      id: ${NODE_ID}
+      id: wso2-obbi
         # server name
       name: WSO2 Open Banking Business Intelligence Server
         # ports used by this server
@@ -78,7 +78,6 @@ data:
           id: "default"
           host: "0.0.0.0"
           port: 9091
-          messageProcessorId: "MSF4J-CM-PROCESSOR"
         -
           id: "msf4j-https"
           host: "0.0.0.0"
@@ -87,7 +86,6 @@ data:
           keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
           keyStorePassword: wso2carbon
           certPass: wso2carbon
-          messageProcessorId: "MSF4J-CM-PROCESSOR"
 
       senderConfigurations:
         -
@@ -339,9 +337,10 @@ data:
       enabled: false
       intervalInMin: 1
       revisionsToKeep: 2
-      persistenceStore: org.wso2.carbon.stream.processor.core.persistence.FileSystemPersistenceStore
+      persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.DBPersistenceStore
       config:
-        location: siddhi-app-persistence
+        datasource: PERSISTENCE_DB   # A datasource with this name should be defined in wso2.datasources namespace
+        table: PERSISTENCE_TABLE
 
       # Secure Vault Configuration
     wso2.securevault:
@@ -359,22 +358,6 @@ data:
       # Datasource Configurations
     wso2.datasources:
       dataSources:
-        -
-          definition:
-            configuration:
-              connectionTestQuery: "SELECT 1"
-              driverClassName: org.h2.Driver
-              idleTimeout: 60000
-              isAutoCommit: false
-              jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CARBON_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000"
-              maxPoolSize: 10
-              password: wso2carbon
-              username: wso2carbon
-              validationTimeout: 30000
-            type: RDBMS
-          description: "The datasource used for registry and user manager"
-          name: WSO2_CARBON_DB
-
         # carbon metrics data source
         - name: WSO2_METRICS_DB
           description: The datasource used for dashboard feature
@@ -412,25 +395,6 @@ data:
               password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
               driverClassName: {{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}
               maxPoolSize: 10
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              # Use below for oracle database
-              # connectionTestQuery: SELECT 1 FROM DUAL
-              validationTimeout: 30000
-              isAutoCommit: false
-
-        - name: Message_Tracing_DB
-          description: "The datasource used for message tracer to store span information."
-          jndiConfig:
-            name: jdbc/Message_Tracing_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/dashboard/database/MESSAGE_TRACING_DB;AUTO_SERVER=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
-              maxPoolSize: 30
               idleTimeout: 60000
               connectionTestQuery: SELECT 1
               # Use below for oracle database
@@ -503,6 +467,40 @@ data:
               validationTimeout: 30000
               isAutoCommit: false
 
+        - name: WSO2_CLUSTER_DB
+          description: "The datasource used by cluster coordinators in HA deployment"
+          jndiConfig:
+            name: jdbc/WSO2_CLUSTER_DB
+          definition:
+            type: RDBMS
+            configuration:
+              connectionTestQuery: "SELECT 1"
+              driverClassName: org.h2.Driver
+              idleTimeout: 60000
+              isAutoCommit: false
+              jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
+              maxPoolSize: 10
+              password: wso2carbon
+              username: wso2carbon
+              validationTimeout: 30000
+
+        #    -
+        #      name: PERSISTENCE_DB
+        #      description: "Datasource used for persistence"
+        #      jndiConfig:
+        #        name: jdbc/PERSISTENCE_DB
+        #      definition:
+        #        type: RDBMS
+        #        configuration:
+        #          connectionTestQuery: "SELECT 1"
+        #          driverClassName: com.mysql.jdbc.Driver
+        #          idleTimeout: 60000
+        #          isAutoCommit: false
+        #          jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERSISTENCE_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
+        #          maxPoolSize: 10
+        #          password: pass
+        #          username: root
+        #          validationTimeout: 30000
         - name: OPEN_BANKING_DB
           description: "The datasource used to store payment consents"
           jndiConfig:
@@ -510,10 +508,18 @@ data:
           definition:
             type: RDBMS
             configuration:
+              {{- if .Values.wso2.deployment.spec.uk.enabled }}
+              {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
+              jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingUK.name }}?autoReconnect=true&useSSL=false'
+              {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
+              jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingUK.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
+              {{- else }}
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
               jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}
               jdbcUrl: 'jdbc:sqlserver://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }};databaseName={{ .Values.wso2.deployment.ob.config.datasources.databases.openBanking.name }};SendStringParametersAsUnicode=false'
+              {{- end }}
               {{- end }}
               username: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}'
               password: '{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}'
@@ -573,10 +579,20 @@ data:
               isAutoCommit: false
 
     siddhi:
-      properties:
-        partitionById: true
-        shardId: ${NODE_ID}
-
+      # properties:
+      #  partitionById: true
+      #  shardId: 1
+      refs:
+        - ref:
+            name: 'grpcSource'
+            type: 'grpc'
+            properties:
+              receiver.url : grpc://localhost:9806/org.wso2.analytics.mgw.grpc.service.AnalyticsSendService/sendAnalytics
+        - ref:
+            name: 'grpcSourceOB'
+            type: 'grpc'
+            properties:
+              receiver.url : grpc://localhost:9807/com.wso2.finance.open.banking.reporting.data.grpc.publisher.OBAnalyticsService/publishAPIInvocationData
       extensions:
         -
           extension:
@@ -598,6 +614,18 @@ data:
               cacheSize: 10000
               isPersistInDatabase: true
               datasource: GEO_LOCATION_DATA
+        #Enabling GRPC Service with an Extension
+        -
+          extension:
+            name: 'grpc'
+            namespace: 'source'
+            properties:
+              keyStoreFile : ${sys:carbon.home}/resources/security/wso2carbon.jks
+              keyStorePassword : wso2carbon
+              keyStoreAlgorithm : SunX509
+              trustStoreFile : ${sys:carbon.home}/resources/security/client-truststore.jks
+              trustStorePassword : wso2carbon
+              trustStoreAlgorithm : SunX509
 
       # Cluster Configuration
     cluster.config:
@@ -605,16 +633,17 @@ data:
       groupId:  sp
       coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
       strategyConfig:
-        datasource: WSO2_CARBON_DB
-        heartbeatInterval: 1000
-        heartbeatMaxRetry: 2
+        datasource: WSO2_CLUSTER_DB
+        heartbeatInterval: 5000
+        heartbeatMaxRetry: 3
         eventPollingInterval: 1000
 
+    # Authentication configuration
     auth.configs:
-      type: 'local'
+      type: 'local'        # Type of the IdP client used
       userManager:
-        adminRole: admin
-        userStore:
+        adminRole: admin   # Admin role which is granted all permissions
+        userStore:         # User store
           users:
            -
              user:
@@ -626,6 +655,11 @@ data:
              role:
                id: 1
                displayName: admin
+
+      # Configuration to enable apim alerts
+      #analytics.solutions:
+      #  APIM-alerts.enabled: true
+
 
       # Sample of deployment.config for Two node HA
     #deployment.config:
@@ -662,4 +696,139 @@ data:
     #      port: 9543
     #      username: admin
     #      password: admin
+
   {{ end }}
+  netty-transports.yml: |-
+    ################################################################################
+    #   Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    #
+    #   Licensed under the Apache License, Version 2.0 (the "License");
+    #   you may not use this file except in compliance with the License.
+    #   You may obtain a copy of the License at
+    #
+    #   http://www.apache.org/licenses/LICENSE-2.0
+    #
+    #   Unless required by applicable law or agreed to in writing, software
+    #   distributed under the License is distributed on an "AS IS" BASIS,
+    #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    #   See the License for the specific language governing permissions and
+    #   limitations under the License.
+    ################################################################################
+    transportProperties:
+      -
+        name: "latency.metrics.enabled"
+        value: true
+      -
+        name: "request.size.validation"
+        value: false
+      -
+        name: "request.size.validation.maximum.value" #in bytes
+        value: 2048
+      -
+        name: "request.size.validation.reject.status.code"
+        value: 401
+      -
+        name: "request.size.validation.reject.message"
+        value: "Message is too big, hence cannot proceed"
+      -
+        name: "request.size.validation.reject.message.content.type"
+        value: "plain/text"
+      -
+        name: "header.size.validation"
+        value: false
+      -
+        name: "header.validation.maximum.request.line" #in bytes
+        value: 2048
+      -
+        name: "header.validation.maximum.size" #in bytes
+        value: 2048
+      -
+        name: "header.validation.maximum.chunk.size" #in bytes, refere http://netty.io/4.0/api/io/netty/handler/codec/http/HttpRequestDecoder.html
+        value: 2048
+      -
+        name: "header.validation.reject.status.code"
+        value: 401
+      -
+        name: "header.validation.reject.message"
+        value: "Message's header size is too big, hence cannot proceed"
+      -
+        name: "header.validation.reject.message.content.type"
+        value: "plain/text"
+      -
+        name: "server.bootstrap.boss.group.size"
+        value: 4
+      -
+        name: "server.bootstrap.worker.group.size"
+        value: 8
+      -
+        name: "server.bootstrap.nodelay"
+        value: true
+      -
+        name: "server.bootstrap.keepalive"
+        value: true
+      -
+        name: "server.bootstrap.sendbuffersize"
+        value: 1048576
+      -
+        name: "server.bootstrap.recievebuffersize"
+        value: 1048576
+      -
+        name: "server.bootstrap.connect.timeout"
+        value: 15000
+      -
+        name: "server.bootstrap.socket.reuse"
+        value: false
+      -
+        name: "server.bootstrap.socket.timeout"
+        value: 15
+      -
+        name: "server.bootstrap.socket.backlog"
+        value: 100
+
+    listenerConfigurations:
+      -
+        id: "default"
+        host: "0.0.0.0"
+        port: 9090
+        messageProcessorId: "MSF4J-CM-PROCESSOR"
+
+      -
+        id: "https"
+        host: "0.0.0.0"
+        port: 9443
+        scheme: https
+        keyStoreFile: ${carbon.home}/resources/security/wso2carbon.jks
+        keyStorePassword: wso2carbon
+        certPass: wso2carbon
+        messageProcessorId: "MSF4J-CM-PROCESSOR"
+
+
+    senderConfigurations:
+      -
+        id: "netty-gw"
+        parameters:
+          -
+            name: "connection.pool.count"
+            value: 0
+          -
+            name: "client.bootstrap.nodelay"
+            value: true
+          -
+            name: "client.bootstrap.keepalive"
+            value: true
+          -
+            name: "client.bootstrap.sendbuffersize"
+            value: 1048576
+          -
+            name: "client.bootstrap.recievebuffersize"
+            value: 1048576
+          -
+            name: "client.bootstrap.connect.timeout"
+            value: 15000
+          -
+            name: "client.bootstrap.socket.reuse"
+            value: false
+          -
+            name: "client.bootstrap.socket.timeout"
+            value: 15
+

@@ -12,23 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-service
-  namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am
-  ports:
-    # ports that this service should serve on
-    - name: pass-through-https
-      protocol: TCP
-      port: 8243
-    - name: servlet-https
-      protocol: TCP
-      port: 9443
-    - name: servlet-http
-      protocol: TCP
-      port: 9763
+dependencies:
+  - name: mysql-ob-berlin
+    version: "2.0.0-1"
+#    repository: "https://helm.wso2.com"
+    repository: "file://../mysql-ob-berlin"
+    condition: wso2.deployment.spec.berlin.enabled
+  - name: mysql-ob-uk
+    version: "2.0.0-1"
+#    repository: "https://helm.wso2.com"
+    repository: "file://../mysql-ob-uk"
+    condition: wso2.deployment.spec.uk.enabled

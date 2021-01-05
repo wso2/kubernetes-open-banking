@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,12 @@
 # limitations under the License.
 
 apiVersion: v1
-appVersion: "5.7"
-description: A Helm chart for MySQL based deployment of WSO2 Open Banking Datasources
-name: mysql-ob
-version: 1.5.0-1
+kind: ConfigMap
+metadata:
+  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-resources-security
+  namespace : {{ .Release.Namespace }}
+binaryData:
+  client-truststore.jks: |-
+    {{ .Files.Get "resources/ob-bi/client-truststore.jks" | b64enc }}
+  wso2carbon.jks: |-
+    {{ .Files.Get "resources/ob-bi/wso2carbon.jks" | b64enc }}

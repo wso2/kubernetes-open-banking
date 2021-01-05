@@ -29,11 +29,10 @@ spec:
     metadata:
       annotations:
         checksum.ob.am.conf: {{ include (print $.Template.BasePath "/ob-am/instance-1/wso2ob-pattern-2-ob-am-conf.yaml") . | sha256sum }}
-        checksum.ob.am.conf.datasources: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-datasources.yaml") . | sha256sum }}
-        checksum.ob.am.conf.finance: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-finance.yaml") . | sha256sum }}
         checksum.ob.am.conf.jaggeryapp.admin: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-admin.yaml") . | sha256sum }}
-        checksum.ob.am.conf.jaggeryapp.store: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-store.yaml") . | sha256sum }}
+        checksum.ob.am.conf.jaggeryapp.store: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-jaggeryapp-devportal.yaml") . | sha256sum }}
         checksum.ob.am.resources.api_templates: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-resources-api-templates.yaml") . | sha256sum }}
+        checksum.ob.am.synapse.configs.token_api: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-conf-synapse-configs-token-api.yaml") . | sha256sum }}
         checksum.ob.am.resources.security: {{ include (print $.Template.BasePath "/ob-am/wso2ob-pattern-2-ob-am-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am
@@ -43,11 +42,9 @@ spec:
         - name: init-ob-db
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
-        {{ if .Values.wso2.deployment.ob.config.fraudDetection.enabled }}
         - name: init-ob-bi-dashboard
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Dashboard deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service 9643; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Dashboard has started";']
-        {{ end }}
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Dashboard deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service 9649; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Dashboard has started";']
         - name: init-ob-bi-worker
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Worker deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service 7612; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Worker has started";']
@@ -117,19 +114,42 @@ spec:
               value: "-Xms{{ .Values.wso2.deployment.ob.am.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.ob.am.resources.jvm.heap.memory.xmx }}"
           volumeMounts:
             - name: ob-executionplans-storage
-              mountPath: /home/wso2carbon/wso2-obam-1.5.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2-obam-2.0.0/repository/deployment/server/executionplans
             - name: ob-synapse-configs-storage
-              mountPath: /home/wso2carbon/wso2-obam-1.5.0/repository/deployment/server/synapse-configs
+              mountPath: /home/wso2carbon/wso2-obam-2.0.0/repository/deployment/server/synapse-configs
+            {{- if .Values.wso2.deployment.spec.uk.enabled }}
             - name: ob-am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: ob-am-conf-datasources
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-            - name: ob-am-conf-finance
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment-uk.toml
+            - name: ob-am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/log4j2.properties
+              subPath: log4j2.properties
             - name: ob-am-conf-jaggeryapp-admin
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf
-            - name: ob-am-conf-jaggeryapp-store
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/store/site/conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf/site.json
+              subPath: site-uk.json
+            - name: ob-am-conf-jaggeryapp-devportal
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/devportal/site/public/theme/settings.js
+              subPath: settings-uk.js
+            - name: ob-am-conf-synapse-configs-token-api
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/synapse-configs/default/api/_TokenAPI_.xml
+              subPath: _TokenAPI_.xml
+            {{- else }}
+            - name: ob-am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment-berlin.toml
+            - name: ob-am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/log4j2.properties
+              subPath: log4j2.properties
+            - name: ob-am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf/identity/RecoveryEndpointConfig.properties.j2
+              subPath: RecoveryEndpointConfig.properties.j2
+            - name: ob-am-conf-jaggeryapp-admin
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf/site.json
+              subPath: site-berlin.json
+            - name: ob-am-conf-jaggeryapp-devportal
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/devportal/site/public/theme/settings.js
+              subPath: settings-berlin.js
+            {{- end }}
             - name: ob-am-resources-api-templates
               mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/api_templates
             - name: ob-am-resources-security
@@ -163,24 +183,23 @@ spec:
         - name: ob-am-conf
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-1-conf
-        - name: ob-am-conf-datasources
-          configMap:
-            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-datasources
-        - name: ob-am-conf-finance
-          configMap:
-            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-finance
         - name: ob-am-conf-jaggeryapp-admin
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-jaggeryapp-admin
-        - name: ob-am-conf-jaggeryapp-store
+        - name: ob-am-conf-jaggeryapp-devportal
           configMap:
-            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-jaggeryapp-store
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-jaggeryapp-devportal
         - name: ob-am-resources-api-templates
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-api-templates
         - name: ob-am-resources-security
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-security
+        {{- if .Values.wso2.deployment.spec.uk.enabled }}
+        - name: ob-am-conf-synapse-configs-token-api
+          configMap:
+            name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-synapse-configs-token-api
+        {{- end }}
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: ob-local-carbon-database-storage
           persistentVolumeClaim:

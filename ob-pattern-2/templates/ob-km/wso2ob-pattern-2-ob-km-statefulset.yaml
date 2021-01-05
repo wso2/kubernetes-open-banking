@@ -28,10 +28,6 @@ spec:
       annotations:
         checksum.ob.km.bin: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-bin.yaml") . | sha256sum }}
         checksum.ob.km.conf: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-conf.yaml") . | sha256sum }}
-        checksum.ob.km.conf.axis2: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-conf-axis2.yaml") . | sha256sum }}
-        checksum.ob.km.conf.datasources: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-conf-datasources.yaml") . | sha256sum }}
-        checksum.ob.km.conf.finance: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-conf-finance.yaml") . | sha256sum }}
-        checksum.ob.km.conf.identity: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-conf-identity.yaml") . | sha256sum }}
         checksum.ob.km.resources.security: {{ include (print $.Template.BasePath "/ob-km/wso2ob-pattern-2-ob-km-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: wso2ob-km
@@ -40,11 +36,9 @@ spec:
         - name: init-ob-db
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
-      {{ if .Values.wso2.deployment.ob.config.fraudDetection.enabled }}
         - name: init-ob-bi-dashboard
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Dashboard deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service 9643; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Dashboard has started";']
-      {{ end }}
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Dashboard deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service 9649; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Dashboard has started";']
         - name: init-ob-bi-worker
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Worker deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-service 7612; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Worker has started";']
@@ -107,20 +101,31 @@ spec:
               subPath: docker-entrypoint.sh
             - name: ob-km-bin
               mountPath: /home/wso2carbon/wso2-config-volume/bin
+            {{- if .Values.wso2.deployment.spec.uk.enabled }}
             - name: ob-km-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: ob-km-conf-axis2
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-            - name: ob-km-conf-datasources
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-            - name: ob-km-conf-finance
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/finance
-            - name: ob-km-conf-identity
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment-uk.toml
+            - name: ob-km-conf-jaggeryapp-ccportal
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/ccportal/configs/conf.json
+              subPath: conf-uk.json
+            - name: ob-km-conf-jaggeryapp-consentmgt
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/consentmgt/configs/conf.json
+              subPath: conf-uk.json
+            {{- else }}
+            - name: ob-km-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment-berlin.toml
+            - name: ob-km-conf-jaggeryapp-ccportal
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/ccportal/configs/conf.json
+              subPath: conf-berlin.json
+            - name: ob-km-conf-jaggeryapp-consentmgt
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/consentmgt/configs/conf.json
+              subPath: conf-berlin.json
+            {{- end }}
             - name: ob-km-resources-security
               mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
             - name: ob-km-volume-claim-userstores-storage
-              mountPath: /home/wso2carbon/wso2-obkm-1.5.0/repository/deployment/server/userstores
+              mountPath: /home/wso2carbon/wso2-obiam-2.0.0/repository/deployment/server/userstores
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.ob.km.imagePullSecrets }}
       imagePullSecrets:
@@ -140,18 +145,12 @@ spec:
       - name: ob-km-conf
         configMap:
           name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf
-      - name: ob-km-conf-axis2
+      - name: ob-km-conf-jaggeryapp-ccportal
         configMap:
-          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-axis2
-      - name: ob-km-conf-datasources
+          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-jaggeryapp-ccportal
+      - name: ob-km-conf-jaggeryapp-consentmgt
         configMap:
-          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-datasources
-      - name: ob-km-conf-finance
-        configMap:
-          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-finance
-      - name: ob-km-conf-identity
-        configMap:
-          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-identity
+          name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-conf-jaggeryapp-consentmgt
       - name: ob-km-resources-security
         configMap:
           name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-km-resources-security
