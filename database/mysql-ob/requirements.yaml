@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
 dependencies:
   - name: mysql-ob-berlin
     version: "2.0.0-1"
-#    repository: "https://helm.wso2.com"
     repository: "file://../mysql-ob-berlin"
     condition: wso2.deployment.spec.berlin.enabled
   - name: mysql-ob-uk
     version: "2.0.0-1"
-#    repository: "https://helm.wso2.com"
     repository: "file://../mysql-ob-uk"
     condition: wso2.deployment.spec.uk.enabled
