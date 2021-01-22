@@ -117,13 +117,10 @@ spec:
               mountPath: /home/wso2carbon/wso2-obam-2.0.0/repository/deployment/server/executionplans
             - name: ob-synapse-configs-storage
               mountPath: /home/wso2carbon/wso2-obam-2.0.0/repository/deployment/server/synapse-configs
-            {{- if .Values.wso2.deployment.spec.uk.enabled }}
+            {{- if index  .Values "mysql-ob" "wso2" "deployment" "spec" "uk" "enabled"}}
             - name: ob-am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment-uk.toml
-            - name: ob-am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/log4j2.properties
-              subPath: log4j2.properties
             - name: ob-am-conf-jaggeryapp-admin
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf/site.json
               subPath: site-uk.json
@@ -137,12 +134,6 @@ spec:
             - name: ob-am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment-berlin.toml
-            - name: ob-am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/log4j2.properties
-              subPath: log4j2.properties
-            - name: ob-am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf/identity/RecoveryEndpointConfig.properties.j2
-              subPath: RecoveryEndpointConfig.properties.j2
             - name: ob-am-conf-jaggeryapp-admin
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/admin/site/conf/site.json
               subPath: site-berlin.json
@@ -195,7 +186,7 @@ spec:
         - name: ob-am-resources-security
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-resources-security
-        {{- if .Values.wso2.deployment.spec.uk.enabled }}
+        {{- if index  .Values "mysql-ob" "wso2" "deployment" "spec" "uk" "enabled"}}
         - name: ob-am-conf-synapse-configs-token-api
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-synapse-configs-token-api

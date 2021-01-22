@@ -508,7 +508,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              {{- if .Values.wso2.deployment.spec.uk.enabled }}
+              {{- if index  .Values "mysql-ob" "wso2" "deployment" "spec" "uk" "enabled"}}
               {{- if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mysql" }}
               jdbcUrl: 'jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/{{ .Values.wso2.deployment.ob.config.datasources.databases.openBankingUK.name }}?autoReconnect=true&useSSL=false'
               {{- else if eq .Values.wso2.deployment.ob.config.datasources.rdbms.type "mssql" }}

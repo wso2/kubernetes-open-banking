@@ -101,7 +101,7 @@ spec:
               subPath: docker-entrypoint.sh
             - name: ob-km-bin
               mountPath: /home/wso2carbon/wso2-config-volume/bin
-            {{- if .Values.wso2.deployment.spec.uk.enabled }}
+            {{- if index  .Values "mysql-ob" "wso2" "deployment" "spec" "uk" "enabled"}}
             - name: ob-km-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment-uk.toml

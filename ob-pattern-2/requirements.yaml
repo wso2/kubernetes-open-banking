@@ -15,7 +15,6 @@
 dependencies:
   - name: mysql-ob
     version: "2.0.0-1"
-#    repository: "https://helm.wso2.com"
     repository: "file://../database/mysql-ob"
     condition: wso2.deployment.dependencies.mysql
   - name: nfs-server-provisioner

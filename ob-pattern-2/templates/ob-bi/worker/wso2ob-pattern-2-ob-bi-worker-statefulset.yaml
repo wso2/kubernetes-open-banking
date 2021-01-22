@@ -28,7 +28,6 @@ spec:
       annotations:
         checksum.ob.bi.worker.bin: {{ include (print $.Template.BasePath "/ob-bi/worker/wso2ob-pattern-2-ob-bi-worker-bin.yaml") . | sha256sum }}
         checksum.ob.bi.worker.conf: {{ include (print $.Template.BasePath "/ob-bi/worker/wso2ob-pattern-2-ob-bi-worker-conf.yaml") . | sha256sum }}
-        checksum.ob.bi.worker.resources.security: {{ include (print $.Template.BasePath "/ob-bi/worker/wso2ob-pattern-2-ob-bi-worker-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker
     spec:
@@ -122,8 +121,6 @@ spec:
             - name: ob-bi-worker-deployment-siddhi-files
               mountPath: /home/wso2carbon/wso2-config-volume/deployment/siddhi-files/InvalidSubmissionsApp.siddhi
               subPath: InvalidSubmissionsApp.siddhi
-            - name: ob-bi-worker-resources-security
-              mountPath: /home/wso2carbon/wso2-artifact-volume/resources/security
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.ob.bi.imagePullSecrets }}
       imagePullSecrets:
@@ -142,6 +139,3 @@ spec:
         - name: ob-bi-worker-deployment-siddhi-files
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-worker-deployment-siddhi-files
-        - name: ob-bi-worker-resources-security
-          secret:
-            secretName: asymmetric

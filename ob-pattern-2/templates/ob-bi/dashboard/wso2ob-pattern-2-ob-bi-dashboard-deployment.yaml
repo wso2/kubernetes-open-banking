@@ -32,7 +32,6 @@ spec:
       annotations:
         checksum.ob.bi.dashboard.bin: {{ include (print $.Template.BasePath "/ob-bi/dashboard/wso2ob-pattern-2-ob-bi-dashboard-bin.yaml") . | sha256sum }}
         checksum.ob.bi.dashboard.conf: {{ include (print $.Template.BasePath "/ob-bi/dashboard/wso2ob-pattern-2-ob-bi-dashboard-conf.yaml") . | sha256sum }}
-        checksum.ob.bi.dashboard.resources.security: {{ include (print $.Template.BasePath "/ob-bi/dashboard/wso2ob-pattern-2-ob-bi-dashboard-resources-security.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard
     spec:
@@ -89,8 +88,6 @@ spec:
             - name: ob-bi-dashboard-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
-            - name: ob-bi-dashboard-resources-security
-              mountPath: /home/wso2carbon/wso2-artifact-volume/resources/security
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.ob.bi.imagePullSecrets }}
       imagePullSecrets:
@@ -106,7 +103,4 @@ spec:
         - name: ob-bi-dashboard-conf
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-conf
-        - name: ob-bi-dashboard-resources-security
-          secret:
-            secretName: asymmetric
 
