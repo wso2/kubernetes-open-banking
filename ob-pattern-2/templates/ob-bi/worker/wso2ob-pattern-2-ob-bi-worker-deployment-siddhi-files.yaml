@@ -341,4 +341,3 @@ data:
     --from InvalidSubmissionStream
     --select *
     --insert into InvalidSubmissionsHistory;
-

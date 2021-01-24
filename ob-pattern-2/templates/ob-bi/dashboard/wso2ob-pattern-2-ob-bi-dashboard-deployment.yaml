@@ -103,4 +103,3 @@ spec:
         - name: ob-bi-dashboard-conf
           configMap:
             name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-conf
-

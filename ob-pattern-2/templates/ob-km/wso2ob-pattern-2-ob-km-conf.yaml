@@ -934,4 +934,3 @@ data:
 
     [open_banking.account_id_validation_on_retrieval]
     enable = true
-

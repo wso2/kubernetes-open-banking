@@ -328,4 +328,3 @@ data:
         org.wso2.carbon.launcher.Main $*
         status=$?
     done
-

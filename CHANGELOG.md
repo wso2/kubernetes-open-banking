@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Kubernetes and Helm resources for WSO2 Open Banking version `2.0.0` in each resource release,
+All notable changes to Kubernetes and Helm resources for WSO2 Open Banking version `2.0.x` in each resource release,
 will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).

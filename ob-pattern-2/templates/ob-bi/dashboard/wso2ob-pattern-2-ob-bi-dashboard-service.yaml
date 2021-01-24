@@ -26,4 +26,3 @@ spec:
     - name: 'analytics-dashboard'
       port: 9649
       protocol: TCP
-

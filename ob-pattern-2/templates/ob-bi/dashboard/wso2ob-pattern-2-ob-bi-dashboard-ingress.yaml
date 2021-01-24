@@ -33,4 +33,3 @@ spec:
             backend:
               serviceName: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service
               servicePort: 9649
-
