@@ -1,11 +1,11 @@
-# Helm Chart for deployment of WSO2 Open Banking API Manager with Key Manager and Business Intelligence Support
+# Helm Chart for deployment of WSO2 Open Banking API Manager with Identity & Access Management Module and Business Intelligence Support
 
-Resources for building a Helm chart for deployment of [All-In-One WSO2 Open Banking API Manager with WSO2 Open Banking Key Manager
-support](https://docs.wso2.com/display/OB150/Open+Banking+API+Manager+High+Availability+Deployment#OpenBankingAPIManagerHighAvailabilityDeployment-DeploymentPatterns).
+Resources for building a Helm chart for deployment of [All-In-One WSO2 Open Banking API Manager with WSO2 Open Banking Identity & Access Managment Module
+support](https://docs.wso2.com/display/OB200/Open+Banking+API+Management+High+Availability+Deployment#OpenBankingAPIManagementHighAvailabilityDeployment-DeploymentPatterns).
 
-![WSO2 Open Banking pattern 1 deployment](https://raw.githubusercontent.com/wso2/kubernetes-open-banking/v1.5.0.1/ob-pattern-2/pattern-2.png)
+![WSO2 Open Banking pattern 2 deployment](https://raw.githubusercontent.com/wso2/kubernetes-open-banking/v2.0.0.1/ob-pattern-2/pattern-2.png)
 
-For advanced details on the deployment pattern, please refer to the official [documentation](https://docs.wso2.com/display/OB150/Configuring+WSO2+Open+Banking).
+For advanced details on the deployment pattern, please refer to the official [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking).
 
 ## Contents
 
@@ -59,13 +59,27 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/ob-pattern-2 --version 1.5.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ ```
+**Note:**
+
+* Specification to deploy is set to Berlin by default, use following to deploy UK specification instead of Berlin for Helm version 2.
+
+ ```
+ helm install --name <RELEASE_NAME> wso2/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD> --set mysql-ob.wso2.deployment.spec.berlin.enabled=false --set mysql-ob.wso2.deployment.spec.uk.enabled=true
  ```
 
  Helm version 3
 
  ```
- helm install <RELEASE_NAME> wso2/ob-pattern-2 --version 1.5.0-1 --namespace <NAMESPACE> --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install <RELEASE_NAME> wso2/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ ```
+**Note:**
+
+* Specification to deploy is set to Berlin by default, use following to deploy UK specification instead of Berlin for Helm version 3.
+
+ ```
+ helm install <RELEASE_NAME> wso2/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD> --set mysql-ob.wso2.deployment.spec.berlin.enabled=false --set mysql-ob.wso2.deployment.spec.uk.enabled=true
  ```
 
 #### Install Chart From Source
@@ -80,18 +94,32 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 git clone https://github.com/wso2/kubernetes-open-banking.git
 ```
 
-##### Deploy Helm chart for WSO2 Open Banking Pattern 1 deployment.
+##### Deploy Helm chart for WSO2 Open Banking Pattern 2 deployment.
 
  Helm version 2
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 1.5.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --dep-up --name <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ ```
+**Note:**
+
+* Specification to deploy is set to Berlin by default, use following to deploy UK specification instead of Berlin for Helm version 2.
+
+ ```
+ helm install --dep-up --name <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD> --set mysql-ob.wso2.deployment.spec.berlin.enabled=false --set mysql-ob.wso2.deployment.spec.uk.enabled=true
  ```
 
  Helm version 3
 
  ```
- helm install <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 1.5.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ ```
+**Note:**
+
+* Specification to deploy is set to Berlin by default, use following to deploy UK specification instead of Berlin for Helm version 3.
+
+ ```
+ helm install <RELEASE_NAME> <GIT_REPO>/ob-pattern-2 --version 2.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
  ```
 
 ### 2. Obtain the external IP
@@ -104,7 +132,7 @@ kubectl get ing -n <NAMESPACE>
 
 The output under the relevant column stands for the following.
 
-API Manager Admin Portal, Carbon Management Console, API Publisher and API Store
+API Manager Admin Portal, Carbon Management Console, API Publisher and Developer Portal
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2ob-pattern-2-ob-am-ingress`)
 - HOSTS: Hostname of the API Manager service (`<wso2.deployment.ob.am.ingress.management.hostname>`)
@@ -118,12 +146,12 @@ API Manager Gateway
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Gateway service
 
-Key Manager Carbon Management Console
+Identity & Access Management Module Carbon Management Console
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2ob-pattern-2-ob-km-ingress`)
-- HOSTS: Hostname of the Key Manager service (`<wso2.deployment.ob.km.ingress.hostname>`)
-- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Key Manager service to outside of the Kubernetes environment
-- PORTS: Externally exposed service ports of the Key Manager service
+- HOSTS: Hostname of the Identity & Access Management Module service (`<wso2.deployment.ob.km.ingress.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Identity & Access Management Module service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the Identity & Access Management Module service
 
 Business Intelligence (BI) Dashboard
 
@@ -152,11 +180,11 @@ hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 - API Manager Publisher: `https://<wso2.deployment.ob.am.ingress.management.hostname>/publisher`
 
-- API Manager Store: `https://<wso2.deployment.ob.am.ingress.management.hostname>/store`
+- API Manager Developer Portal: `https://<wso2.deployment.ob.am.ingress.management.hostname>/devportal`
 
-- Key Manager Carbon Management Console: `https://<wso2.deployment.ob.km.ingress.hostname>/carbon`
+- Identity & Access Management Module Carbon Management Console: `https://<wso2.deployment.ob.km.ingress.hostname>/carbon`
 
-Please refer the official [documentation](https://docs.wso2.com/display/OB150/WSO2+Open+Banking) for advanced usage details.
+Please refer the official [documentation](https://docs.wso2.com/display/OB200/WSO2+Open+Banking) for advanced usage details.
 
 ## Configuration
 
@@ -194,7 +222,7 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.ob.am.dockerRegistry`                          | Registry location of the Docker image to be used to create API Manager instances          | -                           |
 | `wso2.deployment.ob.am.imageName`                               | Name of the Docker image to be used to create API Manager instances                       | `wso2-obam`                 |
-| `wso2.deployment.ob.am.imageTag`                                | Tag of the image used to create API Manager instances                                     | `1.5.0`                     |
+| `wso2.deployment.ob.am.imageTag`                                | Tag of the image used to create API Manager instances                                     | `2.0.0`                     |
 | `wso2.deployment.ob.am.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.ob.am.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager node                                | 180                         |
 | `wso2.deployment.ob.am.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager node                                        | 10                          |
@@ -206,36 +234,36 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.deployment.ob.am.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                       |
 | `wso2.deployment.ob.am.resources.jvm.heap.memory.xms`           | The initial memory allocation for JVM Heap                                                | 1024m                       |
 | `wso2.deployment.ob.am.resources.jvm.heap.memory.xmx`           | The maximum memory allocation for JVM Heap                                                | 1024m                       |
-| `wso2.deployment.ob.am.ingress.management.hostname`             | Hostname for API Manager Admin Portal, Publisher, Store and Carbon Management Console     | `am.ob.wso2.com`            |
+| `wso2.deployment.ob.am.ingress.management.hostname`             | Hostname for API Manager Admin Portal, Publisher, Devportal and Carbon Management Console     | `am.ob.wso2.com`            |
 | `wso2.deployment.ob.am.ingress.management.annotations`          | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations         |
 | `wso2.deployment.ob.am.ingress.gateway.hostname`                | Hostname for API Manager Gateway                                                          | `gateway.am.ob.wso2.com`    |
 | `wso2.deployment.ob.am.ingress.gateway.annotations`             | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 Open Banking API Manager server profiles are based on its [official documentation](https://docs.wso2.com/display/AM260/Installation+Prerequisites).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 Open Banking API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/3.1.0/install-and-setup/install/installation-prerequisites/).
 
-###### API Manager Server Configurations
+###### IAM Module Server Configurations
 
 | Parameter                                                       | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.ob.km.dockerRegistry`                          | Registry location of the Docker image to be used to create Key Manager instances          | -                           |
-| `wso2.deployment.ob.km.imageName`                               | Name of the Docker image to be used to create Key Manager instances                       | `wso2-obkm`                 |
-| `wso2.deployment.ob.km.imageTag`                                | Tag of the image used to create Key Manager instances                                     | `1.5.0`                     |
+| `wso2.deployment.ob.km.dockerRegistry`                          | Registry location of the Docker image to be used to create Identity & Access Management Module instances          | -                           |
+| `wso2.deployment.ob.km.imageName`                               | Name of the Docker image to be used to create Identity & Access Management Module instances                       | `wso2-obiam`                 |
+| `wso2.deployment.ob.km.imageTag`                                | Tag of the image used to create Identity & Access Management Module instances                                     | `2.0.0`                     |
 | `wso2.deployment.ob.km.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
-| `wso2.deployment.ob.km.replicas`                                | Number of replicas of Key Manager                                                         | 2                           |
-| `wso2.deployment.ob.km.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for Key Manager node                                | 120                         |
-| `wso2.deployment.ob.km.livenessProbe.periodSeconds`             | Period of the live-ness probe for Key Manager node                                        | 10                          |
-| `wso2.deployment.ob.km.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for Key Manager node                                | 120                         |
-| `wso2.deployment.ob.km.readinessProbe.periodSeconds`            | Period of the readiness probe for Key Manager node                                        | 10                          |
+| `wso2.deployment.ob.km.replicas`                                | Number of replicas of Identity & Access Management Module                                                         | 2                           |
+| `wso2.deployment.ob.km.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for Identity & Access Management Module node                                | 120                         |
+| `wso2.deployment.ob.km.livenessProbe.periodSeconds`             | Period of the live-ness probe for Identity & Access Management Module node                                        | 10                          |
+| `wso2.deployment.ob.km.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for Identity & Access Management Module node                                | 120                         |
+| `wso2.deployment.ob.km.readinessProbe.periodSeconds`            | Period of the readiness probe for Identity & Access Management Module                                        | 10                          |
 | `wso2.deployment.ob.km.resources.requests.memory`               | The minimum amount of memory that should be allocated for a Pod                           | 3Gi                         |
 | `wso2.deployment.ob.km.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                              | 3000m                       |
 | `wso2.deployment.ob.km.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
 | `wso2.deployment.ob.km.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
 | `wso2.deployment.ob.km.resources.jvm.heap.memory.xms`           | The initial memory allocation for JVM Heap                                                | 2048m                       |
 | `wso2.deployment.ob.km.resources.jvm.heap.memory.xmx`           | The maximum memory allocation for JVM Heap                                                | 2048m                       |
-| `wso2.deployment.ob.km.ingress.hostname`                        | Hostname for Key Manager service                                                          | `km.ob.wso2.com`            |
-| `wso2.deployment.ob.km.ingress.annotations`                     | Ingress resource annotations for Key Manager service                                      | Community NGINX Ingress controller annotations         |
+| `wso2.deployment.ob.km.ingress.hostname`                        | Hostname for Identity & Access Management Module service                                                          | `km.ob.wso2.com`            |
+| `wso2.deployment.ob.km.ingress.annotations`                     | Ingress resource annotations for Identity & Access Management Module service                                      | Community NGINX Ingress controller annotations         |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 Open Banking Key Manager server profile are based on its [official documentation](https://docs.wso2.com/display/OB150/Open+Banking+Key+Manager+High+Availability+Deployment#OpenBankingKeyManagerHighAvailabilityDeployment-Deploymentprerequisites).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 Open Banking Identity & Access Management Module server profile are based on its [official documentation](https://docs.wso2.com/display/OB200/Open+Banking+Identity+and+Access+Management+High+Availability+Deployment#OpenBankingIdentityandAccessManagementHighAvailabilityDeployment-Deploymentprerequisites).
 
 ###### BI Dashboard Runtime Configurations
 
@@ -243,7 +271,7 @@ The following tables lists the configurable parameters of the chart and their de
 |---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.ob.bi.dashboard.dockerRegistry`                          | Registry location of the Docker image to be used to create a BI Dashboard instance                               | -                           |
 | `wso2.deployment.ob.bi.dashboard.imageName`                               | Name of the Docker image to be used to create a BI Dashboard instance                                            | `wso2-obbi-dashboard`       |
-| `wso2.deployment.ob.bi.dashboard.imageTag`                                | Tag of the image used to create a BI Dashboard instance                                                          | `1.5.0`                     |
+| `wso2.deployment.ob.bi.dashboard.imageTag`                                | Tag of the image used to create a BI Dashboard instance                                                          | `2.0.0`                     |
 | `wso2.deployment.ob.bi.dashboard.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                            | `Always`                    |
 | `wso2.deployment.ob.bi.dashboard.replicas`                                | Number of replicas of BI Dashboard to be started                                                                 | 1                           |
 | `wso2.deployment.ob.bi.dashboard.strategy.rollingUpdate.maxSurge`         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 1                |
@@ -268,7 +296,7 @@ The following tables lists the configurable parameters of the chart and their de
 |------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.ob.bi.worker.dockerRegistry`                          | Registry location of the Docker image to be used to create a BI Worker instance                                     | -                           |
 | `wso2.deployment.ob.bi.worker.imageName`                               | Name of the Docker image to be used to create a BI Worker instance                                                  | `wso2-obbi-worker`          |
-| `wso2.deployment.ob.bi.worker.imageTag`                                | Tag of the image used to create a BI Worker instance                                                                | `1.5.0`                     |
+| `wso2.deployment.ob.bi.worker.imageTag`                                | Tag of the image used to create a BI Worker instance                                                                | `2.0.0`                     |
 | `wso2.deployment.ob.bi.worker.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                               | `Always`                    |
 | `wso2.deployment.ob.bi.worker.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for BI Worker node                                                            | 20                          |
 | `wso2.deployment.ob.bi.worker.livenessProbe.periodSeconds`             | Period of the live-ness probe for BI Worker node                                                                    | 10                          |
@@ -288,7 +316,7 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                       | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.ob.config.workflowServerURL`                   | Configure workflow server URL for signup workflow (refer to [doc](https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)  | `https://localhost:9445/services/` |
+| `wso2.deployment.ob.config.workflowServerURL`                   | Configure workflow server URL for signup workflow (refer to [doc](https://docs.wso2.com/display/OB200/Using+the+Signup+Workflow+for+Berlin) for Berlin specification, refer to [doc](https://docs.wso2.com/display/OB200/Using+the+Signup+Workflow+for+UK) for UK specification)  | `https://localhost:9445/services/` |
 
 * **Data source configurations**
 
@@ -308,22 +336,32 @@ The following tables lists the configurable parameters of the chart and their de
 
 * We **do not recommend** you to use the evaluatory, MySQL deployment, to host the product databases in a production grade deployment.
 
-* For setting up databases depending on the desired PSD2 API specification, please refer to the official WSO2 Open Banking [documentation](https://docs.wso2.com/display/OB150/Configuring+WSO2+Open+Banking).
+* For setting up databases depending on the desired PSD2 API specification, please refer to the official WSO2 Open Banking [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking).
 
 * **Berlin PSD2 specific configurations**
 
 | Parameter                                                              | Description                                                                                 | Default Value                                                                                      |
 |------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `wso2.deployment.ob.config.berlin.payableAccountsRetrieveEndpoint`     | Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter   | `https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/payable`   |
-| `wso2.deployment.ob.config.berlin.sharableAccountsRetrieveEndpoint`    | Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter  | `https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/shareable` |
+| `wso2.deployment.ob.config.berlin.payableAccountsRetrieveEndpoint`     | Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter   | `https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/payable`   |
+| `wso2.deployment.ob.config.berlin.sharableAccountsRetrieveEndpoint`    | Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter  | `https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/shareable` |
 
-**Note**: Please refer to the official [documentation](https://docs.wso2.com/display/OB150/Configuring+WSO2+Open+Banking+for+Berlin) for advanced details with regards to configuring the Berlin specification.
+**Note**: Please refer to the official [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking+for+Berlin) for advanced details with regards to configuring the Berlin specification.
+
+* **UK PSD2 specific configurations**
+
+| Parameter                                                              | Description                                                                                 | Default Value                                                                                      |
+|------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `wso2.deployment.ob.config.uk.payableAccountsRetrieveEndpoint`     | Configure endpoint to retrieve UK payable accounts passing PSU-ID as a path parameter   | `http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/payable-accounts`   |
+| `wso2.deployment.ob.config.uk.sharableAccountsRetrieveEndpoint`    | Configure endpoint to retrieve UK sharable accounts passing PSU-ID as a path parameter  | `http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/sharable-accounts` |
+
+**Note**: Please refer to the official [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking+for+UK) for advanced details with regards to configuring the UK specification.
+
 
 * **Business Intelligence configurations**
 
 | Parameter                                                  | Description                                                                                                         | Default Value        |
 |------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|----------------------|
-| `wso2.deployment.ob.config.fraudDetection.enabled`         | Enable/Disable fraud detection (refer to [doc](https://docs.wso2.com/display/OB150/Working+with+Fraud+Detection))   | false                |
+| `wso2.deployment.ob.config.fraudDetection.enabled`         | Enable/Disable fraud detection (refer to [doc](https://docs.wso2.com/display/OB200/Working+with+Fraud+Detection))   | false                |
 
 ###### Kubernetes Specific Configurations
 

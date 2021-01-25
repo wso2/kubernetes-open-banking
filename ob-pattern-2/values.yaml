@@ -30,7 +30,7 @@ wso2:
     # Persisted and shared runtime artifacts for Open Banking product profiles
     # See official documentation for detailed information
     # - API Manager: https://docs.wso2.com/display/AM260/Common+Runtime+and+Configuration+Artifacts#CommonRuntimeandConfigurationArtifacts-PersistentRuntimeArtifacts
-    # - Key Manager: https://docs.wso2.com/display/OB150/Open+Banking+Key+Manager+High+Availability+Deployment#OpenBankingKeyManagerHighAvailabilityDeployment-DeploymentPattern
+    # - Identity & Access Management Module: https://docs.wso2.com/display/OB200/Open+Banking+Identity+and+Access+Management+High+Availability+Deployment#OpenBankingIdentityandAccessManagementHighAvailabilityDeployment-DeploymentPattern
     persistentRuntimeArtifacts:
       # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
       # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
@@ -40,7 +40,7 @@ wso2:
       sharedArtifacts:
         # Define capacities for persistent runtime artifacts which are shared between instances of the Open Banking product profiles
         capacity:
-          # For secondary user stores shared between the Key Manager profile instances
+          # For secondary user stores shared between the Identity & Access Management Module profile instances
           userstores: 50M
           # For execution plans shared between the API Manager profile instances
           executionPlans: 20M
@@ -64,7 +64,7 @@ wso2:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
         imageName: "wso2-obam"
-        imageTag: "1.5.0"
+        imageTag: "2.0.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -129,8 +129,8 @@ wso2:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
-        imageName: "wso2-obkm"
-        imageTag: "1.5.0"
+        imageName: "wso2-obiam"
+        imageTag: "2.0.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -151,8 +151,8 @@ wso2:
           periodSeconds: 10
 
         resources:
-          # These are the resource recommendations for running WSO2 Open Banking Key Manager product profile
-          # as per official documentation (https://docs.wso2.com/display/OB150/Open+Banking+Key+Manager+High+Availability+Deployment#OpenBankingKeyManagerHighAvailabilityDeployment-Deploymentprerequisites)
+          # These are the resource recommendations for running WSO2 Open Banking Identity & Access Management Module profile
+          # as per official documentation (https://docs.wso2.com/display/OB200/Open+Banking+Identity+and+Access+Management+High+Availability+Deployment#OpenBankingIdentityandAccessManagementHighAvailabilityDeployment-Deploymentprerequisites)
           requests:
             # The minimum amount of memory that should be allocated for a Pod
             memory: "3Gi"
@@ -174,11 +174,11 @@ wso2:
                 # Maximum Heap size
                 xmx: "2048m"
 
-        # Configure Ingress for Open Banking Key Manager service
+        # Configure Ingress for Open Banking Identity & Access Management Module service
         ingress:
-          # Hostname for Open Banking Key Manager service
+          # Hostname for Open Banking Identity & Access Management Module service
           hostname: "km.ob.wso2.com"
-          # Annotations for the Open Banking Key Manager service Ingress
+          # Annotations for the Open Banking Identity & Access Management Module service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -192,7 +192,7 @@ wso2:
           # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
           # dockerRegistry: ""
           imageName: "wso2-obbi-dashboard"
-          imageTag: "1.5.0"
+          imageTag: "2.0.0"
           # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
           imagePullPolicy: Always
 
@@ -242,11 +242,11 @@ wso2:
                   # Maximum Heap size
                   xmx: "2048m"
 
-          # If the deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml),
+          # If the deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v2.0.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml),
           # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> dashboard -> config -> deployment.yaml)
 #          config:
 #            deployment.yaml: |-
-#              # deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml)
+#              # deployment configurations for the Dashboard profile of WSO2 Open Banking Business Intelligence v2.0.0 (<WSO2OB_BI>/conf/dashboard/deployment.yaml)
 
           # Configure Ingress
           ingress:
@@ -262,7 +262,7 @@ wso2:
           # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
           # dockerRegistry: ""
           imageName: "wso2-obbi-worker"
-          imageTag: "1.5.0"
+          imageTag: "2.0.0"
           # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
           imagePullPolicy: Always
 
@@ -303,11 +303,11 @@ wso2:
                   # Maximum Heap size
                   xmx: "2048m"
 
-          # If the deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/worker/deployment.yaml),
+          # If the deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v2.0.0 (<WSO2OB_BI>/conf/worker/deployment.yaml),
           # add the customized configuration file under (wso2 -> deployment -> ob -> bi -> worker -> config -> deployment.yaml)
 #          config:
 #            deployment.yaml: |-
-#              # deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v1.5.0 (<WSO2OB_BI>/conf/worker/deployment.yaml)
+#              # deployment configurations for the Worker profile of WSO2 Open Banking Business Intelligence v2.0.0 (<WSO2OB_BI>/conf/worker/deployment.yaml)
 
       # Product configurations
       config:
@@ -326,9 +326,9 @@ wso2:
             driverClassName: "com.mysql.jdbc.Driver"
           # Specific data source configurations
           # Please refer to official documentation for detailed information on data sources
-          # For Open Banking API Manager and Key Manager based on specification (https://docs.wso2.com/display/OB150/Configuring+WSO2+Open+Banking)
-          # For Open Banking Business Intelligence (https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-Configuringdatabases)
-          # For API Manager Analytics (https://docs.wso2.com/display/AM260/Configuring+APIM+Analytics#standardsetup)
+          # For Open Banking API Manager and Identity & Access Management Module based on specification (https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking
+          # For Open Banking Business Intelligence (https://docs.wso2.com/display/OB200/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-Configuringdatabases)
+          # For API Manager Analytics (https://apim.docs.wso2.com/en/3.1.0/install-and-setup/install/installation-prerequisites/)
           databases:
             amConfigRegistry:
               name: "OPENBANK_AM_CONFIG_DB"
@@ -342,6 +342,8 @@ wso2:
               name: "OPENBANK_APIMGT_STATS_DB"
             openBanking:
               name: "OPENBANK_OPENBANKING_BERLIN_DB"
+            openBankingUK:
+              name: "OPENBANK_OPENBANKING_UK_DB"
             user:
               name: "OPENBANK_USER_DB"
             geoLocation:
@@ -354,23 +356,35 @@ wso2:
               name: "OPENBANK_BUSINESS_RULES_DB"
             permissions:
               name: "OPENBANK_PERMISSIONS_DB"
-        # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB150/Using+the+Signup+Workflow+for+Berlin)
+        # Configure workflow server URL for signup workflow (refer to https://docs.wso2.com/display/OB200/Using+the+Signup+Workflow+for+Berlin for Berlin specification, refer to https://docs.wso2.com/display/OB200/Using+the+Signup+Workflow+for+UK for UK specification)
         workflowServerURL: "https://localhost:9445/services/"
-        # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB150/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)
+        # Enable/Disable fraud detection (refer to https://docs.wso2.com/display/OB200/Integrate+Open+Banking+Business+Intelligence#IntegrateOpenBankingBusinessIntelligence-EnablingFraudDetection)
         fraudDetection:
           enabled: false
         berlin:
           # Configure endpoint to retrieve BERLIN payable accounts passing PSU-ID as a path parameter
-          payableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/payable"
+          payableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/payable"
           # Configure endpoint to retrieve BERLIN sharable accounts passing PSU-ID as a path parameter
-          sharableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/open-banking-berlin/services/v130/accounts/shareable"
-
+          sharableAccountsRetrieveEndpoint: "https://wso2ob-pattern-2-ob-am-service:9443/api/openbanking/backend-berlin/services/v130/accounts/shareable"
+        uk:
+          # Configure endpoint to retrieve UK payable accounts passing PSU-ID as a path parameter
+          payableAccountsRetrieveEndpoint: "http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/payable-accounts"
+          # Configure endpoint to retrieve UK sharable accounts passing PSU-ID as a path parameter
+          sharableAccountsRetrieveEndpoint: "http://wso2ob-pattern-2-ob-am-service:9763/api/openbanking/backend-uk/services/bankaccounts/bankaccountservice/sharable-accounts"
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2ob-pattern-2-svc-account"
 
 # Override sub chart parameters
 mysql-ob:
+  # Override spec related parameters
+  wso2:
+    deployment:
+      spec:
+        berlin:
+          enabled: true
+        uk:
+          enabled: false
   mysql:
     persistence:
       storageClass: *storage_class

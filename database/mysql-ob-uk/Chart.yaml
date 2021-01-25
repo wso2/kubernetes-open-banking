@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,16 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service
-  namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard
-  ports:
-    # ports that this service should serve on
-    - name: 'analytics-dashboard'
-      port: 9649
-      protocol: TCP
+appVersion: "5.7"
+description: A Helm chart for MySQL based deployment of WSO2 Open Banking Datasources for UK
+name: mysql-ob-uk
+version: 2.0.0-1

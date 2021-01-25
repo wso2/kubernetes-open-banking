@@ -29,3 +29,6 @@ spec:
     - name: servlet-https
       protocol: TCP
       port: 9443
+    - name: servlet-http
+      protocol: TCP
+      port: 9763

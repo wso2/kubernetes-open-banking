@@ -3,14 +3,13 @@
 *This repository contains Kubernetes and Helm Resources for container-based deployments
 of WSO2 Open Banking.*
 
-## Helm resources for Open Banking deployment patterns
+## Helm resources for Open Banking deployment pattern
 
-* [Deployment Pattern 1](ob-pattern-1/README.md)
 * [Deployment Pattern 2](ob-pattern-2/README.md)
 
 ## Changelog
 
-**Change log** from previous `v1.4.0.2` release: [View Here](CHANGELOG.md)
+**Change log** from previous `v1.5.0.1` release: [View Here](CHANGELOG.md)
 
 ## Contributions
 

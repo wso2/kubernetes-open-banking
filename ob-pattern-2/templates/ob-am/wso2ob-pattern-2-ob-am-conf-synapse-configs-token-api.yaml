@@ -1,0 +1,52 @@
+  {{ if index .Values "mysql-ob" "wso2" "deployment" "spec" "uk" "enabled" }}
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ob-pattern-2.resource.prefix" . }}-ob-am-conf-synapse-configs-token-api
+  namespace : {{ .Release.Namespace }}
+data:
+  _TokenAPI_.xml: |-
+    <api xmlns="http://ws.apache.org/ns/synapse" name="_WSO2AMTokenAPI_" context="/token">
+        <resource methods="POST" url-mapping="/*" faultSequence="_token_fault_">
+            <inSequence>
+                <property name="api.ut.backendRequestTime" expression="get-property('SYSTEM_TIME')"/>
+                <property name="uri.var.portnum" expression="get-property('keyManager.port')"/>
+                <property name="uri.var.hostname" expression="get-property('keyManager.hostname')"/>
+                <send>
+                    <endpoint>
+                        <http uri-template="https://{uri.var.hostname}:{uri.var.portnum}/oauth2/token">
+                            <timeout>
+                                <duration>60000</duration>
+                                <responseAction>fault</responseAction>
+                            </timeout>
+                        </http>
+                    </endpoint>
+                </send>
+            </inSequence>
+            <outSequence>
+                <send/>
+            </outSequence>
+        </resource>
+        <handlers>
+            <handler class="com.wso2.finance.open.banking.management.information.reporting.data.publisher.APIInvocationLatencyStatsHandler"/>
+            <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerCacheExtensionHandler"/>
+            <handler class="org.wso2.carbon.apimgt.gateway.handlers.common.SynapsePropertiesHandler"/>
+            <handler class="com.wso2.finance.open.banking.management.information.reporting.data.publisher.ReportingDataHandler"/>
+        </handlers>
+    </api>
+
+  {{ end }}
