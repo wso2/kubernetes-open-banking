@@ -35,6 +35,9 @@ spec:
         - name: init-ob-db
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+        - name: init-ob-bi-dashboard
+          image: busybox:1.32
+          command: [ 'sh', '-c', 'echo -e "Checking for the availability of WSO2 OB BI Dashboard deployment"; while ! nc -z {{ template "ob-pattern-2.resource.prefix" . }}-ob-bi-dashboard-service 9649; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB BI Dashboard has started";' ]
       containers:
         - name: wso2ob-bi-worker
           {{- if .Values.wso2.deployment.ob.bi.worker.dockerRegistry }}
@@ -59,7 +62,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
+                - nc -z localhost 9445
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.worker.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.bi.worker.livenessProbe.periodSeconds }}
           readinessProbe:
@@ -88,7 +91,7 @@ spec:
               protocol: TCP
             - containerPort: 7712
               protocol: TCP
-            - containerPort: 9444
+            - containerPort: 9445
               protocol: TCP
             - containerPort: 8006
               protocol: TCP
@@ -103,6 +106,9 @@ spec:
             - name: ob-bi-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
+            - name: ob-bi-worker-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/worker/conf/transports/netty-transports.yml
+              subPath: netty-transports.yml
             - name: ob-bi-worker-deployment-siddhi-files
               mountPath: /home/wso2carbon/wso2-config-volume/deployment/siddhi-files/FraudStatusUpdaterApp.siddhi
               subPath: FraudStatusUpdaterApp.siddhi
@@ -112,6 +118,9 @@ spec:
             - name: ob-bi-worker-deployment-siddhi-files
               mountPath: /home/wso2carbon/wso2-config-volume/deployment/siddhi-files/TRAPaymentValidationApp.siddhi
               subPath: TRAPaymentValidationApp.siddhi
+            - name: ob-bi-worker-deployment-siddhi-files
+              mountPath: /home/wso2carbon/wso2-config-volume/deployment/siddhi-files/InvalidSubmissionsApp.siddhi
+              subPath: InvalidSubmissionsApp.siddhi
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.ob.bi.imagePullSecrets }}
       imagePullSecrets:
