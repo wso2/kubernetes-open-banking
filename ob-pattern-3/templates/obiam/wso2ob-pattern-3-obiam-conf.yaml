@@ -22,7 +22,7 @@ data:
     #================configs related to carbon.xml=============
     [server]
     hostname = "{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}"
-    node_ip = "127.0.0.1"
+    node_ip = "$env{NODE_IP}"
     base_path = "https://$ref{server.hostname}:${carbon.management.port}"
     serverDetails = "WSO2 IS as KM 5.11.0"
     mode = "single"
@@ -812,3 +812,6 @@ data:
     [open_banking_uk.account.refresh_token]
     validity_period = 15552000
     last_authorized_date_limit = 90
+
+    [transport.https.properties]
+    proxyPort = 443
