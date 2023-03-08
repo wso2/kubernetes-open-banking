@@ -12,13 +12,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-3.resource.prefix" . }}-obam-conf
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-conf
   namespace : {{ .Release.Namespace }}
 data:
   deployment-uk.toml: |- 
     [server]
     hostname = "{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}"
-    node_ip = "$env{NODE_IP}"
+    node_ip = "127.0.0.1"
     #offset=0
     mode = "single" #single or ha
     base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
@@ -58,9 +58,9 @@ data:
     # for registry data
     [database.shared_db]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_govdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.shared_db.pool_options]
     maxActive = "150"
@@ -76,9 +76,9 @@ data:
     # for api manager data
     [database.apim_db]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_apimgtdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.apim_db.pool_options]
     maxActive = "150"
@@ -94,9 +94,9 @@ data:
     # for am-config registry
     [database.config]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_am_configdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.config.pool_options]
     maxActive = "150"
@@ -113,9 +113,9 @@ data:
     [[datasource]]
     id="WSO2UM_DB"
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_userdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
     jmx_enable=false
     pool_options.maxActive = "150"
     pool_options.maxWait = "60000"
@@ -157,15 +157,15 @@ data:
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true
-    service_url = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:${mgt.transport.https.port}/services/"
+    service_url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:${mgt.transport.https.port}/services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint = "ws://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9099"
-    wss_endpoint = "wss://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8099"
-    http_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:${http.nio.port}"
-    https_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:${https.nio.port}"
-    websub_event_receiver_http_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9021"
-    websub_event_receiver_https_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8021"
+    ws_endpoint = "ws://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9099"
+    wss_endpoint = "wss://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8099"
+    http_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${http.nio.port}"
+    https_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${https.nio.port}"
+    websub_event_receiver_http_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9021"
+    websub_event_receiver_https_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8021"
 
     [apim.sync_runtime_artifacts.gateway]
     skip_list.sequences = ["jsonConverter.xml"]
@@ -207,7 +207,7 @@ data:
     properties.'publisher.reporter.class' = "com.wso2.openbanking.accelerator.gateway.reporter.OBAnalyticsMetricReporter"
 
     #[apim.key_manager]
-    #service_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446${carbon.context}services/"
+    #service_url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
     #type = "WSO2-IS"
     #key_manager_client_impl = "org.wso2.carbon.apimgt.impl.AMDefaultKeyManagerImpl"
     #username = "$ref{super_admin.username}"
@@ -219,11 +219,11 @@ data:
     #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
 
     [apim.key_manager.configuration]
-    ServerURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446${carbon.context}services/"
+    ServerURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
     Username = "${admin.username}"
     Password = "${admin.password}"
-    TokenURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:${https.nio.port}/token"
-    RevokeURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:${https.nio.port}/revoke"
+    TokenURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/token"
+    RevokeURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/revoke"
 
     #[apim.idp]
     #server_url = "https://localhost:${mgt.transport.https.port}"
@@ -251,7 +251,7 @@ data:
     #enable_token_hashing = false
 
     [apim.devportal]
-    #url = "https://localhost:${mgt.transport.https.port}/devportal"
+    #url = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:${mgt.transport.https.port}/devportal"
     #enable_application_sharing = false
     #if application_sharing_type, application_sharing_impl both defined priority goes to application_sharing_impl
     #application_sharing_type = "default" #changed type, saml, default #todo: check the new config for rest api
@@ -364,7 +364,7 @@ data:
     custom_webapps = ["/keymanager-operations/"]
 
     [authentication.adaptive.event_publisher]
-    url = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8280/"
+    url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8280/"
     authentication.basic.enable = true
 
     #================configs related to identity-event.properties=============
@@ -438,7 +438,7 @@ data:
     jwks_endpoint_name = "software_jwks_endpoint"
     #app_name_claim = " "
     #isRequestJWT = true
-    token_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9443/oauth2/token"
+    token_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9443/oauth2/token"
     use_softwareIdForAppName = true
 
     #[open_banking.dcr.jwks_retriever]
@@ -524,7 +524,7 @@ data:
     username="$ref{super_admin.username}@carbon.super"
     password="$ref{super_admin.password}"
     server_url = "{tcp://localhost:7612}"
-    #auth_url = "{ssl://localhost:7612}"
+    #auth_url = "{ssl://BI_HOSTNAME:7612}"
     protocol = "Thrift"
     pool_size = 10
     queue_size = 32768
@@ -870,7 +870,7 @@ data:
     retry_count = 3
     [open_banking.gateway.certificate_management.certificate.revocation.proxy]
     enabled = false
-    host = "{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}"
+    host = "PROXY_HOSTNAME"
     port = 8080
     [[open_banking.gateway.certificate_management.certificate.revocation.validator]]
     type = "OCSP"
@@ -913,20 +913,20 @@ data:
 
     #============to increase the https header size===============
     [transport.https.properties]
-    proxyPort = 443
     maxHttpHeaderSize = 16384
+    proxyPort = 443
 
     [open_banking.gateway.consent.validation]
-    endpoint = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446/api/openbanking/consent/validate"
+    endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/api/openbanking/consent/validate"
 
     #===================UK Toolkit====================
     [open_banking_uk.consent]
-    payable_account_retrieval_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
-    sharable_account_retrieval_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
-    account_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/aisp/"
-    payment_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/pisp/"
-    vrp_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/vrp/"
-    cof_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/cbpii/"
+    payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
+    sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
+    account_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/aisp/"
+    payment_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/pisp/"
+    vrp_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/vrp/"
+    cof_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/cbpii/"
 
 
     [open_banking_uk.consent.payment_restrictions.cutoff_date]
@@ -939,7 +939,7 @@ data:
     #========================OB Distributed Cache Configurations===============================
     [open_banking.distributed_cache]
     enabled=true
-    host_name="{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}"
+    host_name="{{ template "ob-pattern-5.resource.prefix" . }}-obam-service"
     port=5701
     discovery_mechanism="TCP"
     #members=["192.168.1.0-7", "localhost:5703"]
@@ -1000,3 +1000,5 @@ data:
 
     [[open_banking.uk.jws_signature.response_signing.response_sig_required_apis]]
     api_context="/open-banking/v3.1/event"
+
+

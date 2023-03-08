@@ -12,7 +12,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-3.resource.prefix" . }}-obiam-conf
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
   namespace : {{ .Release.Namespace }}
 data:
   deployment-uk.toml: |- 
@@ -25,6 +25,15 @@ data:
     mode = "single"
     userAgent = "WSO2 IS as KM 5.11.0"
     offset = 3
+
+    [clustering]
+    membership_scheme = "kubernetes"
+    domain = "wso2.ob.iam.domain"
+    properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
+    properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service"
+    properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
+    properties.USE_DNS = "false"
 
     [keystore.primary]
     name = "wso2carbon.jks"
@@ -68,9 +77,9 @@ data:
     # for registry data
     [database.shared_db]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_govdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.shared_db.pool_options]
     maxActive = "150"
@@ -86,9 +95,9 @@ data:
     # for api manager data
     [database.identity_db]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_apimgtdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.identity_db.pool_options]
     maxActive = "150"
@@ -104,9 +113,9 @@ data:
     # for km-config registry
     [database.config]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_iskm_configdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.config.pool_options]
     maxActive = "150"
@@ -122,9 +131,9 @@ data:
     # for user-mgt data
     [database.user]
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_userdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
 
     [database.user.pool_options]
     maxActive = "150"
@@ -141,9 +150,9 @@ data:
     [[datasource]]
     id="WSO2OB_DB"
     url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_openbankingdb?autoReconnect=true&amp;useSSL=false"
-    username = "root"
-    password = "root"
-    driver = "com.mysql.jdbc.Driver"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
     jmx_enable=false
     pool_options.maxActive = "150"
     pool_options.maxWait = "60000"
@@ -158,8 +167,8 @@ data:
     #================configs related to application-authentication.xml=============
 
     [authentication.endpoints]
-    login_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446/authenticationendpoint/login.do"
-    retry_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446/authenticationendpoint/retry.do"
+    login_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/login.do"
+    retry_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/retry.do"
 
     [authentication.endpoint.redirect_params]
     filter_policy = "include"
@@ -176,7 +185,7 @@ data:
     parameters.ValidateUsername = true
     parameters.throttleLimit = 3
     parameters.throttleTimePeriod = 300
-    parameters.authRequestURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446/api/identity/auth/v1.1/data/AuthRequestKey/"
+    parameters.authRequestURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/api/identity/auth/v1.1/data/AuthRequestKey/"
 
 
     #================configs related to identity.xml=============
@@ -191,8 +200,8 @@ data:
     renew_refresh_token = false
 
     [oauth.endpoints]
-    oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:${carbon.management.port}/ob/authenticationendpoint/oauth2_authz.do"
-    oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:${carbon.management.port}/ob/authenticationendpoint/oauth2_consent.do"
+    oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_authz.do"
+    oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_consent.do"
 
     [oauth.response_type]
     token.enable = true
@@ -219,8 +228,8 @@ data:
     [event_listener.properties]
     PreventTokenReuse= false
     RejectBeforeInMinutes= "100"
-    TokenEndpointAlias= "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:9446/oauth2/token"
-    notification_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9443/internal/data/v1/notify"
+    TokenEndpointAlias= "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/token"
+    notification_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "WSO2-IS"
@@ -320,7 +329,7 @@ data:
     http_method="GET"
 
     [authentication.adaptive.event_publisher]
-    url = "http://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}:8006/"
+    url = "http://localhost:8006/"
 
     [tenant_context.rewrite]
     custom_webapps = ["/keymanager-operations/"]

@@ -10,6 +10,6 @@
 # ----------------------------------------------------------------------------------------
 
 apiVersion: v1
-name: ob-pattern-3
+name: ob-pattern-5
 description: A Helm chart for the deployment of WSO2 Open Banking pattern 3
 version: 3.0.0-1
