@@ -12,14 +12,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "ob-pattern-3.resource.prefix" . }}-obam-service
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: {{ template "ob-pattern-3.resource.prefix" . }}-obam
+    deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obam
   ports:
     # ports that this service should serve on
+    - name: pass-through-https
+      protocol: TCP
+      port: 8243
     - name: binary
       protocol: TCP
       port: 9611

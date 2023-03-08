@@ -78,6 +78,16 @@ wso2:
               nginx.ingress.kubernetes.io/affinity: "cookie"
               nginx.ingress.kubernetes.io/session-cookie-name: "route"
               nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+          
+          # Ingress configurations for Gateway profile service
+          gateway:
+            # Hostname for Open Banking API Manager Gateway service
+            hostname: "obam-gateway"
+            # Annotations for the Open Banking API Manager Gateway service Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       
       iam:
         # Container image configurations
@@ -138,7 +148,6 @@ wso2:
               nginx.ingress.kubernetes.io/affinity: "cookie"
               nginx.ingress.kubernetes.io/session-cookie-name: "route"
               nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-          
       
       # Product configurations
       config:
@@ -152,13 +161,10 @@ wso2:
             server:
               hostname: "wso2ob-rdbms-service-mysql"
               port: "3306"
-              username: "wso2carbon"
-              password: "wso2carbon"
+              username: "root"
+              password: "root"
             driverClassName: "com.mysql.jdbc.Driver"
-          # Specific data source configurations
-          # Please refer to official documentation for detailed information on data sources
-          databases:
 
 kubernetes:
   # Name of Kubernetes service account
-  serviceAccount: "wso2ob-pattern-3-svc-account"
+  serviceAccount: "wso2ob-pattern-5-svc-account"

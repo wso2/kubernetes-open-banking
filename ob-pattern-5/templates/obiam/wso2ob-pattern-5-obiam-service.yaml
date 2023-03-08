@@ -12,12 +12,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "ob-pattern-3.resource.prefix" . }}-obiam-service
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: {{ template "ob-pattern-3.resource.prefix" . }}-obiam
+    deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obiam
   ports:
   - name: servlet-https
     port: 9446
