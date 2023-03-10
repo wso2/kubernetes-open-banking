@@ -101,3 +101,4 @@ spec:
         - name: obiam-resources-security
           configMap:
             name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-resources-security
+            
