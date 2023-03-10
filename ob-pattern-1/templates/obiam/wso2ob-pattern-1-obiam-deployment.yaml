@@ -15,7 +15,7 @@ metadata:
   name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.wso2.deployment.ob.iam.replicas }}
   strategy:
     rollingUpdate:
       maxSurge: 1
