@@ -18,8 +18,6 @@ wso2:
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true
-      # Enable NFS dynamic provisioner for Kubernetes
-      nfsServerProvisioner: true
 
     ob:
       am:
@@ -167,5 +165,5 @@ wso2:
 
 kubernetes:
   # Name of Kubernetes service account
-  serviceAccount: "wso2ob-pattern-5-svc-account"
+  serviceAccount: "wso2ob-pattern-1-svc-account"
   

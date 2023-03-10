@@ -12,24 +12,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-ingress
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-ingress
   namespace : {{ .Release.Namespace }}
-{{- if .Values.wso2.deployment.ob.am.ingress.management.annotations }}
+{{- if .Values.wso2.deployment.ob.iam.ingress.management.annotations }}
   annotations:
-{{ toYaml .Values.wso2.deployment.ob.am.ingress.management.annotations | indent 4 }}
+{{ toYaml .Values.wso2.deployment.ob.iam.ingress.management.annotations | indent 4 }}
 {{- end }}
 spec:
   tls:
   - hosts:
-      - {{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}
+      - {{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}
   rules:
-    - host: {{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}
-      http:
-        paths:
-          - path: / 
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-service
-                port:
-                  number: 9443
+  - host: {{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-service
+              port:
+                number: 9446

@@ -12,7 +12,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-conf
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-conf
   namespace : {{ .Release.Namespace }}
 data:
   deployment-uk.toml: |- 
@@ -157,15 +157,15 @@ data:
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true
-    service_url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:${mgt.transport.https.port}/services/"
+    service_url = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:${mgt.transport.https.port}/services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint = "ws://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9099"
-    wss_endpoint = "wss://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8099"
+    ws_endpoint = "ws://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:9099"
+    wss_endpoint = "wss://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8099"
     http_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${http.nio.port}"
     https_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${https.nio.port}"
-    websub_event_receiver_http_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9021"
-    websub_event_receiver_https_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8021"
+    websub_event_receiver_http_endpoint = "http://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:9021"
+    websub_event_receiver_https_endpoint = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8021"
 
     [apim.sync_runtime_artifacts.gateway]
     skip_list.sequences = ["jsonConverter.xml"]
@@ -207,7 +207,7 @@ data:
     properties.'publisher.reporter.class' = "com.wso2.openbanking.accelerator.gateway.reporter.OBAnalyticsMetricReporter"
 
     #[apim.key_manager]
-    #service_url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
+    #service_url = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
     #type = "WSO2-IS"
     #key_manager_client_impl = "org.wso2.carbon.apimgt.impl.AMDefaultKeyManagerImpl"
     #username = "$ref{super_admin.username}"
@@ -219,11 +219,11 @@ data:
     #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
 
     [apim.key_manager.configuration]
-    ServerURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
+    ServerURL = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
     Username = "${admin.username}"
     Password = "${admin.password}"
-    TokenURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/token"
-    RevokeURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/revoke"
+    TokenURL = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service:${https.nio.port}/token"
+    RevokeURL = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service:${https.nio.port}/revoke"
 
     #[apim.idp]
     #server_url = "https://localhost:${mgt.transport.https.port}"
@@ -364,7 +364,7 @@ data:
     custom_webapps = ["/keymanager-operations/"]
 
     [authentication.adaptive.event_publisher]
-    url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8280/"
+    url = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8280/"
     authentication.basic.enable = true
 
     #================configs related to identity-event.properties=============
@@ -438,7 +438,7 @@ data:
     jwks_endpoint_name = "software_jwks_endpoint"
     #app_name_claim = " "
     #isRequestJWT = true
-    token_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9443/oauth2/token"
+    token_endpoint = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:9443/oauth2/token"
     use_softwareIdForAppName = true
 
     #[open_banking.dcr.jwks_retriever]
@@ -917,16 +917,16 @@ data:
     proxyPort = 443
 
     [open_banking.gateway.consent.validation]
-    endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/api/openbanking/consent/validate"
+    endpoint = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service:9446/api/openbanking/consent/validate"
 
     #===================UK Toolkit====================
     [open_banking_uk.consent]
-    payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
-    sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
-    account_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/aisp/"
-    payment_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/pisp/"
-    vrp_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/vrp/"
-    cof_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/cbpii/"
+    payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
+    sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
+    account_consent_self_link = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8243/open-banking/{version}/aisp/"
+    payment_consent_self_link = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8243/open-banking/{version}/pisp/"
+    vrp_consent_self_link = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8243/open-banking/{version}/vrp/"
+    cof_consent_self_link = "https://{{ template "ob-pattern-1.resource.prefix" . }}-obam-service:8243/open-banking/{version}/cbpii/"
 
 
     [open_banking_uk.consent.payment_restrictions.cutoff_date]
@@ -939,7 +939,7 @@ data:
     #========================OB Distributed Cache Configurations===============================
     [open_banking.distributed_cache]
     enabled=true
-    host_name="{{ template "ob-pattern-5.resource.prefix" . }}-obam-service"
+    host_name="{{ template "ob-pattern-1.resource.prefix" . }}-obam-service"
     port=5701
     discovery_mechanism="TCP"
     #members=["192.168.1.0-7", "localhost:5703"]

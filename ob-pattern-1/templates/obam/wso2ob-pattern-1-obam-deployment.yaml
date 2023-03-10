@@ -12,20 +12,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-deployment
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{template "ob-pattern-5.resource.prefix" . }}-obam
+      deployment: {{template "ob-pattern-1.resource.prefix" . }}-obam
   template:
     metadata:
       annotations:
       labels:
-        deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obam
+        deployment: {{ template "ob-pattern-1.resource.prefix" . }}-obam
     spec:
       initContainers:
         - name: init-ob-db
@@ -33,7 +36,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
         - name: init-obiam
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB Identity & access management deployment"; while ! nc -z {{ template "ob-pattern-5.resource.prefix" . }}-obiam-service 9446; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB Identity & access management has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB Identity & access management deployment"; while ! nc -z {{ template "ob-pattern-1.resource.prefix" . }}-obiam-service 9446; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB Identity & access management has started";']
       containers:
         - name: obam
           {{ if .Values.wso2.deployment.ob.am.dockerRegistry }}
@@ -102,13 +105,13 @@ spec:
         - name: {{ .Values.wso2.deployment.ob.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "ob-pattern-5.resource.prefix" . }}-wso2-private-registry-creds
+        - name: {{ template "ob-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       volumes:
         - name: obam-conf
           configMap:
-            name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-conf
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-conf
         - name: obam-resources-security
           configMap:
-            name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-resources-security
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-resources-security

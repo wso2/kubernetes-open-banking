@@ -12,20 +12,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-deployment
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{template "ob-pattern-5.resource.prefix" . }}-obiam
+      deployment: {{template "ob-pattern-1.resource.prefix" . }}-obiam
   template:
     metadata:
       annotations:
       labels:
-        deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obiam
+        deployment: {{ template "ob-pattern-1.resource.prefix" . }}-obiam
     spec:
       initContainers:
         - name: init-ob-db
@@ -91,14 +94,14 @@ spec:
         - name: {{ .Values.wso2.deployment.ob.iam.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "ob-pattern-5.resource.prefix" . }}-wso2-private-registry-creds
+        - name: {{ template "ob-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       volumes:
         - name: obiam-conf
           configMap:
-            name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-conf
         - name: obiam-resources-security
           configMap:
-            name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-resources-security
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-resources-security
             
