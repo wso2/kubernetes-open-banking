@@ -12,13 +12,29 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-service
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obiam
+    deployment: {{ template "ob-pattern-1.resource.prefix" . }}-obam
   ports:
-  - name: servlet-https
-    port: 9446
-    protocol: TCP
+    # ports that this service should serve on
+    - name: pass-through-https
+      protocol: TCP
+      port: 8243
+    - name: binary
+      protocol: TCP
+      port: 9611
+    - name: binary-secure
+      protocol: TCP
+      port: 9711
+    - name: jms-tcp
+      protocol: TCP
+      port: 5672
+    - name: servlet-https
+      protocol: TCP
+      port: 9443
+    - name: servlet-http
+      protocol: TCP
+      port: 9763

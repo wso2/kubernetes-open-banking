@@ -12,7 +12,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-conf
   namespace : {{ .Release.Namespace }}
 data:
   deployment-uk.toml: |- 
@@ -31,7 +31,7 @@ data:
     domain = "wso2.ob.iam.domain"
     properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
     properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
-    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service"
     properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
     properties.USE_DNS = "false"
 
