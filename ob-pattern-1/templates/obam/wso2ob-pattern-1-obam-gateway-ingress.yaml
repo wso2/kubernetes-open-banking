@@ -33,4 +33,4 @@ spec:
             name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-service
             port:
               number: 8243
-              
+             
