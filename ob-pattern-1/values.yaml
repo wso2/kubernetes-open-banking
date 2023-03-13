@@ -173,4 +173,3 @@ wso2:
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2ob-pattern-1-svc-account"
-  
