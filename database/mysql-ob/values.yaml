@@ -4390,4 +4390,3 @@ mysql:
         PRIMARY KEY (THROTTLE_GROUP,THROTTLE_PARAM)
       )
       ENGINE INNODB;
-           
