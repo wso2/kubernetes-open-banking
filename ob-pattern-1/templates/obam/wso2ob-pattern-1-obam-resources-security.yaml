@@ -19,3 +19,4 @@ binaryData:
     {{ .Files.Get "resources/obam/client-truststore.jks" | b64enc }}
   wso2carbon.jks: |-
     {{ .Files.Get "resources/obam/wso2carbon.jks" | b64enc }}
+    
