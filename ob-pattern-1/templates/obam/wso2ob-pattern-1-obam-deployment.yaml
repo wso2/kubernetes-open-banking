@@ -115,4 +115,4 @@ spec:
         - name: obam-resources-security
           configMap:
             name: {{ template "ob-pattern-1.resource.prefix" . }}-obam-resources-security
-           
+          
