@@ -12,7 +12,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-conf
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
   namespace : {{ .Release.Namespace }}
 data:
   deployment-uk.toml: |- 
@@ -31,7 +31,7 @@ data:
     domain = "wso2.ob.iam.domain"
     properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
     properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
-    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-1.resource.prefix" . }}-obiam-service"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service"
     properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
     properties.USE_DNS = "false"
 
@@ -42,6 +42,9 @@ data:
     [tenant_mgt]
     enable_email_domain = true
 
+    [application_mgt]
+    enable_role_validation = true
+    
     #================configs related to user-mgt.xml=============
 
     [super_admin]
@@ -202,6 +205,23 @@ data:
     [oauth.endpoints]
     oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_authz.do"
     oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_consent.do"
+    oauth1_request_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/request-token"
+    oauth1_authorize_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/authorize-url"
+    oauth1_access_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/access-token"
+    oauth2_authz_url = "${carbon.protocol}://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/oauth2/authorize"
+    oauth2_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/token"
+    oauth2_revoke_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/revoke"
+    oauth2_introspect_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/introspect"
+    oauth2_user_info_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/userinfo"
+    oidc_check_session_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oidc/checksession"
+    oidc_logout_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oidc/logout"
+    oauth2_error_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_error.do"
+    oidc_logout_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_logout_consent.do"
+    oidc_logout_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_logout.do"
+    oauth2_dcr_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/api/identity/oauth2/dcr/v1.1/register"
+    oauth2_jwks_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/jwks"
+    oidc_discovery_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/oidcdiscovery"
+    oidc_web_finger_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/.well-known/webfinger"
 
     [oauth.response_type]
     token.enable = true
@@ -228,8 +248,8 @@ data:
     [event_listener.properties]
     PreventTokenReuse= false
     RejectBeforeInMinutes= "100"
-    TokenEndpointAlias= "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/token"
-    notification_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}/internal/data/v1/notify"
+    TokenEndpointAlias= "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/oauth2/token"
+    notification_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9443/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "WSO2-IS"
@@ -800,12 +820,12 @@ data:
     zone_id = "Asia/Colombo"
 
     [open_banking_uk.consent]
-    payable_account_retrieval_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
-    sharable_account_retrieval_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
-    account_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/aisp/"
-    payment_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/pisp/"
-    vrp_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/vrp/"
-    cof_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}:8243/open-banking/{version}/cbpii/"
+    payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
+    sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
+    account_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/aisp/"
+    payment_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/pisp/"
+    vrp_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/vrp/"
+    cof_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/cbpii/"
     acc_update_by_psu_enabled = false
 
     [open_banking_uk.consent.payment_restrictions.cutoff_date]

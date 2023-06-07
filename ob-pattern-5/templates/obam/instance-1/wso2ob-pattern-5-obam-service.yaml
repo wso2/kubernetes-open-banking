@@ -10,12 +10,26 @@
 # ----------------------------------------------------------------------------------------
 
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-resources-security
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1-service
   namespace : {{ .Release.Namespace }}
-binaryData:
-  client-truststore.jks: |-
-    {{ .Files.Get "resources/obiam/client-truststore.jks" | b64enc }}
-  wso2carbon.jks: |-
-    {{ .Files.Get "resources/obiam/wso2carbon.jks" | b64enc }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obam
+    node: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1
+  ports:
+    # ports that this service should serve on
+    - name: binary
+      protocol: TCP
+      port: 9611
+    - name: binary-secure
+      protocol: TCP
+      port: 9711
+    - name: jms-tcp
+      protocol: TCP
+      port: 5672
+    - name: servlet-https
+      protocol: TCP
+      port: 9443

@@ -12,7 +12,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-deployment
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.ob.iam.replicas }}
@@ -23,17 +23,25 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{template "ob-pattern-1.resource.prefix" . }}-obiam
+      deployment: {{template "ob-pattern-5.resource.prefix" . }}-obiam
   template:
     metadata:
       annotations:
       labels:
-        deployment: {{ template "ob-pattern-1.resource.prefix" . }}-obiam
+        deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obiam
     spec:
       initContainers:
         - name: init-ob-db
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+        - name: install-is-extension
+          image: busybox:1.32
+          command: ['sh', '-c', 'wget -O {{ .Values.wso2.deployment.ob.iam.connector.name }}-{{ .Values.wso2.deployment.ob.iam.connector.version }}.zip {{ .Values.wso2.deployment.ob.iam.connector.url }} && unzip {{ .Values.wso2.deployment.ob.iam.connector.name }}-{{ .Values.wso2.deployment.ob.iam.connector.version }}.zip && rm -f {{ .Values.wso2.deployment.ob.iam.connector.name }}-{{ .Values.wso2.deployment.ob.iam.connector.version }}.zip' ]
+          volumeMounts:
+          - name: is-extension-dropins
+            mountPath: "/wso2is-extensions-1.6.8/dropins"
+          - name: is-extension-webapps
+            mountPath: "/wso2is-extensions-1.6.8/webapps"
       containers:
         - name: obiam
           {{ if .Values.wso2.deployment.ob.iam.dockerRegistry }}
@@ -84,23 +92,38 @@ spec:
             - name: JVM_MEM_OPTS
               value: "-Xms{{ .Values.wso2.deployment.ob.iam.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.ob.iam.resources.jvm.heap.memory.xmx }}"
           volumeMounts:
+            - name: obiam-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
             - name: obiam-conf
-              mountPath: /home/wso2carbon/wso2is-5.11.0/repository/conf/deployment.toml  
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml  
               subPath: deployment-uk.toml
-            - name: obiam-resources-security
+            - name: obiam-carbon-certs
               mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
+            - name: is-extension-dropins
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins/
+            - name: is-extension-webapps
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/deployment/server/webapps/
       {{- if .Values.wso2.deployment.ob.iam.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.ob.iam.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "ob-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
+        - name: {{ template "ob-pattern-5.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       volumes:
+        - name: obiam-conf-entrypoint
+          configMap:
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf-entrypoint
+            defaultMode: 0407
         - name: obiam-conf
           configMap:
-            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-conf
-        - name: obiam-resources-security
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
+        - name: obiam-carbon-certs
           configMap:
-            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-resources-security
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-carbon-certs
+        - name: is-extension-dropins
+          emptyDir: {}
+        - name: is-extension-webapps
+          emptyDir: {}
