@@ -271,7 +271,7 @@ data:
 
     [apim.throttling]
     username = "admin@wso2.com@carbon.super"
-    event_duplicate_url = ["tcp://{{ template "ob-pattern-5.resource.prefix" . }}-obam-1-service:5672"]
+    event_duplicate_url = ["tcp://{{ template "ob-pattern-5.resource.prefix" . }}-obam-2-service:5672"]
     #enable_data_publishing = true
     #enable_policy_deploy = true
     #enable_blacklist_condition = true
