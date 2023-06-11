@@ -239,9 +239,6 @@ The following tables lists the configurable parameters of the chart and their de
 
 * We **do not recommend** you to use the evaluatory, MySQL deployment, to host the product databases in a production grade deployment.
 
-* For setting up databases depending on the desired PSD2 API specification, please refer to the official WSO2 Open Banking [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking).
-
-
 ###### Kubernetes Specific Configurations
 
 | Parameter                                                     | Description                                                                               | Default Value                   |
