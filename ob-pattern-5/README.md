@@ -1,11 +1,8 @@
-# Helm Chart for deployment of WSO2 Open Banking API Manager with Identity & Access Management Module and Business Intelligence Support
+# Helm Chart for deployment of WSO2 Open Banking API Manager with Identity & Access Management Module 
 
-Resources for building a Helm chart for deployment of [All-In-One WSO2 Open Banking API Manager with WSO2 Open Banking Identity & Access Managment Module
-support](https://docs.wso2.com/display/OB200/Open+Banking+API+Management+High+Availability+Deployment#OpenBankingAPIManagementHighAvailabilityDeployment-DeploymentPatterns).
-
-![WSO2 Open Banking pattern 2 deployment](https://raw.githubusercontent.com/wso2/kubernetes-open-banking/v3.0.0.1/ob-pattern-5/pattern-5.png)
-
-For advanced details on the deployment pattern, please refer to the official [documentation](https://docs.wso2.com/display/OB200/Configuring+WSO2+Open+Banking).
+Resources for building a Helm chart for deployment of WSO2 Open Banking API Manager with WSO2 Open Banking Identity & Access Managment Module
+support
+![WSO2 Open Banking pattern 5 deployment](https://raw.githubusercontent.com/wso2/kubernetes-open-banking/v3.0.0.1/ob-pattern-5/pattern-5.png)
 
 ## Contents
 
