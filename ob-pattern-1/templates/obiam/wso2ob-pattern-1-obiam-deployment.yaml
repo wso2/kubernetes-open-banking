@@ -1,0 +1,106 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.ob.iam.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: {{template "ob-pattern-1.resource.prefix" . }}-obiam
+  template:
+    metadata:
+      annotations:
+      labels:
+        deployment: {{ template "ob-pattern-1.resource.prefix" . }}-obiam
+    spec:
+      initContainers:
+        - name: init-ob-db
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+      containers:
+        - name: obiam
+          {{ if .Values.wso2.deployment.ob.iam.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.ob.iam.dockerRegistry }}/{{ .Values.wso2.deployment.ob.iam.imageName }}
+          {{- $tag := .Values.wso2.deployment.ob.iam.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{ else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.ob.iam.imageName }}:{{ .Values.wso2.deployment.ob.iam.imageTag }}
+          {{ end }}
+          securityContext:
+            runAsUser: 802
+          imagePullPolicy: {{ .Values.wso2.deployment.ob.iam.imagePullPolicy }}
+          ports:
+            - containerPort: 9766
+              protocol: TCP
+            - containerPort: 9446
+              protocol: TCP
+            - containerPort: 4000
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9446
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.iam.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.iam.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9446
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.iam.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.iam.readinessProbe.periodSeconds }}
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.ob.iam.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.iam.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.ob.iam.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.iam.resources.limits.cpu }}
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JVM_MEM_OPTS
+              value: "-Xms{{ .Values.wso2.deployment.ob.iam.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.ob.iam.resources.jvm.heap.memory.xmx }}"
+          volumeMounts:
+            - name: obiam-conf
+              mountPath: /home/wso2carbon/wso2is-5.11.0/repository/conf/deployment.toml  
+              subPath: deployment-uk.toml
+            - name: obiam-resources-security
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
+      {{- if .Values.wso2.deployment.ob.iam.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.ob.iam.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "ob-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
+      {{ end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      volumes:
+        - name: obiam-conf
+          configMap:
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-conf
+        - name: obiam-resources-security
+          configMap:
+            name: {{ template "ob-pattern-1.resource.prefix" . }}-obiam-resources-security
