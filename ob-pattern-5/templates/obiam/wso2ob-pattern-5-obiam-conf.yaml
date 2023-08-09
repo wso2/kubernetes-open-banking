@@ -1,0 +1,843 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obiam-conf
+  namespace : {{ .Release.Namespace }}
+data:
+  deployment-uk.toml: |- 
+    #================configs related to carbon.xml=============
+    [server]
+    hostname = "{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}"
+    node_ip = "$env{NODE_IP}"
+    base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+    serverDetails = "WSO2 IS as KM 5.11.0"
+    mode = "single"
+    userAgent = "WSO2 IS as KM 5.11.0"
+    offset = 3
+
+    [clustering]
+    membership_scheme = "kubernetes"
+    domain = "wso2.ob.iam.domain"
+    properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
+    properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
+    properties.KUBERNETES_SERVICES = "{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service"
+    properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
+    properties.USE_DNS = "false"
+
+    [keystore.primary]
+    name = "wso2carbon.jks"
+    password = "wso2carbon"
+
+    [tenant_mgt]
+    enable_email_domain = true
+
+    [application_mgt]
+    enable_role_validation = true
+    
+    #================configs related to user-mgt.xml=============
+
+    [super_admin]
+    username = "admin@wso2.com"
+    password = "wso2123"
+    create_admin_account = true
+
+    [realm_manager]
+    data_source= "WSO2USER_DB"
+
+    [user_store]
+    type = "database_unique_id"
+    class = "org.wso2.carbon.user.core.jdbc.UniqueIDJDBCUserStoreManager"
+
+    [user_store.properties]
+    UsernameJavaRegEx = "a-zA-Z0-9@._-{3,30}$"
+    UsernameJavaScriptRegEx = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"
+    SCIMEnabled = false
+    IsBulkImportSupported = false
+    LeadingOrTrailingSpaceAllowedInUserName = false
+    UsernameWithEmailJavaScriptRegEx = "^[\\S]{3,30}$"
+
+    [authorization_manager]
+    class = "org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager"
+
+    [authorization_manager.properties]
+    AdminRoleManagementPermissions = "/permission"
+    AuthorizationCacheEnabled = true
+    GetAllRolesOfUserEnabled = false
+
+    #================configs related to master-datasources.xml=============
+
+    # for registry data
+    [database.shared_db]
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_govdb?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.shared_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for api manager data
+    [database.identity_db]
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_apimgtdb?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.identity_db.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for km-config registry
+    [database.config]
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_iskm_configdb?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.config.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for user-mgt data
+    [database.user]
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_userdb?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+    [database.user.pool_options]
+    maxActive = "150"
+    maxWait = "60000"
+    minIdle ="5"
+    testOnBorrow = true
+    validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    validationInterval="30000"
+    defaultAutoCommit=false
+
+    # for Open Banking  data
+    [[datasource]]
+    id="WSO2OB_DB"
+    url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_openbankingdb?autoReconnect=true&amp;useSSL=false"
+    username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+    password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+    driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+    jmx_enable=false
+    pool_options.maxActive = "150"
+    pool_options.maxWait = "60000"
+    pool_options.minIdle = "5"
+    pool_options.testOnBorrow = true
+    pool_options.validationQuery="SELECT 1"
+    #Use below for oracle
+    #validationQuery="SELECT 1 FROM DUAL"
+    pool_options.validationInterval="30000"
+    pool_options.defaultAutoCommit=false
+
+    #================configs related to application-authentication.xml=============
+
+    [authentication.endpoints]
+    login_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/login.do"
+    retry_url = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/retry.do"
+
+    [authentication.endpoint.redirect_params]
+    filter_policy = "include"
+    remove_on_consume_from_api = "true"
+    parameters = ["sessionDataKeyConsent","relyingParty", "authenticators", "authFailureMsg", "authFailure"]
+
+    [authentication.authenticator.sms_otp.parameters]
+    EnableAccountLockingForFailedAttempts = true
+    BackupCode = false
+    TokenExpiryTime = 60
+
+    [[authentication.custom_authenticator]]
+    name = "IdentifierExecutor"
+    parameters.ValidateUsername = true
+    parameters.throttleLimit = 3
+    parameters.throttleTimePeriod = 300
+    parameters.authRequestURL = "https://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/api/identity/auth/v1.1/data/AuthRequestKey/"
+
+
+    #================configs related to identity.xml=============
+
+    [identity_data_source]
+    skip_db_schema_creation = true
+
+    [oauth]
+    allowed_scopes = ["consent.*"]
+
+    [oauth.token_renewal]
+    renew_refresh_token = false
+
+    [oauth.endpoints]
+    oauth2_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_authz.do"
+    oidc_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/ob/authenticationendpoint/oauth2_consent.do"
+    oauth1_request_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/request-token"
+    oauth1_authorize_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/authorize-url"
+    oauth1_access_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth/access-token"
+    oauth2_authz_url = "${carbon.protocol}://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/oauth2/authorize"
+    oauth2_token_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/token"
+    oauth2_revoke_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/revoke"
+    oauth2_introspect_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/introspect"
+    oauth2_user_info_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/userinfo"
+    oidc_check_session_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oidc/checksession"
+    oidc_logout_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oidc/logout"
+    oauth2_error_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_error.do"
+    oidc_logout_consent_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_logout_consent.do"
+    oidc_logout_page = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/authenticationendpoint/oauth2_logout.do"
+    oauth2_dcr_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/api/identity/oauth2/dcr/v1.1/register"
+    oauth2_jwks_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/jwks"
+    oidc_discovery_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/oauth2/oidcdiscovery"
+    oidc_web_finger_url = "${carbon.protocol}://{{ .Values.wso2.deployment.ob.iam.ingress.management.hostname }}/.well-known/webfinger"
+
+    [oauth.response_type]
+    token.enable = true
+    code.enable = false
+    id_token.enable = true
+    id_token_token.enable = false
+    device.enable = true
+
+    [[oauth.custom_response_type]]
+    name = "code"
+    class = "com.wso2.openbanking.accelerator.identity.auth.extensions.response.handler.OBCodeResponseTypeHandlerExtension"
+    validator = "com.wso2.openbanking.accelerator.identity.auth.extensions.response.validator.OBCodeResponseTypeValidator"
+
+    [[oauth.custom_response_type]]
+    name = "code id_token"
+    class = "com.wso2.openbanking.accelerator.identity.auth.extensions.response.handler.OBHybridResponseTypeHandlerExtension"
+
+    [[event_listener]]
+    id = "token_revocation"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.is.notification.ApimOauthEventInterceptor"
+    order = 1
+
+    [event_listener.properties]
+    PreventTokenReuse= false
+    RejectBeforeInMinutes= "100"
+    TokenEndpointAlias= "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/oauth2/token"
+    notification_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9443/internal/data/v1/notify"
+    username = "${admin.username}"
+    password = "${admin.password}"
+    'header.X-WSO2-KEY-MANAGER' = "WSO2-IS"
+
+    [[event_listener]]
+    id = "private_key_jwt_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.carbon.identity.oauth2.token.handler.clientauth.jwt.PrivateKeyJWTClientAuthenticator"
+    order = "899"
+
+
+    [oauth.grant_type]
+    iwa_ntlm.enable = false
+    jwt_bearer.enable = true
+
+    [identity_mgt.user_self_registration]
+    allow_self_registration = true
+
+    [[resource.access_control]]
+    context = "(.)/keymanager-operations/user-info/claims(.)"
+    secure = true
+    http_method = "GET"
+    permissions = "/permission/admin/manage/identity/usermgt/list"
+    scopes = "internal_user_mgt_list"
+
+    [[resource.access_control]]
+    context = "(.*)/keymanager-operations/user-info/claims/generate"
+    secure = true
+    http_method = "POST"
+    permissions = "/permission/admin/manage/identity/usermgt/list"
+    scopes = "internal_user_mgt_list"
+
+    [[resource.access_control]]
+    context = "(.*)/keymanager-operations/dcr/register"
+    secure = true
+    http_method = "POST"
+    permissions = "/permission/admin/manage/identity/applicationmgt/create"
+    scopes = "internal_application_mgt_create"
+
+    [[resource.access_control]]
+    context = "(.*)/keymanager-operations/dcr/register(.*)"
+    secure = true
+    http_method = "GET"
+    permissions = "/permission/admin/manage/identity/applicationmgt/view"
+    scopes = "internal_application_mgt_view"
+
+    [[resource.access_control]]
+    context = "(.*)/keymanager-operations/dcr/register(.*)"
+    secure = true
+    http_method = "DELETE"
+    permissions = "/permission/admin/manage/identity/applicationmgt/delete"
+    scopes = "internal_application_mgt_delete"
+
+    [[resource.access_control]]
+    context = "(.*)/keymanager-operations/dcr/register(.*)"
+    secure = true
+    http_method = "PUT"
+    permissions = "/permission/admin/manage/identity/applicationmgt/update"
+    scopes = "internal_application_mgt_update"
+
+    [[resource.access_control]]
+    context = "(.)/keymanager-operations/dcr/register(.)"
+    secure = true
+    http_method = "POST"
+    permissions = "/permission/admin/manage/identity/applicationmgt/update"
+    scopes = "internal_application_mgt_update"
+
+    [[resource.access_control]]
+    context = "(.*)/openbanking/dynamic-client-registration/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/api/openbanking/consent/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/api/openbanking/push-authorization/(.*)"
+    secure="true"
+    http_method="all"
+    permissions=["/permission/admin"]
+    allowed_auth_handlers = ["BasicAuthentication"]
+
+    [[resource.access_control]]
+    context = "(.*)/consentmgr(.*)"
+    secure="false"
+    http_method="GET, DELETE"
+
+    [[resource.access_control]]
+    context = "(.*)/api/openbanking/application/(.*)"
+    secure="false"
+    http_method="GET"
+
+    [authentication.adaptive.event_publisher]
+    url = "http://localhost:8006/"
+
+    [tenant_context.rewrite]
+    custom_webapps = ["/keymanager-operations/"]
+
+    [oauth.mutualtls]
+    client_certificate_header = "x-wso2-mutual-auth-cert"
+
+    [event.default_listener.mutual_tls_authenticator]
+    enable = false
+
+    [[event_listener]]
+    id = "ob_mutual_tls_authenticator"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "com.wso2.openbanking.accelerator.identity.clientauth.OBMutualTLSClientAuthenticator"
+    order = "26"
+    enable = true
+
+    [oauth.token.validation]
+    include_validation_context_as_jwt_in_reponse = "true"
+    validation_response_signing_algorithm = "SHA256withRSA"
+    validation_response_jwt_validity = "15m"
+
+    [oauth.extensions]
+    token_context_generator = "org.wso2.carbon.identity.oauth2.authcontext.JWTTokenGenerator"
+    token_context_claim_retriever = "org.wso2.carbon.identity.oauth2.authcontext.DefaultClaimsRetriever"
+    token_context_dialect_uri = "http://wso2.org/claims"
+
+    [oauth.token_generation]
+    access_token_type = "self_contained"
+
+    [oauth.grant_type.uma_ticket]
+    retrieve_uma_permission_info_through_introspection = true
+
+    [oauth.grant_type.refresh_token]
+    enable=true
+    grant_handler="com.wso2.openbanking.accelerator.identity.grant.type.handlers.OBRefreshGrantHandler"
+
+    [oauth.grant_type.authorization_code]
+    enable=true
+    grant_handler="com.wso2.openbanking.accelerator.identity.grant.type.handlers.OBAuthorizationCodeGrantHandler"
+
+    [oauth.grant_type.password]
+    enable=true
+    grant_handler="com.wso2.openbanking.accelerator.identity.grant.type.handlers.OBPasswordGrantHandler"
+
+    [oauth.grant_type.client_credentials]
+    enable=true
+    grant_handler="com.wso2.openbanking.accelerator.identity.grant.type.handlers.OBClientCredentialsGrantHandler"
+
+    [oauth.oidc.extensions]
+    claim_callback_handler="com.wso2.openbanking.accelerator.identity.claims.OBDefaultOIDCClaimsCallbackHandler"
+    request_object_validator = "com.wso2.openbanking.accelerator.identity.auth.extensions.request.validator.OBRequestObjectValidationExtension"
+
+    [[oauth.oidc.custom_request_object_builder]]
+    type = "request_uri_param_value_builder"
+    class = "com.wso2.openbanking.accelerator.identity.builders.DefaultOBRequestUriRequestObjectBuilder"
+
+    #================configs related to identity-event.properties=============
+
+    [[event_handler]]
+    name="userPostSelfRegistration"
+    subscriptions=["POST_ADD_USER"]
+
+    #================configs related to open-banking.xml=============
+
+    [open_banking]
+    username="$ref{super_admin.username}"
+    password="$ref{super_admin.password}"
+
+    [[open_banking.jdbc_persistence_manager]]
+    data_source.name = "WSO2OB_DB"
+    connection_verification_timeout=1
+
+    #=======================dcr configs======================
+    [open_banking.dcr]
+    validator = "com.wso2.openbanking.uk.identity.dcr.validation.UKRegistrationValidationImpl"
+    jwks_url_sandbox = "https://keystore.openbankingtest.org.uk/0015800001HQQrZAAX/0015800001HQQrZAAX.jwks"
+    jwks_url_production = "https://keystore.openbankingtest.org.uk/0015800001HQQrZAAX/0015800001HQQrZAAX.jwks"
+    applicationupdater = "com.wso2.openbanking.uk.identity.listener.application.UKApplicationUpdaterImpl"
+    use_softwareIdForAppName = true
+    jwks_endpoint_name = "software_jwks_endpoint"
+    [open_banking.dcr.jwks_retriever]
+    connection_timeout = 3000
+    read_timeout = 3000
+
+    [[open_banking.dcr.regulatory_issuers.iss]]
+    name = "OpenBanking Ltd"
+
+    #Signature algorithm types that are allowed
+    #[[open_banking.signature_validation.allowed_algorithms.algorithms]]
+    #algorithm = "PS256"
+
+    [open_banking.sca.primaryauth]
+    name = "BasicAuthenticator"
+    display = "basic"
+
+    #[open_banking.sca.idp]
+    #name = ""
+
+    [open_banking.dcr.registration.callback_uris]
+    required = true
+
+    [open_banking.dcr.registration.request_object_signing_algorithm]
+    required = true
+
+    [open_banking.dcr.registration.token_endpoint_authentication]
+    required = true
+    allowed_values = ["private_key_jwt", "tls_client_auth"]
+
+    [open_banking.dcr.registration.token_endpoint_auth_signing_alg]
+    required = true
+
+    [open_banking.dcr.registration.grant_types]
+    required = true
+    allowed_values = ["authorization_code", "refresh_token", "client_credentials"]
+
+    #[open_banking.dcr.registration.scope]
+    #required = true
+    #allowed_values = ["accounts", "payments"]
+
+    [open_banking.dcr.registration.application_type]
+    required = true
+    allowed_values = ["web"]
+
+    [open_banking.data_publishing]
+    enable = false
+    username="$ref{super_admin.username}@carbon.super"
+    password="$ref{super_admin.password}"
+    server_url = "{tcp://localhost:7612}"
+    #auth_url = "{ssl://localhost:7612}"
+    protocol = "Thrift"
+    pool_size = 10
+    queue_size = 32768
+    worker_thread_count = 10
+    pool_wait_time_Ms = 60000
+    auth_data_publisher = "com.wso2.openbanking.uk.data.publisher.authentication.extension.UKAuthDataPublisher"
+
+    [open_banking.data_publishing.thrift]
+    publishing_timeout = 2000
+    #data streams and their attributes with the priority order
+    [[open_banking.data_publishing.thrift.stream]]
+    name="AuthenticationInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentId"
+    priority=1
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="userId"
+    priority=2
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="requestType"
+    priority=3
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authenticationStep"
+    priority=4
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authenticationStatus"
+    priority=5
+    required=true
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authenticationApproach"
+    priority=6
+    required=true
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="psuChannel"
+    priority=7
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="timestamp"
+    priority=8
+    required=true
+    type="long"
+
+    [[open_banking.data_publishing.thrift.stream]]
+    name="AccessTokenInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="accessTokenID"
+    priority=1
+
+    [[open_banking.data_publishing.thrift.stream]]
+    name="AccountsInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentId"
+    priority=1
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="userId"
+    priority=2
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="tppId"
+    priority=3
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="clientId"
+    priority=4
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="accountId"
+    priority=5
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authorisationStatus"
+    priority=6
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="reAuthorisation"
+    priority=7
+    type="bool"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="timestamp"
+    priority=8
+    required=true
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="apiSpecVersion"
+    priority=9
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentType"
+    priority=10
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="expirationDateTime"
+    priority=11
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="psuInteractionTime"
+    priority=12
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="messageId"
+    priority=13
+
+    [[open_banking.data_publishing.thrift.stream]]
+    name="FundsConfirmationInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentId"
+    priority=1
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="userId"
+    priority=2
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="tppId"
+    priority=3
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="clientId"
+    priority=4
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="debtorAccountId"
+    priority=5
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authorisationStatus"
+    priority=6
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="timestamp"
+    priority=7
+    required=true
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="apiSpecVersion"
+    priority=8
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentType"
+    priority=9
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="expirationDateTime"
+    priority=10
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="psuInteractionTime"
+    priority=11
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="messageId"
+    priority=12
+
+    [[open_banking.data_publishing.thrift.stream]]
+    name="CoFAccessHistoryInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentId"
+    priority=1
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="clientId"
+    priority=2
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="timestamp"
+    priority=3
+    required=true
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="amount"
+    priority=4
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="currency"
+    priority=5
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="reference"
+    priority=6
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="response"
+    priority=7
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="electedResource"
+    priority=8
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="statusCode"
+    priority=9
+    type="int"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="statusMessage"
+    priority=10
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="messageId"
+    priority=11
+
+    [[open_banking.data_publishing.thrift.stream]]
+    name="PaymentInputStream"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentId"
+    priority=1
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="userId"
+    priority=2
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="tppId"
+    priority=3
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="clientId"
+    priority=4
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="paymentType"
+    priority=5
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="authorisationStatus"
+    priority=6
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="timestamp"
+    priority=7
+    required=true
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="creditorAccountId"
+    priority=8
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="debtorAccountId"
+    priority=9
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="multiAuthorisation"
+    priority=10
+    type="bool"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="currency"
+    priority=11
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="amount"
+    priority=12
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="noOfTransactions"
+    priority=13
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="localInstrument"
+    priority=14
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="paymentSubmissionId"
+    priority=15
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="multiAuthUserCount"
+    priority=16
+    type="int"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="apiSpecVersion"
+    priority=17
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="deliveryAddress"
+    priority=18
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="consentType"
+    priority=19
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="paymentRefund"
+    priority=20
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="psuInteractionTime"
+    priority=21
+    type="long"
+    [[open_banking.data_publishing.thrift.stream.attributes]]
+    name="messageId"
+    priority=22
+
+    #================custom filters and filter-mappings==============
+    [[tomcat.filter]]
+    name = "TokenFilter"
+    class = "com.wso2.openbanking.accelerator.identity.token.TokenFilter"
+
+    [[tomcat.filter_mapping]]
+    name = "TokenFilter"
+    url_pattern = "/token"
+
+    [open_banking.identity.mutualtls]
+    #This property needs to be true if the certificate should be decoded when it is passed from the load balancer to the Gateway.
+    client_certificate_encode=true
+    #Specify the jwks uri for the transport certificate.
+    transport_jwks_uri = "software_jwks_endpoint"
+
+    #===================for Connection pool====================
+    [open_banking.http_connection_pool]
+    max_connections = 2000
+    max_connections_per_route = 1500
+
+    [open_banking.consent.periodical_expiration]
+    # This property needs to be true in order to run the consent expiration periodical updater.
+    enabled=true
+    # Cron value for the periodical updater. "0 0 0 * * ?" cron will describe as 00:00:00am every day
+    cron_value="0 0 0 * * ?"
+    # This value to be update for expired consents.
+    expired_consent_status_value="Expired"
+    # These consent statuses will only be consider when checking for expired consents. (Comma separated value list)
+    eligible_statuses="authorised"
+
+    [open_banking.identity.application_information_webapp]
+    sp_metadata_filter="com.wso2.openbanking.accelerator.identity.sp.metadata.extension.impl.DefaultSPMetadataFilter"
+
+    #================UK Toolkit==============
+    #================Identity==============
+    [open_banking.identity.extensions]
+    request_object_validator="com.wso2.openbanking.uk.identity.auth.extensions.request.validator.UKRequestObjectValidator"
+    claim_provider = "com.wso2.openbanking.uk.identity.claims.UKClaimProvider"
+    response_type_handler = "com.wso2.openbanking.uk.identity.auth.extensions.response.handler.impl.UKResponseTypeHandler"
+
+    [open_banking.identity.authentication_webapp]
+    servlet_extension = "com.wso2.openbanking.uk.consent.extensions.authservlet.impl.OBUKAuthServletImpl"
+
+    #================consent management==============
+    [[open_banking.consent.authorize_steps.retrieve]]
+    class = "com.wso2.openbanking.accelerator.consent.extensions.authorize.impl.NonRegulatoryConsentStep"
+    priority = 1
+
+    [[open_banking.consent.authorize_steps.retrieve]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.retrieval.UKConsentRetrievalStep"
+    priority = 2
+
+    [[open_banking.consent.authorize_steps.retrieve]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.retrieval.UKAccountListRetrievalStep"
+    priority = 3
+
+    [[open_banking.consent.authorize_steps.retrieve]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.retrieval.UKMultiAuthRetrievalStep"
+    priority = 4
+
+    [[open_banking.consent.authorize_steps.retrieve]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.retrieval.UKDataReportingRetrievalStep"
+    priority = 5
+
+    [[open_banking.consent.authorize_steps.persist]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.persist.UKMultiAuthPersistStep"
+    priority = 1
+
+    [[open_banking.consent.authorize_steps.persist]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.persist.UKConsentPersistStep"
+    priority = 2
+
+    [[open_banking.consent.authorize_steps.persist]]
+    class = "com.wso2.openbanking.uk.consent.extensions.authorize.impl.persist.UKDataReportingPersistStep"
+    priority = 3
+
+    [open_banking.consent.manage]
+    handler="com.wso2.openbanking.uk.consent.extensions.manage.UKConsentManageHandler"
+
+    [open_banking.consent.validation]
+    validator="com.wso2.openbanking.uk.consent.extensions.validate.UKConsentValidator"
+
+    [open_banking.consent.validation.signature]
+    alias="wso2carbon"
+
+    [open_banking.consent.admin]
+    handler="com.wso2.openbanking.accelerator.consent.extensions.admin.impl.DefaultConsentAdminHandler"
+
+    [open_banking_uk]
+    zone_id = "Asia/Colombo"
+
+    [open_banking_uk.consent]
+    payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
+    sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
+    account_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/aisp/"
+    payment_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/pisp/"
+    vrp_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/vrp/"
+    cof_consent_self_link = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}/open-banking/{version}/cbpii/"
+    acc_update_by_psu_enabled = false
+
+    [open_banking_uk.consent.payment_restrictions.cutoff_date]
+    enabled = false
+    policy = "ACCEPT"
+    daily_cutoff = "12:30:30+00:01"
+    execution_time = "10:30:30+00:01"
+    settlement_time = "11:30:30+00:01"
+
+    [open_banking_uk.account.refresh_token]
+    validity_period = 15552000
+    last_authorized_date_limit = 90
+
+    [transport.https.properties]
+    proxyPort = 443

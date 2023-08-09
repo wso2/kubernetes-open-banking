@@ -1,0 +1,6 @@
+dependencies:
+- name: mysql-ob
+  repository: file://../database/mysql-ob
+  version: 3.0.0-1
+digest: sha256:e27a59978f744b8bcc5ba0323c028e5a41c91766c8a4bdd4f5fb61f63e027edf
+generated: "2023-05-30T19:35:34.274805272+05:30"
