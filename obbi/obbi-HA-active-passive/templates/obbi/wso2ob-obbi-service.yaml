@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "obbi.resource.prefix" . }}-obbi-service
+  namespace : {{ .Release.Namespace }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: {{ template "obbi.resource.prefix" . }}-obbi
+  ports:
+    # ports that this service should serve on
+    - name: servlet-https
+      port: 9444
+      protocol: TCP
+    - name: binary-ssl-port
+      port: 9712
+      protocol: TCP
+    - name: binary-tcp-port
+      port: 9612
+      protocol: TCP
+    - name: thrift-ssl-port
+      port: 7712
+      protocol: TCP
+    - name: thrift-tcp-port
+      port: 7612
+      protocol: TCP
+    - name: health-check
+      port: 9092
+      protocol: TCP
+    

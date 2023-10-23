@@ -1,0 +1,123 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "obbi.resource.prefix" . }}-obbi-2-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.ob.bi.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: {{template "obbi.resource.prefix" . }}-obbi
+      node: {{template "obbi.resource.prefix" . }}-obbi-2
+  template:
+    metadata:
+      annotations:
+      labels:
+        deployment: {{ template "obbi.resource.prefix" . }}-obbi
+        node: {{template "obbi.resource.prefix" . }}-obbi-2
+    spec:
+      initContainers:
+        - name: init-ob-db
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+      containers:
+        - name: obbi
+          {{ if .Values.wso2.deployment.ob.bi.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.ob.bi.dockerRegistry }}/{{ .Values.wso2.deployment.ob.bi.imageName }}
+          {{- $tag := .Values.wso2.deployment.ob.bi.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{ else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.ob.bi.imageName }}:{{ .Values.wso2.deployment.ob.bi.imageTag }}
+          {{ end }}
+          securityContext:
+            runAsUser: 802
+          imagePullPolicy: {{ .Values.wso2.deployment.ob.bi.imagePullPolicy }}
+          ports:
+            - containerPort: 9712
+              protocol: TCP
+            - containerPort: 9612
+              protocol: TCP
+            - containerPort: 7712
+              protocol: TCP
+            - containerPort: 7612
+              protocol: TCP
+            - containerPort: 9092
+              protocol: TCP
+            - containerPort: 9444
+              protocol: TCP
+            - containerPort: 9893
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9444
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.bi.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 7612
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.periodSeconds }}
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.ob.bi.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.bi.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.ob.bi.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.bi.resources.limits.cpu }}
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JVM_MEM_OPTS
+              value: "-Xms{{ .Values.wso2.deployment.ob.bi.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.ob.bi.resources.jvm.heap.memory.xmx }}"
+          volumeMounts:
+            - name: obbi-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
+            - name: obbi-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/server/deployment.yaml
+              subPath: deployment.yaml
+            - name: obbi-carbon-certs
+              mountPath: /home/wso2carbon/wso2-artifact-volume/resources/security
+      {{- if .Values.wso2.deployment.ob.bi.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.ob.bi.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "obbi.resource.prefix" . }}-obbi-wso2-private-registry-creds
+      {{ end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      volumes:
+        - name: obbi-conf-entrypoint
+          configMap:
+            name: {{ template "obbi.resource.prefix" . }}-obbi-conf-entrypoint
+            defaultMode: 0407
+        - name: obbi-conf
+          configMap:
+            name: {{ template "obbi.resource.prefix" . }}-obbi-2-conf
+        - name: obbi-carbon-certs
+          configMap:
+            name: {{ template "obbi.resource.prefix" . }}-obbi-carbon-certs

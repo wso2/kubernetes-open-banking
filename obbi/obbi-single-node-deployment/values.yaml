@@ -1,0 +1,86 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+wso2:
+  subscription:
+    username: ""
+    password: ""
+  
+  deployment:
+    dependencies:
+      # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+      ob-pattern-5: false
+    ob:
+      bi:
+        # Container image configurations
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+        # dockerRegistry: ""
+        imageName: "wso2-obbi"
+        imageTag: "3.0.0.0-si4.0.0.0-alpine"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
+        # Number of deployment replicas
+        replicas: 1
+
+        # Indicates whether the container is running
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        resources:
+          # These are the minimum resource recommendations for running WSO2 API Management product profiles
+          # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "3048m"
+                # Maximum Heap size
+                xmx: "3048m"
+
+      # Product configurations
+      config:
+        # Externalized data source configurations
+        datasources:
+          # RDBMS configurations
+          rdbms:
+            # RDBMS type
+            type: "mysql"
+            # RDBMS server configurations
+            server:
+              hostname: "wso2ob-rdbms-service-mysql"
+              port: "3306"
+              username: "wso2carbon"
+              password: "wso2carbon"
+            driverClassName: "com.mysql.jdbc.Driver"
+
+kubernetes:
+  # Name of Kubernetes service account
+  serviceAccount: "wso2ob-obbi-svc-account"
