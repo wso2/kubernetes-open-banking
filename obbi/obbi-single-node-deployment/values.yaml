@@ -24,7 +24,7 @@ wso2:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
         imageName: "wso2-obbi-toolkit-uk"
-        imageTag: "1.0.0.2-acc3.0.0.0-si4.2.0.0"
+        imageTag: "1.0.0.4-acc3.0.0.1-si4.2.0.3"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 

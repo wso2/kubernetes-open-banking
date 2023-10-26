@@ -71,7 +71,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9443
+                - nc -z 0.0.0.0 9443
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.periodSeconds }}
           readinessProbe:
@@ -79,7 +79,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9443
+                - nc -z 0.0.0.0 9443
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.periodSeconds }}
           resources:
