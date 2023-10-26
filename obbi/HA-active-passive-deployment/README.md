@@ -1,6 +1,6 @@
-# Helm Chart for deployment of WSO2 Open Banking Business Intelligence module.
+# Helm Chart for deployment of WSO2 Open Banking UK Toolkit Business Intelligence module.
 
-Resources for building a Helm chart for deployment of WSO2 Open Banking Business Intelligence module. This chart depends on the WSO2 Open Banking API Manager with WSO2 Open Banking Identity & Access Management Module helm charts.
+Resources for building a Helm chart for deployment of WSO2 Open Banking UK Toolkit Business Intelligence module. This chart depends on the WSO2 Open Banking UK Toolkit API Manager with WSO2 Open Banking UK Toolkit Identity & Access Management Module helm charts.
 
 ## Contents
 
@@ -15,7 +15,7 @@ Resources for building a Helm chart for deployment of WSO2 Open Banking Business
 * Please refer to the README.md in `ob-pattern-5/README.md` on setting up WSO2 obiam and obam.
 
 * Make sure data reporting DBs are created. ( `openbank_ob_reporting_statsdb`, `openbank_ob_reporting_summarizeddb` , `PERSISTENCE_DB` and `WSO2_CLUSTER_DB` )
-  (https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/si-deployment/deploying-si-as-minimum-ha-cluster/)
+  (https://apim.docs.wso2.com/en/4.2.0/install-and-setup/setup/si-deployment/deploying-si-as-minimum-ha-cluster/)
 
 * Enable data publishing https://ob.docs.wso2.com/en/latest/get-started/data-publishing-try-out/
 
@@ -25,7 +25,7 @@ Resources for building a Helm chart for deployment of WSO2 Open Banking Business
     enable = true
     ```
   * Enabling OB data publishing and configure the obbi server url in API Manager and IAM in `ob-pattern-5/templates/obiam/wso2ob-pattern-5-obiam-conf.yaml`, `ob-pattern-5/templates/obam/instance-1/wso2ob-pattern-5-obam-conf.yaml` and `ob-pattern-5/templates/obam/instance-2/wso2ob-pattern-5-obam-conf.yaml`:
-  * This is the service URL of `obbi/obbi-HA-active-passive/templates/obbi/wso2ob-obbi-service.yaml`
+  * This is the service URL of `obbi/HA-active-passive-deployment/templates/obbi/wso2ob-obbi-service.yaml`
     ```azure
     [open_banking.data_publishing]
     enable = true
@@ -50,7 +50,7 @@ Resources for building a Helm chart for deployment of WSO2 Open Banking Business
 git clone https://github.com/wso2/kubernetes-open-banking.git
 ```
 
-##### Deploy Helm chart for WSO2 Open Banking Accelerator with OBBI Accelerator deployment.
+##### Deploy Helm chart for WSO2 Open Banking UK Toolkit with OBBI deployment.
 
 Helm version 2
 
@@ -90,22 +90,22 @@ The following tables lists the configurable parameters of the chart and their de
 
 ###### Open Banking Business Intelligence Server Configurations
 
-| Parameter                                                  | Description                                                                           | Default Value              |
-|------------------------------------------------------------|---------------------------------------------------------------------------------------|----------------------------|
-| `wso2.deployment.ob.bi.dockerRegistry`                     | Registry location of the Docker image to be used to create OBBI instances             | -                          |
-| `wso2.deployment.ob.bi.imageName`                          | Name of the Docker image to be used to create OBBI instances                          | `wso2-obbi`                |
-| `wso2.deployment.ob.bi.imageTag`                           | Tag of the image used to create OBBI instances                                        | `3.0.0.0-si4.0.0.0-alpine` |
-| `wso2.deployment.ob.bi.imagePullPolicy`                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images) | `Always`                   |
-| `wso2.deployment.ob.bi.livenessProbe.initialDelaySeconds`  | Initial delay for the live-ness probe for OBBI node                                   | 20                         |
-| `wso2.deployment.ob.bi.livenessProbe.periodSeconds`        | Period of the live-ness probe for OBBI node                                           | 10                         |
-| `wso2.deployment.ob.bi.readinessProbe.initialDelaySeconds` | Initial delay for the readiness probe for OBBI node                                   | 20                         |
-| `wso2.deployment.ob.bi.readinessProbe.periodSeconds`       | Period of the readiness probe for OBBI node                                           | 10                         |
-| `wso2.deployment.ob.bi.resources.requests.memory`          | The minimum amount of memory that should be allocated for a Pod                       | 4Gi                        |
-| `wso2.deployment.ob.bi.resources.requests.cpu`             | The minimum amount of CPU that should be allocated for a Pod                          | 2000m                      |
-| `wso2.deployment.ob.bi.resources.limits.memory`            | The maximum amount of memory that should be allocated for a Pod                       | 4Gi                        |
-| `wso2.deployment.ob.bi.resources.limits.cpu`               | The maximum amount of CPU that should be allocated for a Pod                          | 2000m                      |
-| `wso2.deployment.ob.bi.resources.jvm.heap.memory.xms`      | The initial memory allocation for JVM Heap                                            | 3048m                      |
-| `wso2.deployment.ob.bi.resources.jvm.heap.memory.xmx`      | The maximum memory allocation for JVM Heap                                            | 3048m                      |
+| Parameter                                                  | Description                                                                           | Default Value                  |
+|------------------------------------------------------------|---------------------------------------------------------------------------------------|--------------------------------|
+| `wso2.deployment.ob.bi.dockerRegistry`                     | Registry location of the Docker image to be used to create OBBI instances             | -                              |
+| `wso2.deployment.ob.bi.imageName`                          | Name of the Docker image to be used to create OBBI instances                          | `wso2-obbi-toolkit-uk`         |
+| `wso2.deployment.ob.bi.imageTag`                           | Tag of the image used to create OBBI instances                                        | `1.0.0.4-acc3.0.0.1-si4.2.0.3` |
+| `wso2.deployment.ob.bi.imagePullPolicy`                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images) | `Always`                       |
+| `wso2.deployment.ob.bi.livenessProbe.initialDelaySeconds`  | Initial delay for the live-ness probe for OBBI node                                   | 20                             |
+| `wso2.deployment.ob.bi.livenessProbe.periodSeconds`        | Period of the live-ness probe for OBBI node                                           | 10                             |
+| `wso2.deployment.ob.bi.readinessProbe.initialDelaySeconds` | Initial delay for the readiness probe for OBBI node                                   | 20                             |
+| `wso2.deployment.ob.bi.readinessProbe.periodSeconds`       | Period of the readiness probe for OBBI node                                           | 10                             |
+| `wso2.deployment.ob.bi.resources.requests.memory`          | The minimum amount of memory that should be allocated for a Pod                       | 4Gi                            |
+| `wso2.deployment.ob.bi.resources.requests.cpu`             | The minimum amount of CPU that should be allocated for a Pod                          | 2000m                          |
+| `wso2.deployment.ob.bi.resources.limits.memory`            | The maximum amount of memory that should be allocated for a Pod                       | 4Gi                            |
+| `wso2.deployment.ob.bi.resources.limits.cpu`               | The maximum amount of CPU that should be allocated for a Pod                          | 2000m                          |
+| `wso2.deployment.ob.bi.resources.jvm.heap.memory.xms`      | The initial memory allocation for JVM Heap                                            | 3048m                          |
+| `wso2.deployment.ob.bi.resources.jvm.heap.memory.xmx`      | The maximum memory allocation for JVM Heap                                            | 3048m                          |
 
 ### Please refer to the README.md in `ob-pattern-5/README.md` for API Manager Server Configurations, IAM Module Server Configurations and Product Configurations.
 

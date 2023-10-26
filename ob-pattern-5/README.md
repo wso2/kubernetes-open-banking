@@ -171,51 +171,51 @@ The following tables lists the configurable parameters of the chart and their de
 
 ###### API Manager Server Configurations
 
-| Parameter                                                       | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.ob.am.dockerRegistry`                          | Registry location of the Docker image to be used to create API Manager instances          | -                           |
-| `wso2.deployment.ob.am.imageName`                               | Name of the Docker image to be used to create API Manager instances                       | `wso2-obam-toolkit-uk`                 |
-| `wso2.deployment.ob.am.imageTag`                                | Tag of the image used to create API Manager instances                                     | `1.0.0.9-acc3.0.0.41-am4.2.0.3`                     |
-| `wso2.deployment.ob.am.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
-| `wso2.deployment.ob.am.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager node                                | 180                         |
-| `wso2.deployment.ob.am.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.ob.am.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for API Manager node                                | 180                         |
-| `wso2.deployment.ob.am.readinessProbe.periodSeconds`            | Period of the readiness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.ob.am.resources.requests.memory`               | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
-| `wso2.deployment.ob.am.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
-| `wso2.deployment.ob.am.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                           | 3Gi                         |
-| `wso2.deployment.ob.am.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                       |
-| `wso2.deployment.ob.am.resources.jvm.heap.memory.xms`           | The initial memory allocation for JVM Heap                                                | 1024m                       |
-| `wso2.deployment.ob.am.resources.jvm.heap.memory.xmx`           | The maximum memory allocation for JVM Heap                                                | 1024m                       |
-| `wso2.deployment.ob.am.ingress.management.hostname`             | Hostname for API Manager Admin Portal, Publisher, Devportal and Carbon Management Console     | `obam`            |
-| `wso2.deployment.ob.am.ingress.management.annotations`          | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations         |
-| `wso2.deployment.ob.am.ingress.gateway.hostname`                | Hostname for API Manager Gateway                                                          | `obam-gateway`    |
-| `wso2.deployment.ob.am.ingress.gateway.annotations`             | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
+| Parameter                                                  | Description                                                                               | Default Value                                  |
+|------------------------------------------------------------|-------------------------------------------------------------------------------------------|------------------------------------------------|
+| `wso2.deployment.ob.am.dockerRegistry`                     | Registry location of the Docker image to be used to create API Manager instances          | -                                              |
+| `wso2.deployment.ob.am.imageName`                          | Name of the Docker image to be used to create API Manager instances                       | `wso2-obam-toolkit-uk`                         |
+| `wso2.deployment.ob.am.imageTag`                           | Tag of the image used to create API Manager instances                                     | `1.0.0.17-acc3.0.0.50-am4.2.0.41`              |
+| `wso2.deployment.ob.am.imagePullPolicy`                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                                       |
+| `wso2.deployment.ob.am.livenessProbe.initialDelaySeconds`  | Initial delay for the live-ness probe for API Manager node                                | 180                                            |
+| `wso2.deployment.ob.am.livenessProbe.periodSeconds`        | Period of the live-ness probe for API Manager node                                        | 10                                             |
+| `wso2.deployment.ob.am.readinessProbe.initialDelaySeconds` | Initial delay for the readiness probe for API Manager node                                | 180                                            |
+| `wso2.deployment.ob.am.readinessProbe.periodSeconds`       | Period of the readiness probe for API Manager node                                        | 10                                             |
+| `wso2.deployment.ob.am.resources.requests.memory`          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                                            |
+| `wso2.deployment.ob.am.resources.requests.cpu`             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                                          |
+| `wso2.deployment.ob.am.resources.limits.memory`            | The maximum amount of memory that should be allocated for a Pod                           | 3Gi                                            |
+| `wso2.deployment.ob.am.resources.limits.cpu`               | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                                          |
+| `wso2.deployment.ob.am.resources.jvm.heap.memory.xms`      | The initial memory allocation for JVM Heap                                                | 1024m                                          |
+| `wso2.deployment.ob.am.resources.jvm.heap.memory.xmx`      | The maximum memory allocation for JVM Heap                                                | 1024m                                          |
+| `wso2.deployment.ob.am.ingress.management.hostname`        | Hostname for API Manager Admin Portal, Publisher, Devportal and Carbon Management Console | `obam`                                         |
+| `wso2.deployment.ob.am.ingress.management.annotations`     | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations |
+| `wso2.deployment.ob.am.ingress.gateway.hostname`           | Hostname for API Manager Gateway                                                          | `obam-gateway`                                 |
+| `wso2.deployment.ob.am.ingress.gateway.annotations`        | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations |
 
 ###### IAM Module Server Configurations
 
-| Parameter                                                       | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.ob.iam.dockerRegistry`                          | Registry location of the Docker image to be used to create Identity & Access Management Module instances          | -                           |
-| `wso2.deployment.ob.iam.imageName`                               | Name of the Docker image to be used to create Identity & Access Management Module instances                       | `wso2-obiam-toolkit-uk`                 |
-| `wso2.deployment.ob.iam.imageTag`                                | Tag of the image used to create Identity & Access Management Module instances                                     | `1.0.0.9-acc3.0.0.76-is6.0.0.71`                     |
-| `wso2.deployment.ob.iam.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
-| `wso2.deployment.ob.iam.replicas`                                | Number of replicas of Identity & Access Management Module                                                         | 2                           |
-| `wso2.deployment.ob.iam.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for Identity & Access Management Module node                                | 120                         |
-| `wso2.deployment.ob.iam.livenessProbe.periodSeconds`             | Period of the live-ness probe for Identity & Access Management Module node                                        | 10                          |
-| `wso2.deployment.ob.iam.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for Identity & Access Management Module node                                | 120                         |
-| `wso2.deployment.ob.iam.readinessProbe.periodSeconds`            | Period of the readiness probe for Identity & Access Management Module                                        | 10                          |
-| `wso2.deployment.ob.iam.resources.requests.memory`               | The minimum amount of memory that should be allocated for a Pod                           | 3Gi                         |
-| `wso2.deployment.ob.iam.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                              | 3000m                       |
-| `wso2.deployment.ob.iam.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
-| `wso2.deployment.ob.iam.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
-| `wso2.deployment.ob.iam.resources.jvm.heap.memory.xms`           | The initial memory allocation for JVM Heap                                                | 2048m                       |
-| `wso2.deployment.ob.iam.resources.jvm.heap.memory.xmx`           | The maximum memory allocation for JVM Heap                                                | 2048m                       |
-| `wso2.deployment.ob.iam.connector.name`                          | Name of the WSO2 IS connector                  | `wso2is-extensions`    |
-| `wso2.deployment.ob.iam.connector.version`                          | Version of the WSO2 IS connector                  | `1.6.8`    |
-| `wso2.deployment.ob.iam.connector.url`                          | The url to download the WSO2 IS connector                  | `https://apim.docs.wso2.com/en/4.2.0/assets/attachments/administer/wso2is-extensions-1.6.8.zip`    |
-| `wso2.deployment.ob.iam.ingress.management.hostname`                        | Hostname for Identity & Access Management Module service                                                          | `obiam`            |
-| `wso2.deployment.ob.iam.ingress.management.annotations`                     | Ingress resource annotations for Identity & Access Management Module service                                      | Community NGINX Ingress controller annotations         |
+| Parameter                                                   | Description                                                                                              | Default Value                                                                                   |
+|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `wso2.deployment.ob.iam.dockerRegistry`                     | Registry location of the Docker image to be used to create Identity & Access Management Module instances | -                                                                                               |
+| `wso2.deployment.ob.iam.imageName`                          | Name of the Docker image to be used to create Identity & Access Management Module instances              | `wso2-obiam-toolkit-uk`                                                                         |
+| `wso2.deployment.ob.iam.imageTag`                           | Tag of the image used to create Identity & Access Management Module instances                            | `1.0.0.21-acc3.0.0.95-is6.1.0.80-alpine`                                                        |
+| `wso2.deployment.ob.iam.imagePullPolicy`                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                    | `Always`                                                                                        |
+| `wso2.deployment.ob.iam.replicas`                           | Number of replicas of Identity & Access Management Module                                                | 2                                                                                               |
+| `wso2.deployment.ob.iam.livenessProbe.initialDelaySeconds`  | Initial delay for the live-ness probe for Identity & Access Management Module node                       | 120                                                                                             |
+| `wso2.deployment.ob.iam.livenessProbe.periodSeconds`        | Period of the live-ness probe for Identity & Access Management Module node                               | 10                                                                                              |
+| `wso2.deployment.ob.iam.readinessProbe.initialDelaySeconds` | Initial delay for the readiness probe for Identity & Access Management Module node                       | 120                                                                                             |
+| `wso2.deployment.ob.iam.readinessProbe.periodSeconds`       | Period of the readiness probe for Identity & Access Management Module                                    | 10                                                                                              |
+| `wso2.deployment.ob.iam.resources.requests.memory`          | The minimum amount of memory that should be allocated for a Pod                                          | 3Gi                                                                                             |
+| `wso2.deployment.ob.iam.resources.requests.cpu`             | The minimum amount of CPU that should be allocated for a Pod                                             | 3000m                                                                                           |
+| `wso2.deployment.ob.iam.resources.limits.memory`            | The maximum amount of memory that should be allocated for a Pod                                          | 4Gi                                                                                             |
+| `wso2.deployment.ob.iam.resources.limits.cpu`               | The maximum amount of CPU that should be allocated for a Pod                                             | 4000m                                                                                           |
+| `wso2.deployment.ob.iam.resources.jvm.heap.memory.xms`      | The initial memory allocation for JVM Heap                                                               | 2048m                                                                                           |
+| `wso2.deployment.ob.iam.resources.jvm.heap.memory.xmx`      | The maximum memory allocation for JVM Heap                                                               | 2048m                                                                                           |
+| `wso2.deployment.ob.iam.connector.name`                     | Name of the WSO2 IS connector                                                                            | `wso2is-extensions`                                                                             |
+| `wso2.deployment.ob.iam.connector.version`                  | Version of the WSO2 IS connector                                                                         | `1.6.8`                                                                                         |
+| `wso2.deployment.ob.iam.connector.url`                      | The url to download the WSO2 IS connector                                                                | `https://apim.docs.wso2.com/en/4.2.0/assets/attachments/administer/wso2is-extensions-1.6.8.zip` |
+| `wso2.deployment.ob.iam.ingress.management.hostname`        | Hostname for Identity & Access Management Module service                                                 | `obiam`                                                                                         |
+| `wso2.deployment.ob.iam.ingress.management.annotations`     | Ingress resource annotations for Identity & Access Management Module service                             | Community NGINX Ingress controller annotations                                                  |
 
 
 
