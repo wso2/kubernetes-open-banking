@@ -475,10 +475,10 @@ data:
     allowed_values = ["web"]
 
     [open_banking.data_publishing]
-    enable = false
+    enable = true
     username="$ref{super_admin.username}@carbon.super"
     password="$ref{super_admin.password}"
-    server_url = "{tcp://wso2ob-obbi-service:7612}"
+    server_url = "{tcp://wso2ob-obbi-1-service:7612|tcp://wso2ob-obbi-2-service:7612}"
     #auth_url = "{ssl://wso2ob-obbi-service:7612}"
     protocol = "Thrift"
     pool_size = 10

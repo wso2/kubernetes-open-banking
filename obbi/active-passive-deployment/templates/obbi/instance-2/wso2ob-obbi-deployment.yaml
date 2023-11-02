@@ -36,6 +36,9 @@ spec:
         - name: init-ob-db
           image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+        - name: init-delay-obbi-2
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo Waiting until obbi instance 1 to become active... ! && sleep 20']
       containers:
         - name: obbi
           {{ if .Values.wso2.deployment.ob.bi.dockerRegistry }}
@@ -76,7 +79,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 7612
+                - nc -z localhost 9444
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.periodSeconds }}
           resources:

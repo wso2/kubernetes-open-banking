@@ -76,7 +76,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 7612
+                - nc -z localhost 9444
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.bi.readinessProbe.periodSeconds }}
           resources:
