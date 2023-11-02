@@ -535,7 +535,7 @@ data:
     enable=false
 
     [open_banking.data_publishing]
-    enable = true
+    enable = false
     username="$ref{super_admin.username}@carbon.super"
     password="$ref{super_admin.password}"
     server_url = "{tcp://wso2ob-obbi-1-service:7612|tcp://wso2ob-obbi-2-service:7612}"
