@@ -34,7 +34,6 @@ Resources for building a Helm chart for deployment of WSO2 Open Banking UK Toolk
 
 * Here we are adding two thrift data publishing urls of obbi, If one is unreachable then it tries the 2nd url.
 * In this deployment, readiness probe is defined as port 9443.
-* This is because we need to publish data only to the active node and only the active node opens the 7612 port. By configuring the passive node is not ready, we can omit the traffic flow to the passive node.
 
 ## Quick Start Guide
 
