@@ -67,19 +67,15 @@ spec:
             - containerPort: 5672
               protocol: "TCP"
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
+            httpGet:
+              path: /services/Version
+              port: 9763
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.periodSeconds }}
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
+            httpGet:
+              path: /services/Version
+              port: 9763
             initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.periodSeconds }}
           resources:
