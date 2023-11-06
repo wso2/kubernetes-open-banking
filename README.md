@@ -6,7 +6,7 @@ of WSO2 Open Banking.*
 ## Helm resources for Open Banking deployment pattern
 
 * [Deployment Pattern 5](ob-pattern-5/README.md)
-* [OBBI Single node Deployment](obbi/single-node-deployment/README.md)
+* [OBBI Single Node Deployment](obbi/single-node-deployment/README.md)
 * [OBBI High Availability Deployment](obbi/active-passive-deployment/README.md)
 
 ## Changelog
