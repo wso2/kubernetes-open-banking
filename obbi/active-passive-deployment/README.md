@@ -80,6 +80,12 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.subscription.username`                                    | Your WSO2 Subscription username                                                           | -                           |
 | `wso2.subscription.password`                                    | Your WSO2 Subscription password                                                           | -                           |
 
+###### Chart Dependencies
+
+| Parameter                                                       | Description                                                       | Default Value               |
+|-----------------------------------------------------------------|-------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.dependencies.ob-pattern-5`                     | Enable the deployment and usage of WSO2 OBIAM and OBAM Helm Chart | true                        |
+
 
 ###### Open Banking Business Intelligence Server Configurations
 

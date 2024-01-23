@@ -15,6 +15,9 @@ wso2:
     password: ""
   
   deployment:
+    dependencies:
+      # The configuration should be set to be 'true' if obam and obiam helm chart needs to be deployed within the cluster
+      ob-pattern-5: false
     ob:
       bi:
         # Container image configurations

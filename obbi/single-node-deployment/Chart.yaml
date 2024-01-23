@@ -11,5 +11,5 @@
 
 apiVersion: v1
 name: obbi
-description: A Helm chart for the deployment of WSO2 Open Banking Business Intelligence module.
+description: A Helm chart for the deployment of WSO2 Open Banking Business Intelligence module, This chart depends on wso2 obiam and wso2 obam.
 version: 3.0.0-1
