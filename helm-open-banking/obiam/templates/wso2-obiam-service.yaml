@@ -10,6 +10,15 @@
 # ----------------------------------------------------------------------------------------
 
 apiVersion: v1
-name: obbi
-description: A Helm chart for the deployment of WSO2 Open Banking Business Intelligence module.
-version: 3.0.0-1
+kind: Service
+metadata:
+  name: {{ template "obiam.resource.prefix" . }}-obiam-service
+  namespace : {{ .Release.Namespace }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: {{ template "obiam.resource.prefix" . }}-obiam
+  ports:
+  - name: servlet-https
+    port: 9446
+    protocol: TCP

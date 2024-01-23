@@ -1,0 +1,40 @@
+# -------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained 
+# herein is strictly forbidden, unless permitted by WSO2 in accordance with the 
+# WSO2 Commercial License available at https://wso2.com/licenses/eula/3.2
+#
+# --------------------------------------------------------------------------------------
+
+{{- if .Values.kubernetes.ingress.websub.enabled }}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "am-all-in-one.fullname" . }}-am-websub-ingress
+  namespace : {{ .Release.Namespace }}
+{{- if .Values.kubernetes.ingress.websub.annotations }}
+  annotations:
+{{ toYaml .Values.kubernetes.ingress.websub.annotations | indent 4 }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.kubernetes.ingressClass }}
+  tls:
+  - hosts:
+    - {{ .Values.kubernetes.ingress.websub.hostname }}
+  secretName: {{ .Values.kubernetes.ingress.tlsSecret }}
+  rules:
+  - host: {{ .Values.kubernetes.ingress.websub.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "am-all-in-one.fullname" . }}-am-service
+            port:
+              number: 8021
+{{- end -}}

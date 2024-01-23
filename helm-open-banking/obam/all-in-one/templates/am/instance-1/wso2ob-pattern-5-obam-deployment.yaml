@@ -1,0 +1,122 @@
+# ----------------------------------------------------------------------------------------
+#
+# Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained
+# herein in any form is strictly forbidden, unless permitted by WSO2 expressly.
+# You may not alter or remove any copyright or other notice from copies of this content.
+#
+# ----------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obam
+      node: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1
+  template:
+    metadata:
+      annotations:
+      labels:
+        deployment: {{ template "ob-pattern-5.resource.prefix" . }}-obam
+        node: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1
+    spec:
+      initContainers:
+        - name: init-ob-db
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of database server deployment"; while ! nc -z {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }} {{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}; do sleep 1; printf "-"; done; echo -e "  >> Database server has started";']
+        - name: init-obiam
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 OB Identity & access management deployment"; while ! nc -z {{ template "ob-pattern-5.resource.prefix" . }}-obiam-service 9446; do sleep 1; printf "-"; done; echo -e "  >> WSO2 OB Identity & access management has started";']
+      containers:
+        - name: obam
+          {{ if .Values.wso2.deployment.ob.am.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.ob.am.dockerRegistry }}/{{ .Values.wso2.deployment.ob.am.imageName }}
+          {{- $tag := .Values.wso2.deployment.ob.am.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{ else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.ob.am.imageName }}:{{ .Values.wso2.deployment.ob.am.imageTag }}
+          {{ end }}
+          securityContext:
+            runAsUser: 802
+          imagePullPolicy: {{ .Values.wso2.deployment.ob.am.imagePullPolicy }}
+          ports:
+            - containerPort: 8280
+              protocol: "TCP"
+            - containerPort: 8243
+              protocol: "TCP"
+            - containerPort: 9763
+              protocol: "TCP"
+            - containerPort: 9443
+              protocol: "TCP"
+            - containerPort: 9711
+              protocol: "TCP"
+            - containerPort: 9611
+              protocol: "TCP"
+            - containerPort: 5672
+              protocol: "TCP"
+          livenessProbe:
+            httpGet:
+              path: /services/Version
+              port: 9763
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.am.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /services/Version
+              port: 9763
+            initialDelaySeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.ob.am.readinessProbe.periodSeconds }}
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.ob.am.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.am.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.ob.am.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.ob.am.resources.limits.cpu }}
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JVM_MEM_OPTS
+              value: "-Xms{{ .Values.wso2.deployment.ob.am.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.ob.am.resources.jvm.heap.memory.xmx }}"
+          volumeMounts:
+            - name: obam-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
+            - name: obam-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml 
+              subPath: deployment-uk.toml
+            - name: obam-carbon-certs
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/resources/security
+      {{- if .Values.wso2.deployment.ob.am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.ob.am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "ob-pattern-5.resource.prefix" . }}-wso2-private-registry-creds
+      {{ end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      volumes:
+        - name: obam-conf-entrypoint
+          configMap:
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-conf-entrypoint
+            defaultMode: 0407
+        - name: obam-conf
+          configMap:
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-obam-1-conf
+        - name: obam-carbon-certs
+          configMap:
+            name: {{ template "ob-pattern-5.resource.prefix" . }}-carbon-certs
