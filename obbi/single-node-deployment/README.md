@@ -2,6 +2,55 @@
 
 Resources for building a Helm chart for deployment of WSO2 Open Banking UK Toolkit Business Intelligence module. This chart depends on the WSO2 Open Banking UK Toolkit API Manager with WSO2 Open Banking UK Toolkit Identity & Access Management Module helm charts.
 
+Note:
+- UK toolkit (OBBI) is used as a reference toolkit throughout the documentation and in the sample helm chart.
+- Accelerator docker (OBBI) images are available at [WSO2 Private Docker Registry](https://docker.wso2.com/) and UK toolkit (OBBI) docker images need to be built using the accelerator docker images with the required customizations.
+  - Sample Dockerfile for [wso2-obbi-toolkit-uk](https://github.com/wso2/docker-open-banking/blob/master/dockerfiles/alpine/obbi-uk/Dockerfile)
+- Reference on accelerator docker deployment, https://ob.docs.wso2.com/en/latest/install-and-setup/deploy-with-docker/
+- Reference on accelerator docker images, https://github.com/wso2/docker-open-banking/tree/master
+
+## Chart Structure
+
+This document provides an overview of the Helm chart structure used for deploying WSO2 Open Banking UK Toolkit Business Intelligence module. Please refer to below chart structure for the customisations.
+
+### `values.yaml`
+- Contains the values used by the templates for configuring the deployment.
+- 
+### `/resources`
+- Contains certificates and private keys for the servers.
+  - `private-keys.jks`: Includes private key for the wso2-obbi-toolkit-uk server.
+  - `public-certs.jks`: Includes public keys for wso2-obbi-toolkit-uk server. These keys need to be exchanged and added to each server's (obiam, obam and obbi) truststore.
+
+### `/templates`
+- Contains the main templates for the deployment.
+
+  #### `wso2ob-obbi-carbon-certs.yaml`
+  - Defines the server certificates and private keys (from the `/resources` directory) as config maps.
+  - These private and public keys are added to the server in the initial start via the `wso2ob-obbi-conf-entrypoint.yaml`.
+  - Note: If adding a custom keystore and truststore as volume mappings, (Ex: `wso2carbon.jks` and `client-truststore.jks`) This step is not needed.
+
+  #### `wso2ob-pattern-5-secret.yaml`
+  - Contains Docker pull credentials as Kubernetes Secrets.
+
+  ### `/templates/obbi`
+  - For **Streaming Integrator Deployment Overview**: Please refer to the [Streaming Integrator Deployment Overview](https://apim.docs.wso2.com/en/4.2.0/install-and-setup/setup/si-deployment/deployment-guide/).
+
+    #### `wso2ob-obbi-conf-entrypoint.yaml`
+    - Contains a shell script used as the server's entrypoint. This script includes the addition of server certificates and private keys from the `/resources` directory.
+
+    #### `wso2ob-obbi-conf.yaml`
+    - Contains the UK toolkit's OBBI deployment.yaml configuration as a config map for the deployment.
+
+    #### `wso2ob-obbi-service.yaml`
+    - Contains the service configuration for the UK toolkit's OBBI deployment, exposing ports 9444, 9712, 9612, 7712 and 7612.
+
+    #### `wso2ob-obbi-deployment.yaml`
+    - Defines the UK toolkit's OBAM deployment. The following volumes are mounted via this deployment.
+      - `deployment-uk.yaml`
+      - `docker-entrypoint.sh`
+      - `private-keys.jks`
+      - `public-certs.jks`
+
 ## Contents
 
 * [Prerequisites](#prerequisites)
