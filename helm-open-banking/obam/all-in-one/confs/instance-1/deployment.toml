@@ -1,0 +1,1236 @@
+[server]
+hostname = "{{ .Values.wso2.deployment.ob.am.ingress.management.hostname }}"
+node_ip = "127.0.0.1"
+#offset=0
+mode = "single" #single or ha
+base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
+#discard_empty_caches = false
+server_role = "default"
+
+[super_admin]
+username = {{ .Values.wso2.apim.configurations.adminUsername | quote }}
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{admin_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.adminPassword | quote }}
+{{- end }}
+create_admin_account = true
+
+[realm_manager]
+data_source= "WSO2UM_DB"
+
+[user_store]
+type = "database_unique_id"
+class = "org.wso2.carbon.user.core.jdbc.UniqueIDJDBCUserStoreManager"
+
+[user_store.properties]
+UsernameJavaRegEx = "a-zA-Z0-9@._-{3,30}$"
+UsernameJavaScriptRegEx = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"
+SCIMEnabled = false
+IsBulkImportSupported = false
+LeadingOrTrailingSpaceAllowedInUserName = false
+UsernameWithEmailJavaScriptRegEx = "^[\\S]{3,30}$"
+
+[authorization_manager]
+class = "org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager"
+
+[authorization_manager.properties]
+AdminRoleManagementPermissions = "/permission"
+AuthorizationCacheEnabled = true
+GetAllRolesOfUserEnabled = false
+
+[database.apim_db]
+type = "{{ .Values.wso2.apim.configurations.databases.type }}"
+url = "{{ .Values.wso2.apim.configurations.databases.apim_db.url}}"
+username = "{{ .Values.wso2.apim.configurations.databases.apim_db.username }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{apim_db_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.databases.apim_db.password | quote }}
+{{- end }}
+driver = "{{ .Values.wso2.apim.configurations.databases.jdbc.driver }}"
+
+[database.apim_db.pool_options]
+{{- range $key, $value := .Values.wso2.apim.configurations.databases.apim_db.poolParameters }}
+{{ $key }} = "{{ $value }}"
+{{- end }}
+
+[database.shared_db]
+type = "{{ .Values.wso2.apim.configurations.databases.type }}"
+url = "{{ .Values.wso2.apim.configurations.databases.shared_db.url}}"
+username = "{{ .Values.wso2.apim.configurations.databases.shared_db.username }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{shared_db_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.databases.shared_db.password | quote }}
+{{- end }}
+driver = "{{ .Values.wso2.apim.configurations.databases.jdbc.driver }}"
+
+[database.shared_db.pool_options]
+{{- range $key, $value := .Values.wso2.apim.configurations.databases.shared_db.poolParameters }}
+{{ $key }} = "{{ $value }}"
+{{- end }}
+
+# for am-config registry
+[database.config]
+url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_am_configdb?autoReconnect=true&amp;useSSL=false"
+username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+
+[database.config.pool_options]
+maxActive = "150"
+maxWait = "60000"
+minIdle ="5"
+testOnBorrow = true
+validationQuery="SELECT 1"
+#Use below for oracle
+#validationQuery="SELECT 1 FROM DUAL"
+validationInterval="30000"
+defaultAutoCommit=true
+
+# for user management data
+[[datasource]]
+id="WSO2UM_DB"
+url = "jdbc:mysql://{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.hostname }}:{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.port }}/openbank_userdb?autoReconnect=true&amp;useSSL=false"
+username = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.username }}"
+password = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.server.password }}"
+driver = "{{ .Values.wso2.deployment.ob.config.datasources.rdbms.driverClassName }}"
+jmx_enable=false
+pool_options.maxActive = "150"
+pool_options.maxWait = "60000"
+pool_options.minIdle = "5"
+pool_options.testOnBorrow = true
+pool_options.validationQuery="SELECT 1"
+#Use below for oracle
+#validationQuery="SELECT 1 FROM DUAL"
+pool_options.validationInterval="30000"
+pool_options.defaultAutoCommit=true
+
+[tenant_mgt]
+enable_email_domain = true
+
+{{- if .Values.wso2.apim.configurations.security.keystores.primary.enabled }}
+[keystore.primary]
+type = "JKS"
+file_name = "{{ .Values.wso2.apim.configurations.security.keystores.primary.name }}"
+alias = "{{ .Values.wso2.apim.configurations.security.keystores.primary.alias }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{keystore_password}"
+key_password = "$secret{keystore_key_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.security.keystores.primary.password | quote }}
+key_password = {{ .Values.wso2.apim.configurations.security.keystores.primary.keyPassword | quote }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.wso2.apim.configurations.security.keystores.tls.enabled }}
+[keystore.tls]
+type = "JKS"
+file_name = "{{ .Values.wso2.apim.configurations.security.keystores.tls.name }}"
+alias = "{{ .Values.wso2.apim.configurations.security.keystores.tls.alias }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{ssl_keystore_password}"
+key_password = "$secret{ssl_key_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.security.keystores.tls.password | quote }}
+key_password = {{ .Values.wso2.apim.configurations.security.keystores.tls.keyPassword | quote }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.wso2.apim.configurations.security.keystores.internal.enabled }}
+[keystore.internal]  
+type = "JKS"
+file_name = "{{ .Values.wso2.apim.configurations.security.keystores.internal.name }}"
+alias = "{{ .Values.wso2.apim.configurations.security.keystores.internal.alias }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{internal_keystore_password}"
+key_password = "$secret{internal_keystore_key_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.security.keystores.internal.password | quote }}
+key_password = {{ .Values.wso2.apim.configurations.security.keystores.internal.keyPassword | quote }}
+{{- end }}
+{{- end }}
+
+[truststore]
+type = "JKS"
+file_name = "{{ .Values.wso2.apim.configurations.security.truststore.name }}"
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+password = "$secret{truststore_password}"
+{{- else }}
+password = {{ .Values.wso2.apim.configurations.security.truststore.password | quote }}
+{{- end }}
+
+{{- range $i, $env := .Values.wso2.apim.configurations.gateway.environments }}
+[[apim.gateway.environment]]
+name = "Default"
+type = "hybrid"
+display_in_api_console = true
+description = "This is a hybrid gateway that handles both production and sandbox token traffic."
+show_as_token_endpoint_url = true
+service_url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:${mgt.transport.https.port}/services/"
+username= "${admin.username}"
+password= "${admin.password}"
+ws_endpoint = "ws://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9099"
+wss_endpoint = "wss://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8099"
+http_endpoint = "http://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${http.nio.port}"
+https_endpoint = "https://{{ .Values.wso2.deployment.ob.am.ingress.gateway.hostname }}:${https.nio.port}"
+websub_event_receiver_http_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9021"
+websub_event_receiver_https_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8021"
+
+{{- end }}
+
+[apim.sync_runtime_artifacts.gateway]
+gateway_labels = {{ toJson .Values.wso2.apim.configurations.syncRuntimeArtifacts.gateway.labels }}
+
+# Caches
+[apim.cache.gateway_token]
+enable = {{ .Values.wso2.apim.configurations.cache.gateway_token.enabled }}
+expiry_time = {{ .Values.wso2.apim.configurations.cache.gateway_token.expiryTime | quote }}
+
+[apim.cache.resource]
+enable = {{ .Values.wso2.apim.configurations.cache.resource.enabled }}
+expiry_time = {{ .Values.wso2.apim.configurations.cache.resource.expiryTime | quote }}
+
+[apim.cache.km_token]
+enable = {{ .Values.wso2.apim.configurations.cache.km_token.enabled }}
+expiry_time = {{ .Values.wso2.apim.configurations.cache.km_token.expiryTime | quote }}
+
+[apim.cache.recent_apis]
+enable = {{ .Values.wso2.apim.configurations.cache.recent_apis.enabled }}
+
+[apim.cache.scopes]
+enable = {{ .Values.wso2.apim.configurations.cache.scopes.enabled }}
+
+[apim.cache.publisher_roles]
+enable = {{ .Values.wso2.apim.configurations.cache.publisher_roles.enabled }}
+
+[apim.cache.jwt_claim]
+enable = {{ .Values.wso2.apim.configurations.cache.jwt_claim.enabled }}
+expiry_time = {{ .Values.wso2.apim.configurations.cache.jwt_claim.expiryTime | quote }}
+
+[apim.cache.tags]
+enable = {{ .Values.wso2.apim.configurations.cache.tags.enabled }}
+expiry_time = {{ .Values.wso2.apim.configurations.cache.tags.expiryTime | quote }}
+
+[apim.analytics]
+{{- if .Values.wso2.choreoAnalytics.enabled }}
+enable = true
+config_endpoint = "{{ .Values.wso2.choreoAnalytics.endpoint }}"
+auth_token = "{{ .Values.wso2.choreoAnalytics.onpremKey }}"
+{{- else }}
+enable = false
+{{- end }}
+
+[transport.http]
+properties.port = 9763
+properties.proxyPort = 80
+
+[transport.https]
+properties.port = 9443
+properties.proxyPort = 443
+
+# key manager implementation
+[apim.key_manager]
+{{- if .Values.wso2.apim.configurations.iskm.enabled }}
+type = "WSO2-IS"
+server_url = "https://{{ .Values.wso2.apim.configurations.iskm.serviceName }}:9443/services/"
+{{- else }}
+service_url = "https://{{ template "am-all-in-one.fullname" . }}-am-service:${mgt.transport.https.port}/services/"
+{{- end }}
+username= "$ref{super_admin.username}"
+password= "$ref{super_admin.password}"
+
+[apim.key_manager.configuration]
+ServerURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446${carbon.context}services/"
+Username = "${admin.username}"
+Password = "${admin.password}"
+TokenURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/token"
+RevokeURL = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:${https.nio.port}/revoke"
+
+[oauth.grant_type.token_exchange]
+{{- if .Values.wso2.apim.configurations.iskm.enabled }}
+enable = false
+{{- else }}
+enable = true
+{{- end }}
+allow_refresh_tokens = true
+iat_validity_period = "1h"
+
+#[apim.idp]
+#server_url = "https://localhost:${mgt.transport.https.port}"
+#authorize_endpoint = "https://localhost:${mgt.transport.https.port}/oauth2/authorize"
+#oidc_logout_endpoint = "https://localhost:${mgt.transport.https.port}/oidc/logout"
+#oidc_check_session_endpoint = "https://localhost:${mgt.transport.https.port}/oidc/checksession"
+
+# JWT Generation
+#{{- if .Values.wso2.apim.configurations.jwt.enabled }}
+#[apim.jwt]
+#enable = {{ .Values.wso2.apim.configurations.jwt.enabled }}
+#encoding = {{ .Values.wso2.apim.configurations.jwt.encoding | quote }} # base64,base64url
+#generator_impl = {{ .Values.wso2.apim.configurations.jwt.generatorImpl | quote }}
+#claim_dialect = {{ .Values.wso2.apim.configurations.jwt.claimDialect | quote }}
+#header = {{ .Values.wso2.apim.configurations.jwt.header | quote }}
+#signing_algorithm = {{ .Values.wso2.apim.configurations.jwt.signingAlgorithm | quote }}
+#enable_user_claims = {{ .Values.wso2.apim.configurations.jwt.enableUserClaims }}
+#claims_extractor_impl = {{ .Values.wso2.apim.configurations.jwt.claimsExtractorImpl | quote }}
+#{{- end }}
+
+[apim.oauth_config]
+remove_outbound_auth_header = {{ .Values.wso2.apim.configurations.oauth_config.removeOutboundAuthHeader }}
+auth_header = {{ .Values.wso2.apim.configurations.oauth_config.authHeader | quote }}
+revoke_endpoint = {{ .Values.wso2.apim.configurations.oauth_config.revokeEndpoint | quote }}
+enable_token_encryption = {{ .Values.wso2.apim.configurations.oauth_config.enableTokenEncryption }}
+enable_token_hashing = {{ .Values.wso2.apim.configurations.oauth_config.enableTokenHashing }}
+
+[apim.devportal]
+url = "https://{{ .Values.kubernetes.ingress.management.hostname }}/devportal"
+{{- if .Values.wso2.apim.configurations.devportal.enableApplicationSharing }}
+enable_application_sharing = {{ .Values.wso2.apim.configurations.devportal.enableApplicationSharing }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.applicationSharingType }}
+application_sharing_type = {{ .Values.wso2.apim.configurations.devportal.applicationSharingType | quote }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.applicationSharingImpl }}
+application_sharing_impl = {{ .Values.wso2.apim.configurations.devportal.applicationSharingImpl | quote }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.displayMultipleVersions }}
+display_multiple_versions = {{ .Values.wso2.apim.configurations.devportal.displayMultipleVersions }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.displayDeprecatedAPIs }}
+display_deprecated_apis = {{ .Values.wso2.apim.configurations.devportal.displayDeprecatedAPIs }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableComments }}
+enable_comments = {{ .Values.wso2.apim.configurations.devportal.enableComments }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableRatings }}
+enable_ratings = {{ .Values.wso2.apim.configurations.devportal.enableRatings }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableForum }}
+enable_forum = {{ .Values.wso2.apim.configurations.devportal.enableForum }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableAnonymousMode }}
+enable_anonymous_mode = {{ .Values.wso2.apim.configurations.devportal.enableAnonymousMode }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableCrossTenantSubscriptions }}
+enable_cross_tenant_subscriptions = {{ .Values.wso2.apim.configurations.devportal.enableCrossTenantSubscriptions }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.defaultReservedUsername }}
+default_reserved_username = {{ .Values.wso2.apim.configurations.devportal.defaultReservedUsername | quote }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.loginUsernameCaseInsensitive }}
+login_username_case_insensitive = {{ .Values.wso2.apim.configurations.devportal.loginUsernameCaseInsensitive }}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.devportal.enableKeyProvisioning }}
+enable_key_provisioning = {{ .Values.wso2.apim.configurations.devportal.enableKeyProvisioning }}
+{{- end }}
+
+[apim.publisher]
+{{- if .Values.wso2.apim.configurations.publisher.supportedDocumentTypes }}
+supported_document_types = {{ toJson .Values.wso2.apim.configurations.publisher.supportedDocumentTypes }}
+{{- end }}
+
+[apim.cors]
+enable = {{ .Values.wso2.apim.configurations.cors.enabled }}
+allow_origins = {{ toJson .Values.wso2.apim.configurations.cors.allowOrigins }}
+allow_methods = {{ toJson .Values.wso2.apim.configurations.cors.allowMethods }}
+allow_headers = {{ toJson .Values.wso2.apim.configurations.cors.allowHeaders }}
+allow_credentials = {{ .Values.wso2.apim.configurations.cors.allowCredentials }}
+enable_validation_for_ws = {{ .Values.wso2.apim.configurations.cors.enableForWS }}
+
+# [apim.throttling]
+# enable_data_publishing = {{ .Values.wso2.apim.configurations.throttling.enableDataPublishing }}
+# enable_policy_deploy = {{ .Values.wso2.apim.configurations.throttling.enablePolicyDeploy }}
+# enable_blacklist_condition = {{ .Values.wso2.apim.configurations.throttling.enableBlacklistCondition }}
+# enable_persistence = {{ .Values.wso2.apim.configurations.throttling.enablePersistence }}
+# throttle_decision_endpoints = ["tcp://{{ template "am-all-in-one.fullname" . }}-am-1-service:5672","tcp://{{ template "am-all-in-one.fullname" . }}-am-2-service:5672"]
+# enable_unlimited_tier = {{ .Values.wso2.apim.configurations.throttling.enableUnlimitedTier }}
+# enable_header_based_throttling = {{ .Values.wso2.apim.configurations.throttling.enableHeaderBasedThrottling }}
+# enable_jwt_claim_based_throttling = {{ .Values.wso2.apim.configurations.throttling.enableJWTClaimBasedThrottling }}
+# enable_query_param_based_throttling = {{ .Values.wso2.apim.configurations.throttling.enableQueryParamBasedThrottling }}
+ 
+[apim.throttling.blacklist_condition]
+{{- if .Values.wso2.apim.configurations.throttling.blacklistCondition.startDelay }}
+start_delay = {{ .Values.wso2.apim.configurations.throttling.blacklistCondition.startDelay}}
+{{- end }}
+{{- if .Values.wso2.apim.configurations.throttling.blacklistCondition.period }}
+period = {{ .Values.wso2.apim.configurations.throttling.blacklistCondition.period}}
+{{- end }}
+
+{{- if .Values.wso2.apim.configurations.throttling.jms.startDelay }}
+[apim.throttling.jms]
+start_delay = {{ .Values.wso2.apim.configurations.throttling.jms.startDelay}}
+{{- end }}
+
+{{- if .Values.wso2.apim.configurations.throttling.eventSync.hostName }}
+[apim.throttling.event_sync]
+hostName = {{ .Values.wso2.apim.configurations.throttling.eventSync.hostName}}
+port = {{ .Values.wso2.apim.configurations.throttling.eventSync.port}}
+{{- end }}
+
+{{- if .Values.wso2.apim.configurations.throttling.eventManagement.hostName }}
+[apim.throttling.event_management]
+hostName = {{ .Values.wso2.apim.configurations.throttling.eventManagement.hostName}}
+port = {{ .Values.wso2.apim.configurations.throttling.eventManagement.port}}
+{{- end }}
+
+[[apim.throttling.url_group]]
+traffic_manager_urls = ["tcp://{{ template "ob-pattern-5.resource.prefix" . }}-obam-1-service:9611"]
+traffic_manager_auth_urls = ["ssl://{{ template "ob-pattern-5.resource.prefix" . }}-obam-1-service:9711"]
+type = "loadbalance"
+
+[[apim.throttling.url_group]]
+traffic_manager_urls = ["tcp://{{ template "ob-pattern-5.resource.prefix" . }}-obam-2-service:9611"]
+traffic_manager_auth_urls = ["ssl://{{ template "ob-pattern-5.resource.prefix" . }}-obam-2-service:9711"]
+type = "loadbalance"
+
+#{{- if .Values.wso2.apim.configurations.workflow.enable }}
+#[apim.workflow]
+#enable = {{ .Values.wso2.apim.configurations.workflow.enable }}
+#service_url = {{ .Values.wso2.apim.configurations.workflow.serviceUrl | quote }}
+#username = "$ref{super_admin.username}"
+#password = "$ref{super_admin.password}"
+#callback_endpoint = {{ .Values.wso2.apim.configurations.workflow.callbackEndpoint | quote }}
+#token_endpoint = {{ .Values.wso2.apim.configurations.workflow.tokenEndpoint | quote }}
+#client_registration_endpoint = {{ .Values.wso2.apim.configurations.workflow.clientRegistrationEndpoint | quote }}
+#client_registration_username = "$ref{super_admin.username}"
+#client_registration_password = "$ref{super_admin.password}"
+#{{- end }}
+
+# Data Bridge Configuration
+# [transport.receiver]
+# type = {{ .Values.wso2.apim.configurations.transport.receiver.type }}
+# worker_threads = {{ .Values.wso2.apim.configurations.transport.receiver.workerThreads }}
+# session_timeout = {{ .Values.wso2.apim.configurations.transport.receiver.sessionTimeout | quote }}
+# keystore.file_name = "$ref{keystore.tls.file_name}"
+# keystore.password = "$ref{keystore.tls.password}"
+# tcp_port = {{ .Values.wso2.apim.configurations.transport.receiver.tcpPort }}
+# ssl_port = {{ .Values.wso2.apim.configurations.transport.receiver.sslPort }}
+# ssl_receiver_thread_pool_size = {{ .Values.wso2.apim.configurations.transport.receiver.sslReceiverThreadPoolSize }}
+# tcp_receiver_thread_pool_size = {{ .Values.wso2.apim.configurations.transport.receiver.tcpReceiverThreadPoolSize }}
+# ssl_enabled_protocols = [{{- .Values.wso2.apim.configurations.transport.receiver.sslEnabledProtocols | join "\",\"" }}]
+# ciphers = [{{- .Values.wso2.apim.configurations.transport.receiver.ciphers | join "\",\"" }}]
+
+[[custom_message_formatters]]
+class = "org.apache.axis2.format.PlainTextFormatter"
+content_type = "application/jwt"
+
+[[custom_message_builders]]
+class = "org.apache.axis2.format.PlainTextBuilder"
+content_type = "application/jwt"
+
+[transport.passthru_https.sender.parameters]
+HostnameVerifier = "AllowAll"
+
+[passthru_http]
+"http.headers.preserve"="Content-Type,Date"
+
+[transport.passthru_https.listener.parameters]
+"SSLVerifyClient" = "optional"
+
+#================configs related to identity.xml=============
+
+[identity_data_source]
+skip_db_schema_creation = true
+
+[oauth.endpoints]
+oauth2_consent_page = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/oauth2_authz.do"
+oauth2_error_page = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/oauth2_error.do"
+oidc_consent_page = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/oauth2_consent.do"
+oidc_logout_consent_page = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/oauth2_logout_consent.do"
+oidc_logout_page = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/oauth2_logout.do"
+
+[oauth.grant_type]
+iwa_ntlm.enable = false
+jwt_bearer.enable = false
+
+[oauth.scope_validator]
+jdbc.enable = false
+xacml.enable = false
+
+[saml.endpoints]
+logout = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/samlsso_logout.do"
+notification = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/samlsso_notification.do"
+
+[passive_sts.endpoints]
+retry = "${carbon.protocol}://${carbon.host}:${carbon.management.port}/ob/authenticationendpoint/retry.do"
+
+[tenant_context.rewrite]
+custom_webapps = ["/keymanager-operations/"]
+
+[authentication.adaptive.event_publisher]
+url = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8280/"
+authentication.basic.enable = true
+
+#================configs related to identity-event.properties=============
+
+[[event_handler]]
+name="userPostSelfRegistration"
+subscriptions=["POST_ADD_USER"]
+
+
+
+[service_provider]
+sp_name_regex = "^[\\sa-zA-Z0-9._-]*$"
+
+[database.local]
+url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+
+#================configs related to synapse.properties=============
+[synapse_properties]
+'synapse.commons.json.output.xmloutMultiplePI' = true
+
+[synapse_handlers]
+UKJwsResponseSignatureHandler.enabled = true
+UKJwsResponseSignatureHandler.class = "com.wso2.openbanking.uk.gateway.handler.UKJwsResponseSignatureHandler"
+
+#================configs related to open-banking.xml=============
+
+[open_banking]
+username="$ref{super_admin.username}"
+password="$ref{super_admin.password}"
+
+[open_banking.dcr]
+jwks_endpoint_name = "software_jwks_endpoint"
+#app_name_claim = " "
+#isRequestJWT = true
+token_endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9443/oauth2/token"
+use_softwareIdForAppName = true
+
+[open_banking.dcr.apim_rest_endpoints]
+app_creation = "api/am/devportal/v3/applications"
+key_generation = "api/am/devportal/v3/applications/application-id/map-keys"
+api_retrieve = "api/am/devportal/v3/apis"
+api_subscribe = "api/am/devportal/v3/subscriptions/multiple"
+retrieve_subscribe="api/am/devportal/v3/subscriptions"
+
+#[open_banking.dcr.jwks_retriever]
+#connection_timeout = 3000
+#read_timeout = 3000
+
+[[open_banking.dcr.regulatory_api]]
+api_name = "DynamicClientRegistrationAPI"
+roles = "AISP,PISP,CBPII"
+
+[[open_banking.dcr.regulatory_api]]
+api_name = "AccountAndTransactionAPI"
+roles = "AISP"
+
+[[open_banking.dcr.regulatory_api]]
+api_name = "PaymentInitiationAPI"
+roles = "PISP"
+
+[[open_banking.dcr.regulatory_api]]
+api_name = "ConfirmationOfFundsAPI"
+roles = "CBPII"
+
+[[open_banking.dcr.regulatory_api]]
+api_name = "VRPInitiationAPI"
+roles = "PISP"
+
+#============executors=========================
+[[open_banking.gateway.openbanking_gateway_executors.type]]
+name = "Default"
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.mtls.cert.validation.executor.MTLSEnforcementExecutor"
+priority = 1
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.mtls.cert.validation.executor.CertRevocationValidationExecutor"
+priority = 2
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.api.resource.access.validation.UKAPIResourceAccessValidationExecutor"
+priority = 3
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.jws.UKJwsRequestHandlingExecutor"
+priority = 4
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.idempotency.OpenBankingIdempotencyHandlingExecutorUKImpl"
+priority = 5
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.request.validation.UKRequestValidationExecutor"
+priority = 6
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.consent.ConsentEnforcementExecutor"
+priority = 7
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.common.reporting.data.executor.CommonReportingDataExecutor"
+priority = 8
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.reporting.UKDataReportingExecutor"
+priority = 9
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.vrp.UKVRPResponseExecutor"
+priority = 10
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.error.handling.UKErrorHandlingExecutor"
+priority = 1000
+
+[[open_banking.gateway.openbanking_gateway_executors.type]]
+name = "DCR"
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.mtls.cert.validation.executor.MTLSEnforcementExecutor"
+priority = 1
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.api.resource.access.validation.UKAPIResourceAccessValidationExecutor"
+priority = 2
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.dcr.DCRExecutor"
+priority = 3
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.reporting.UKDCRDataReportingExecutor"
+priority = 4
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.uk.gateway.executors.error.handling.UKErrorHandlingExecutor"
+priority = 1000
+[[open_banking.gateway.openbanking_gateway_executors.type]]
+name = "Consent"
+[[open_banking.gateway.openbanking_gateway_executors.type.executors]]
+name = "com.wso2.openbanking.accelerator.gateway.executor.impl.selfcare.portal.UserPermissionValidationExecutor"
+priority = 1
+
+[open_banking.apim.analytics]
+enable=false
+
+[open_banking.data_publishing]
+enable = false
+username="$ref{super_admin.username}@carbon.super"
+password="$ref{super_admin.password}"
+server_url = "{tcp://wso2ob-obbi-1-service:7612|tcp://wso2ob-obbi-2-service:7612}"
+#auth_url = "{ssl://wso2ob-obbi-service:7612}"
+protocol = "Thrift"
+pool_size = 10
+queue_size = 32768
+worker_thread_count = 10
+pool_wait_time_Ms = 60000
+
+[open_banking.data_publishing.thrift]
+publishing_timeout = 2000
+#data streams and their attributes with the priority order
+[[open_banking.data_publishing.thrift.stream]]
+name="APIInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consumerId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="userAgent"
+priority=4
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="statusCode"
+priority=5
+required=true
+type="int"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="httpMethod"
+priority=6
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="responsePayloadSize"
+priority=7
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="electedResource"
+priority=8
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiName"
+priority=9
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiSpecVersion"
+priority=10
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=11
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=12
+required=true
+
+[[open_banking.data_publishing.thrift.stream]]
+name="APILatencyInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="correlationId"
+priority=1
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="requestTimestamp"
+priority=2
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="backendLatency"
+priority=3
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="requestMediationLatency"
+priority=4
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="responseLatency"
+priority=5
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="responseMediationLatency"
+priority=6
+required=true
+type="long"
+
+[[open_banking.data_publishing.thrift.stream]]
+name="AppRegInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=1
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="appEnvironment"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="appRoles"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="appName"
+priority=4
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="appSoftwareId"
+priority=5
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="appStatus"
+priority=6
+required=true
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=7
+required=true
+type="long"
+
+[[open_banking.data_publishing.thrift.stream]]
+name="AccountsInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="userId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="tppId"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="accountId"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="authorisationStatus"
+priority=6
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="reAuthorisation"
+priority=7
+type="bool"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=8
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiSpecVersion"
+priority=9
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentType"
+priority=10
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="expirationDateTime"
+priority=11
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="psuInteractionTime"
+priority=12
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=13
+
+[[open_banking.data_publishing.thrift.stream]]
+name="FundsConfirmationInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="userId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="tppId"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="debtorAccountId"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="authorisationStatus"
+priority=6
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=7
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiSpecVersion"
+priority=8
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentType"
+priority=9
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="expirationDateTime"
+priority=10
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="psuInteractionTime"
+priority=11
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=12
+
+[[open_banking.data_publishing.thrift.stream]]
+name="CoFAccessHistoryInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=3
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="amount"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="currency"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="reference"
+priority=6
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="response"
+priority=7
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="electedResource"
+priority=8
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="statusCode"
+priority=9
+type="int"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="statusMessage"
+priority=10
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=11
+
+[[open_banking.data_publishing.thrift.stream]]
+name="PaymentInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="userId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="tppId"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="paymentType"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="authorisationStatus"
+priority=6
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=7
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="creditorAccountId"
+priority=8
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="debtorAccountId"
+priority=9
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="multiAuthorisation"
+priority=10
+type="bool"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="currency"
+priority=11
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="amount"
+priority=12
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="noOfTransactions"
+priority=13
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="localInstrument"
+priority=14
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="paymentSubmissionId"
+priority=15
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="multiAuthUserCount"
+priority=16
+type="int"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiSpecVersion"
+priority=17
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="deliveryAddress"
+priority=18
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentType"
+priority=19
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="paymentRefund"
+priority=20
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="psuInteractionTime"
+priority=21
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=22
+
+[[open_banking.data_publishing.thrift.stream]]
+name="VrpInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="userId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="tppId"
+priority=3
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="authorisationStatus"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=6
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="apiSpecVersion"
+priority=7
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="creditorAccountId"
+priority=8
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="debtorAccountId"
+priority=9
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="deliveryAddress"
+priority=10
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentType"
+priority=11
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="paymentRefund"
+priority=12
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="psuInteractionTime"
+type="long"
+priority=13
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="vrpType"
+priority=14
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=15
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="validToDateTime"
+priority=16
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="reAuthorisation"
+priority=17
+type="bool"
+[[open_banking.data_publishing.thrift.stream]]
+name="VRPHistoryInputStream"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="consentId"
+priority=1
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="clientId"
+priority=2
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="timestamp"
+priority=3
+required=true
+type="long"
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="amount"
+priority=4
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="currency"
+priority=5
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="reference"
+priority=6
+[[open_banking.data_publishing.thrift.stream.attributes]]
+name="messageId"
+priority=7
+
+[[apim.extension.listener]]
+type = "AUTHENTICATION"
+class = "com.wso2.openbanking.accelerator.gateway.executor.core.OBExtensionListenerImpl"
+
+[[apim.extension.listener]]
+type = "THROTTLING"
+class = "com.wso2.openbanking.accelerator.gateway.throttling.OBThrottlingExtensionImpl"
+
+#[open_banking.gateway.throttling]
+#throttling_data_publisher = "com.wso2.openbanking.sample.throttling.publisher.SampleThrottlingDataPublisher"
+
+#keymanager name
+[open_banking.keyManager]
+name = "OBKM"
+
+#===================for certificate management====================
+[open_banking.gateway.certificate_management.certificate]
+cache_expiry = 3600
+[open_banking.gateway.certificate_management.certificate.revocation]
+enabled = true
+retry_count = 3
+[open_banking.gateway.certificate_management.certificate.revocation.proxy]
+enabled = false
+host = "PROXY_HOSTNAME"
+port = 8080
+[[open_banking.gateway.certificate_management.certificate.revocation.validator]]
+type = "OCSP"
+priority = 1
+[[open_banking.gateway.certificate_management.certificate.revocation.validator]]
+type = "CRL"
+priority = 2
+[[open_banking.gateway.certificate_management.certificate.revocation.excluded]]
+issuer_dn = ""
+[open_banking.gateway.certificate_management.certificate.issuer.validation]
+enabled = true
+[open_banking.gateway.certificate_management.truststore]
+dynamic_loading_interval = 86400
+
+
+#===================for TPP management====================
+[open_banking.gateway.tpp_management.tpp_validation]
+enabled = false
+implementation_path = ""
+cache_expiry = 3600
+[open_banking.gateway.tpp_management.psd2_role_validation]
+enabled = true
+[[open_banking.gateway.tpp_management.allowed_scopes]]
+name = "accounts"
+roles = "AISP, PISP"
+[[open_banking.gateway.tpp_management.allowed_scopes]]
+name = "payments"
+roles = "PISP"
+
+#===================for Connection pool====================
+[open_banking.http_connection_pool]
+max_connections = 2000
+max_connections_per_route = 1500
+
+#===================for event==============================
+[open_banking.event]
+queue_size = 32768
+worker_thread_count = 10
+event_executor = "com.wso2.openbanking.accelerator.common.event.executor.DefaultOBEventExecutor"
+
+#============to increase the https header size===============
+[transport.https.properties]
+maxHttpHeaderSize = 16384
+proxyPort = 443
+
+[open_banking.gateway.consent.validation]
+endpoint = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obiam-service:9446/api/openbanking/consent/validate"
+
+#===================UK Toolkit====================
+[open_banking_uk.consent]
+payable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/payable-accounts"
+sharable_account_retrieval_endpoint = "http://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:9763/api/openbanking/uk/backend/services/bankaccounts/bankaccountservice/sharable-accounts"
+account_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/aisp/"
+payment_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/pisp/"
+vrp_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/vrp/"
+cof_consent_self_link = "https://{{ template "ob-pattern-5.resource.prefix" . }}-obam-service:8243/open-banking/{version}/cbpii/"
+
+
+[open_banking_uk.consent.payment_restrictions.cutoff_date]
+enabled = false
+policy = "ACCEPT"
+daily_cutoff = "12:30:30+00:01"
+execution_time = "10:30:30+00:01"
+settlement_time = "11:30:30+00:01"
+
+#========================OB Distributed Cache Configurations===============================
+[open_banking.distributed_cache]
+enabled=true
+host_name="{{ template "ob-pattern-5.resource.prefix" . }}-obam-service"
+port=5701
+discovery_mechanism="TCP"
+#members=["192.168.1.0-7", "localhost:5703"]
+[open_banking.distributed_cache.properties]
+max_heartbeat=600
+max_master_confirmation=900
+merge_first_run_delay=60
+merge_next_run_delay=30
+logging_type="none"
+
+#========================OB Idempotency Configurations======================
+[open_banking.gateway.cache.idempotency_validation_cache]
+cache_time_to_live=1440
+[open_banking.gateway.idempotency]
+enabled=true
+allowed_time_duration=1440
+idempotency_key_header="x-idempotency-key"
+
+#========================OB JWS Signature Validation & Response Signing Configurations======================
+[open_banking.common.identity.cache]
+cache_modified_expiry_minutes=60
+cache_access_expiry_minutes=60
+
+[open_banking.jws_signature.signature_validation]
+enabled=true
+
+[[open_banking.jws_signature.signature_validation.allowed_algorithms]]
+algorithm="PS256"
+
+[[open_banking.jws_signature.signature_validation.allowed_algorithms]]
+algorithm="ES256"
+
+[open_banking.jws_signature.response_signing]
+enabled=true
+allowed_algorithm="PS256"
+
+[open_banking.ob_identity_retriever.server]
+signing_cert_alias="wso2carbon"
+sandbox_signing_cert_alias="wso2carbon"
+signing_cert_kid="1234"
+sandbox_signing_cert_kid="5678"
+
+[open_banking.ob_identity_retriever.jwks_retriever]
+size_limit=51200
+connection_timeout=2000
+read_timeout=2000
+
+#============UK Related Configs for JWS Signature Validation & Response Signing===============
+[open_banking.uk.jws_signature.obie]
+org_id="0015800001HQQrZAAX"
+
+[open_banking.uk.jws_signature.obie.trusted_anchors]
+signature_validation="openbanking.org.uk"
+response_signing="openbanking.org.uk"
+
+[[open_banking.uk.jws_signature.signature_validation.mandated_apis]]
+api_context="/open-banking/v3.1/event"
+
+[[open_banking.uk.jws_signature.signature_validation.mandated_apis]]
+api_context="/open-banking/v3.1/vrp"
+
+[[open_banking.uk.jws_signature.response_signing.response_sig_required_apis]]
+api_context="/open-banking/v3.1/event"
+
+[[open_banking.uk.jws_signature.response_signing.response_sig_required_apis]]
+api_context="/open-banking/v3.1/vrp"
+
+
+{{- if .Values.wso2.apim.configurations.notification.hostname }}
+[apim.notification]
+from_address = "{{ .Values.wso2.apim.configurations.notification.fromAddress }}"
+username = "{{ .Values.wso2.apim.configurations.notification.username }}"
+password = "{{ .Values.wso2.apim.configurations.notification.password }}"
+signature = "{{ .Values.wso2.apim.configurations.notification.signature }}"
+hostname = "{{ .Values.wso2.apim.configurations.notification.hostname }}"
+port = {{ .Values.wso2.apim.configurations.notification.port }}
+enable_start_tls = {{ .Values.wso2.apim.configurations.notification.enableStartTls }}
+enable_authentication = {{ .Values.wso2.apim.configurations.notification.enableAuthentication }}
+{{- end }}
+
+# [apim.token.revocation]
+# notifier_impl = "{{ .Values.wso2.apim.configurations.token.revocation.NotifierImpl }}"
+# enable_realtime_notifier = {{ .Values.wso2.apim.configurations.token.revocation.EnableRealtimeNotifier }}
+# realtime_notifier_ttl = {{ .Values.wso2.apim.configurations.token.revocation.RealtimeNotifierTtl }}
+# enable_persistent_notifier = {{ .Values.wso2.apim.configurations.token.revocation.EnablePersistentNotifier }}
+# persistent_notifier_hostname = "{{ .Values.wso2.apim.configurations.token.revocation.PersistentNotifierHostname }}"
+# persistent_notifier_ttl = {{ .Values.wso2.apim.configurations.token.revocation.PersistentNotifierTtl }}
+# persistent_notifier_username = "{{ .Values.wso2.apim.configurations.token.revocation.PersistentNotifierUsername }}"
+# persistent_notifier_password = "{{ .Values.wso2.apim.configurations.token.revocation.PersistentNotifierPassword }}"
+
+{{- range .Values.wso2.apim.configurations.eventHandlers }}
+[[event_handler]]
+name = "{{ .name }}"
+subscriptions = [{{ range .subscriptions }}"{{ . }}", {{ end }}]
+{{- end }}
+
+[service_provider]
+sp_name_regex = {{ .Values.wso2.apim.configurations.serviceProvider.spNameRegex | quote }}
+
+{{- if not .Values.wso2.apim.configurations.iskm.enabled }}
+{{ range .Values.wso2.apim.configurations.eventListeners }}
+[[event_listener]]
+id = "{{ .id }}"
+type = "{{ .type }}"
+name = "{{ .name }}"
+order = {{ .order }}
+
+[event_listener.properties]
+notification_endpoint = "https://{{ template "am-all-in-one.fullname" $ }}-am-service:${mgt.transport.https.port}/internal/data/v1/notify"
+username = "${admin.username}"
+password = "${admin.password}"
+'header.X-WSO2-KEY-MANAGER' = "default"
+{{- end }}
+{{- end }}
+
+{{- if .Values.wso2.deployment.persistence.solrIndexing.enabled }}
+[database.local]
+url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+
+[indexing]
+location = "/home/wso2carbon/solr/indexed-data"
+{{- else }}
+[database.local]
+url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+{{- end }}
+
+{{- if .Values.wso2.apim.secureVaultEnabled }}
+[secrets]
+admin_password = {{ .Values.wso2.apim.configurations.adminPassword | quote }}
+keystore_password = {{ .Values.wso2.apim.configurations.security.keystores.primary.password | quote }}
+keystore_key_password = {{ .Values.wso2.apim.configurations.security.keystores.primary.keyPassword | quote }}
+ssl_keystore_password = {{ .Values.wso2.apim.configurations.security.keystores.tls.password | quote }}
+ssl_key_password = {{ .Values.wso2.apim.configurations.security.keystores.tls.keyPassword | quote }}
+internal_keystore_password = {{ .Values.wso2.apim.configurations.security.keystores.internal.password | quote }}
+internal_keystore_key_password = {{ .Values.wso2.apim.configurations.security.keystores.internal.keyPassword | quote }}
+truststore_password = {{ .Values.wso2.apim.configurations.security.truststore.password | quote }}
+apim_db_password = {{ .Values.wso2.apim.configurations.databases.apim_db.password | quote }}
+shared_db_password = {{ .Values.wso2.apim.configurations.databases.shared_db.password | quote}}
+{{- end}}
